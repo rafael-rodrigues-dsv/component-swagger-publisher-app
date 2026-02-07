@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="801b8284-ebbb-49d7-94fb-70d36f3a6b09" name="Changes" comment="Commit inicial">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/publishing/ConfluencePublisher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/publishing/ConfluencePublisher.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/confluence-preview.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/confluence-preview.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/confluence-preview.html.j2" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/confluence-preview.html.j2" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/GIT/GITHUB/RAFAEL-RODRIGUES-DSV/PYTHON/component-swagger-publisher-app" value="39JbpNbmbf5yckIxVRjaWc1rABm" />
+      <entry key="_C:/GIT/Python/component-swagger-publisher-app" value="39MvygyMUvE2cqngiVP87PHO9pV" />
+    </persistenceIdMap>
+  </component>
+  <component name="CopilotUserSelectedModel">
+    <selectedModels>
+      <entry key="chat-panel" value="Claude Sonnet 4.5" />
+      <entry key="agent-panel" value="Claude Sonnet 4.5" />
+    </selectedModels>
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Rafael Rodrigues &lt;rafael.rodrigues.dsv@gmail.com&gt;" />
+      </list>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;rafael-rodrigues-dsv&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/rafael-rodrigues-dsv/component-swagger-publisher-app&quot;,
+    &quot;accountId&quot;: &quot;f0d3f2ee-324a-4da8-ac59-911a4a7a43a7&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="39JbpNbmbf5yckIxVRjaWc1rABm" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.main.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "ai.playground.ignore.import.keys.banner.in.settings": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "master",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/GIT/Python/component-swagger-publisher-app",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.github.copilot.settings.ApplicationConfigurable",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="component-swagger-publisher-app" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.14 (component-swagger-publisher-app)" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-PY-253.30387.173" />
+        <option value="bundled-python-sdk-4762d8aabb82-6d6dccd035ac-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.30387.173" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="801b8284-ebbb-49d7-94fb-70d36f3a6b09" name="Changes" comment="" />
+      <created>1770417305107</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770417305107</updated>
+      <workItem from="1770417306238" duration="6742000" />
+      <workItem from="1770519010322" duration="148000" />
+      <workItem from="1770559577129" duration="501000" />
+      <workItem from="1770560743547" duration="16173000" />
+    </task>
+    <task id="LOCAL-00001" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770463531150</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1770463531150</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770646431866</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1770646431866</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770646482741</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1770646482741</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770648204554</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1770648204554</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770649723649</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1770649723649</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770650173138</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1770650173138</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770651141049</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1770651141049</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770651197303</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1770651197303</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770652019837</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1770652019837</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770652164431</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1770652164431</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770652592668</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1770652592668</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770653034966</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1770653034966</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770654202521</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1770654202521</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770656674763</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1770656674763</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770657536984</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1770657536984</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770658285549</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1770658285549</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Commit inicial">
+      <option name="closed" value="true" />
+      <created>1770659299578</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1770659299578</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="No preview" />
+    <MESSAGE value="Commit inicial" />
+    <option name="LAST_COMMIT_MESSAGE" value="Commit inicial" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/component_swagger_publisher_app$main.coverage" NAME="main Coverage Results" MODIFIED="1770659217076" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>

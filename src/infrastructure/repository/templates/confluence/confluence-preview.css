@@ -1,0 +1,506 @@
+/* Confluence-like styles - Simulating real Confluence appearance */
+
+:root {
+    --confluence-blue: #0052CC;
+    --confluence-text: #172B4D;
+    --confluence-bg: #FFFFFF;
+    --confluence-sidebar: #F4F5F7;
+    --confluence-border: #DFE1E6;
+    --confluence-hover: #EBECF0;
+    --confluence-link: #0052CC;
+    --confluence-code-bg: #F4F5F7;
+    --confluence-success: #00875A;
+    --confluence-warning: #FF991F;
+    --confluence-error: #DE350B;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    color: var(--confluence-text);
+    background-color: var(--confluence-bg);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Confluence Header */
+.confluence-header {
+    background: var(--confluence-blue);
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.confluence-logo {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.confluence-breadcrumb {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Layout */
+.confluence-layout {
+    display: flex;
+    height: calc(100vh - 48px);
+}
+
+/* Sidebar Navigation */
+.confluence-sidebar {
+    width: 280px;
+    background: var(--confluence-sidebar);
+    border-right: 1px solid var(--confluence-border);
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.space-info {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--confluence-border);
+}
+
+.space-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--confluence-text);
+    margin-bottom: 4px;
+}
+
+.space-key {
+    font-size: 11px;
+    color: #6B778C;
+    text-transform: uppercase;
+}
+
+.page-tree {
+    list-style: none;
+}
+
+.page-tree-item {
+    margin: 4px 0;
+}
+
+.page-tree-link {
+    display: flex;
+    align-items: center;
+    padding: 6px 8px;
+    text-decoration: none;
+    color: var(--confluence-text);
+    border-radius: 3px;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.page-tree-link:hover {
+    background: var(--confluence-hover);
+}
+
+.page-tree-link.active {
+    background: var(--confluence-blue);
+    color: white;
+    font-weight: 500;
+}
+
+.page-icon {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.page-tree-children {
+    list-style: none;
+    padding-left: 20px;
+    margin-top: 4px;
+}
+
+.page-tree-children .page-tree-children {
+    padding-left: 16px;
+}
+
+.folder-arrow {
+    margin-left: auto;
+    font-size: 10px;
+    color: #6B778C;
+    transition: transform 0.2s;
+}
+
+.tag-folder {
+    font-weight: 500;
+}
+
+.http-method-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-right: 6px;
+    flex-shrink: 0;
+}
+
+.http-method-icon.method-get,
+.http-method-icon.method-g {
+    background: #61affe;
+    color: white;
+}
+
+.http-method-icon.method-post,
+.http-method-icon.method-p {
+    background: #49cc90;
+    color: white;
+}
+
+.http-method-icon.method-put {
+    background: #fca130;
+    color: white;
+}
+
+.http-method-icon.method-delete,
+.http-method-icon.method-d {
+    background: #f93e3e;
+    color: white;
+}
+
+.http-method-icon.method-patch {
+    background: #50e3c2;
+    color: white;
+}
+
+.endpoint-path {
+    font-size: 11px;
+    color: var(--confluence-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+/* Main Content */
+.confluence-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 40px;
+    background: white;
+}
+
+.page-header {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--confluence-border);
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--confluence-text);
+    margin-bottom: 8px;
+}
+
+.page-metadata {
+    font-size: 12px;
+    color: #6B778C;
+}
+
+.page-labels {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.label {
+    background: var(--confluence-code-bg);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    color: #42526E;
+}
+
+/* Content Sections */
+.content-section {
+    margin-bottom: 32px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--confluence-text);
+}
+
+/* Info Macro (Confluence style) */
+.info-macro {
+    background: #DEEBFF;
+    border-left: 4px solid #0052CC;
+    padding: 12px 16px;
+    margin: 16px 0;
+    border-radius: 3px;
+}
+
+.info-macro-icon {
+    color: #0052CC;
+    margin-right: 8px;
+}
+
+/* Panel Macro */
+.panel-macro {
+    background: var(--confluence-sidebar);
+    border: 1px solid var(--confluence-border);
+    border-radius: 3px;
+    padding: 16px;
+    margin: 16px 0;
+}
+
+.panel-header {
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+/* Code Macro */
+.code-macro {
+    background: #F4F5F7;
+    border: 1px solid var(--confluence-border);
+    border-radius: 3px;
+    padding: 12px;
+    margin: 12px 0;
+    overflow-x: auto;
+}
+
+.code-macro pre {
+    margin: 0;
+    font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* Table */
+.confluence-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+}
+
+.confluence-table th {
+    background: var(--confluence-sidebar);
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+    border: 1px solid var(--confluence-border);
+}
+
+.confluence-table td {
+    padding: 8px 12px;
+    border: 1px solid var(--confluence-border);
+}
+
+.confluence-table tbody tr:hover {
+    background: #FAFBFC;
+}
+
+/* Schema Link */
+.schema-link {
+    color: var(--confluence-link);
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.schema-link:hover {
+    text-decoration: underline;
+    color: #0065FF;
+}
+
+/* Code Block */
+.code-block {
+    background: #172B4D;
+    border-radius: 4px;
+    padding: 16px;
+    overflow-x: auto;
+    margin: 12px 0;
+}
+
+.code-block pre {
+    margin: 0;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.code-block code {
+    color: #FFFFFF;
+    background: transparent;
+    padding: 0;
+}
+
+/* Status Lozenges (Confluence style) */
+.status-lozenge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-success {
+    background: #E3FCEF;
+    color: #006644;
+}
+
+.status-warning {
+    background: #FFFAE6;
+    color: #974F0C;
+}
+
+.status-error {
+    background: #FFEBE6;
+    color: #BF2600;
+}
+
+.status-default {
+    background: #DFE1E6;
+    color: #42526E;
+}
+
+/* HTTP Method badges */
+.http-method {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-right: 8px;
+}
+
+.method-get { background: #36B37E; color: white; }
+.method-post { background: #0052CC; color: white; }
+.method-put { background: #FF991F; color: white; }
+.method-delete { background: #DE350B; color: white; }
+.method-patch { background: #6554C0; color: white; }
+
+/* Expand/Collapse */
+.expand-control {
+    background: none;
+    border: none;
+    color: var(--confluence-link);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px 8px;
+    margin-right: 8px;
+}
+
+.expand-control:hover {
+    background: var(--confluence-hover);
+    border-radius: 3px;
+}
+
+/* Cards for endpoints */
+.endpoint-card {
+    border: 1px solid var(--confluence-border);
+    border-radius: 3px;
+    margin: 12px 0;
+    overflow: hidden;
+}
+
+.endpoint-header {
+    background: var(--confluence-sidebar);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.endpoint-header:hover {
+    background: var(--confluence-hover);
+}
+
+.endpoint-body {
+    padding: 16px;
+    border-top: 1px solid var(--confluence-border);
+}
+
+/* Links */
+a {
+    color: var(--confluence-link);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Preview Notice */
+.preview-notice {
+    background: #FFF0B3;
+    border: 1px solid #FFC400;
+    border-radius: 3px;
+    padding: 12px 16px;
+    margin: 16px 0;
+    display: flex;
+    align-items: center;
+}
+
+.preview-notice-icon {
+    color: #974F0C;
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+/* Scrollbar styling (Confluence-like) */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--confluence-sidebar);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #C1C7D0;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #A5ADBA;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .confluence-layout {
+        flex-direction: column;
+    }
+
+    .confluence-sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--confluence-border);
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.confluence-content {
+    animation: fadeIn 0.3s ease-in;
+}
+
