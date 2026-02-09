@@ -21,10 +21,38 @@ The current version generates beautiful HTML documentation locally. Future phase
 
 ## Installation
 
+### Option 1: Auto-setup Script (Recommended) 🚀
+
+**Windows:**
+```cmd
+execute_doc_generation.bat
+```
+
+**Linux/Mac:**
+```bash
+chmod +x execute_doc_generation.sh
+./execute_doc_generation.sh
+```
+
+The script will:
+- ✅ Create `.venv` automatically if not exists
+- ✅ Install all dependencies
+- ✅ Activate virtual environment
+- ✅ Run the application
+
+### Option 2: Manual Installation
+
 ```bash
 # Clone the repository
 git clone <repository-url>
 cd component-swagger-publisher-app
+
+# Create virtual environment
+python -m venv .venv
+
+# Activate virtual environment
+.venv\Scripts\activate    # Windows
+source .venv/bin/activate # Linux/Mac
 
 # Install dependencies
 pip install -r requirements.txt
@@ -32,7 +60,25 @@ pip install -r requirements.txt
 
 ## Quick Start
 
+### Option 1: Using Auto-execution Script
+
+**Windows:**
+```cmd
+execute_doc_generation.bat
+```
+
+**Linux/Mac:**
 ```bash
+./execute_doc_generation.sh
+```
+
+### Option 2: Manual Execution
+
+```bash
+# Activate virtual environment (if not already activated)
+.venv\Scripts\activate    # Windows
+source .venv/bin/activate # Linux/Mac
+
 # Run the application
 py main.py
 ```

@@ -283,6 +283,13 @@
                                                     {% if media_obj.schema.ref %}
                                                         {% set model_name = media_obj.schema.ref.split('/')[-1] %}
                                                         <a href="javascript:showPage('schemas')" class="schema-link" title="View in Data Models">{{ model_name }}</a>
+                                                    {% elif media_obj.schema.type == 'array' and media_obj.schema.items %}
+                                                        {% if media_obj.schema.items.ref %}
+                                                            {% set item_model_name = media_obj.schema.items.ref.split('/')[-1] %}
+                                                            array[<a href="javascript:showPage('schemas')" class="schema-link" title="View in Data Models">{{ item_model_name }}</a>]
+                                                        {% else %}
+                                                            <code>array[{{ media_obj.schema.items.type or 'object' }}]</code>
+                                                        {% endif %}
                                                     {% elif media_obj.schema.type %}
                                                         <code>{{ media_obj.schema.type }}</code>
                                                     {% else %}
@@ -306,6 +313,16 @@
                                 {% if operation.request_body.description %}
                                 <p style="margin-top: 8px; font-style: italic; color: #6B778C;">{{ operation.request_body.description }}</p>
                                 {% endif %}
+
+                                <!-- Request Body JSON Example -->
+                                {% for content_type, media_obj in operation.request_body.content.items() %}
+                                    {% if 'json' in content_type %}
+                                    <h3 class="subsection-title" style="margin-top: 16px;">Request Body Example</h3>
+                                    <div class="code-block">
+                                        <pre><code class="language-json">{% if media_obj.example %}{{ media_obj.example | tojson_pretty }}{% elif media_obj.schema %}{{ example_generator.generate_example_json(media_obj.schema) }}{% else %}{}{% endif %}</code></pre>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
                             </div>
                             {% endif %}
 
@@ -313,30 +330,37 @@
                             {% if operation.responses %}
                             <div class="content-section">
                                 <h2 class="section-title">Responses</h2>
-                                <table class="confluence-table">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 100px;">Status</th>
-                                            <th>Description</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for status, response in operation.responses.items() %}
-                                        <tr>
-                                            <td>
-                                                {% if status.startswith('2') %}
-                                                <span class="status-lozenge status-success">{{ status }}</span>
-                                                {% elif status.startswith('4') %}
-                                                <span class="status-lozenge status-warning">{{ status }}</span>
-                                                {% else %}
-                                                <span class="status-lozenge status-error">{{ status }}</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>{{ response.description }}</td>
-                                        </tr>
+                                {% for status, response in operation.responses.items() %}
+                                <div class="response-item" style="margin-bottom: 20px; padding: 12px; background: #f4f5f7; border-radius: 4px;">
+                                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                        {% if status.startswith('2') %}
+                                        <span class="status-lozenge status-success">{{ status }}</span>
+                                        {% elif status.startswith('4') %}
+                                        <span class="status-lozenge status-warning">{{ status }}</span>
+                                        {% else %}
+                                        <span class="status-lozenge status-error">{{ status }}</span>
+                                        {% endif %}
+                                        <span style="margin-left: 12px;">{{ response.description }}</span>
+                                    </div>
+
+                                    <!-- Response Body Example -->
+                                    {% if response.content %}
+                                        {% for content_type, media_obj in response.content.items() %}
+                                            {% if 'json' in content_type %}
+                                            {% set example_json = media_obj.example | tojson_pretty if media_obj.example else (example_generator.generate_example_json(media_obj.schema) if media_obj.schema else '{}') %}
+                                            {% if example_json.strip() not in ['{}', '""', 'null', ''] %}
+                                            <div style="margin-top: 12px;">
+                                                <strong style="font-size: 12px; color: #6B778C;">Response Example ({{ content_type }}):</strong>
+                                                <div class="code-block" style="margin-top: 8px;">
+                                                    <pre><code class="language-json">{{ example_json }}</code></pre>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            {% endif %}
                                         {% endfor %}
-                                    </tbody>
-                                </table>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
                             </div>
                             {% endif %}
 
@@ -346,8 +370,8 @@
                                 <div class="code-block">
                                     <pre><code class="language-bash">curl -X {{ method.upper() }} '{% if api.servers and api.servers|length > 0 %}{{ api.servers[0].url }}{% else %}https://api.example.com{% endif %}{{ path }}'{% if operation.parameters %}{% for param in operation.parameters %}{% if param.location == 'path' %} # Replace {{ param.name }}{% endif %}{% endfor %}{% endif %} \
   -H 'Accept: application/json'{% if method.lower() in ['post', 'put', 'patch'] %} \
-  -H 'Content-Type: application/json'{% if operation.request_body %} \
-  -d '{"key": "value"}'{% endif %}{% endif %}</code></pre>
+  -H 'Content-Type: application/json'{% if operation.request_body %}{% for content_type, media_obj in operation.request_body.content.items() %}{% if 'json' in content_type %} \
+  -d '{% if media_obj.example %}{{ media_obj.example | tojson_pretty | replace("'", "\\'") }}{% elif media_obj.schema %}{{ example_generator.generate_example_json(media_obj.schema) | replace("'", "\\'") }}{% else %}{"key": "value"}{% endif %}'{% endif %}{% endfor %}{% endif %}{% endif %}</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -428,7 +452,23 @@
                                 {% for prop_name, prop in schema.properties.items() %}
                                 <tr>
                                     <td><code>{{ prop_name }}</code></td>
-                                    <td><code>{{ prop.type or 'object' }}</code></td>
+                                    <td>
+                                        {% if prop.ref %}
+                                            {% set ref_model = prop.ref.split('/')[-1] %}
+                                            <a href="javascript:void(0)" onclick="scrollToSchema('{{ ref_model }}')" class="schema-link">{{ ref_model }}</a>
+                                        {% elif prop.type == 'array' and prop.items %}
+                                            {% if prop.items.ref %}
+                                                {% set item_model = prop.items.ref.split('/')[-1] %}
+                                                array[<a href="javascript:void(0)" onclick="scrollToSchema('{{ item_model }}')" class="schema-link">{{ item_model }}</a>]
+                                            {% elif prop.items.type %}
+                                                <code>array[{{ prop.items.type }}]</code>
+                                            {% else %}
+                                                <code>array[object]</code>
+                                            {% endif %}
+                                        {% else %}
+                                            <code>{{ prop.type or 'object' }}</code>
+                                        {% endif %}
+                                    </td>
                                     <td>
                                         {% if prop_name in schema.required %}
                                         <span class="status-lozenge status-warning">Required</span>
@@ -514,7 +554,23 @@
                                     {% for prop_name, prop in schema.properties.items() %}
                                     <tr>
                                         <td><code>{{ prop_name }}</code></td>
-                                        <td><code>{{ prop.type or 'object' }}</code></td>
+                                        <td>
+                                            {% if prop.ref %}
+                                                {% set ref_model = prop.ref.split('/')[-1] %}
+                                                <a href="#schema-{{ ref_model }}" onclick="return scrollToSchema('{{ ref_model }}', event)" class="schema-link">{{ ref_model }}</a>
+                                            {% elif prop.type == 'array' and prop.items %}
+                                                {% if prop.items.ref %}
+                                                    {% set item_model = prop.items.ref.split('/')[-1] %}
+                                                    array[<a href="#schema-{{ item_model }}" onclick="return scrollToSchema('{{ item_model }}', event)" class="schema-link">{{ item_model }}</a>]
+                                                {% elif prop.items.type %}
+                                                    <code>array[{{ prop.items.type }}]</code>
+                                                {% else %}
+                                                    <code>array[object]</code>
+                                                {% endif %}
+                                            {% else %}
+                                                <code>{{ prop.type or 'object' }}</code>
+                                            {% endif %}
+                                        </td>
                                         <td>
                                             {% if prop_name in schema.required %}
                                             <span class="status-lozenge status-warning">Required</span>
@@ -590,6 +646,59 @@
 
             // Scroll to top
             document.querySelector('.confluence-content').scrollTop = 0;
+        }
+
+        function scrollToSchema(schemaName, e) {
+            // Prevent default anchor behavior
+            if (e) {
+                e.preventDefault();
+            }
+
+            // Check if we're already on the schemas page
+            const schemasPage = document.getElementById('page-schemas');
+            const isOnSchemasPage = schemasPage && schemasPage.style.display !== 'none';
+
+            // If not on schemas page, show it first (without scrolling to top)
+            if (!isOnSchemasPage) {
+                // Hide all pages
+                document.querySelectorAll('.page-content').forEach(page => {
+                    page.style.display = 'none';
+                });
+                // Show schemas page
+                schemasPage.style.display = 'block';
+            }
+
+            // Scroll to the schema element
+            setTimeout(function() {
+                const schemaElement = document.getElementById('schema-' + schemaName);
+                const contentArea = document.querySelector('.confluence-content');
+
+                console.log('Scrolling to schema:', schemaName, schemaElement);
+
+                if (schemaElement && contentArea) {
+                    // Calculate the position relative to the content area
+                    const elementRect = schemaElement.getBoundingClientRect();
+                    const contentRect = contentArea.getBoundingClientRect();
+                    const scrollTop = contentArea.scrollTop + elementRect.top - contentRect.top - 20;
+
+                    console.log('Scroll position:', scrollTop);
+
+                    // Scroll the content area to the schema
+                    contentArea.scrollTo({
+                        top: scrollTop,
+                        behavior: 'smooth'
+                    });
+
+                    // Highlight the schema briefly
+                    schemaElement.style.backgroundColor = '#fff3cd';
+                    schemaElement.style.transition = 'background-color 0.3s ease';
+                    setTimeout(function() {
+                        schemaElement.style.backgroundColor = '';
+                    }, 2000);
+                }
+            }, 100);
+
+            return false;
         }
 
         function toggleFolder(folderId) {

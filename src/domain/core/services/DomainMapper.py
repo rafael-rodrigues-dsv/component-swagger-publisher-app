@@ -156,8 +156,15 @@ class DomainMapper:
         """Map operation"""
         # Parameters - filter out invalid ones
         parameters = []
+        body_param = None  # For Swagger 2.0
+
         for p in op_dict.get('parameters', []):
             try:
+                # Check for Swagger 2.0 body parameter
+                if p.get('in') == 'body':
+                    body_param = p
+                    continue  # Don't add to regular parameters
+
                 param = DomainMapper._map_parameter(p)
                 # Only add if parameter has a valid name
                 if param.name and param.name != 'unnamed_parameter':
@@ -167,13 +174,19 @@ class DomainMapper:
                 print(f"Warning: Skipping invalid parameter: {e}")
                 continue
 
-        # Request body
+        # Request body - OpenAPI 3.0 style
         request_body = None
         if 'requestBody' in op_dict:
             try:
                 request_body = DomainMapper._map_request_body(op_dict['requestBody'])
             except Exception as e:
                 print(f"Warning: Failed to map request body: {e}")
+        # Swagger 2.0 style - body parameter
+        elif body_param:
+            try:
+                request_body = DomainMapper._map_swagger2_body_param(body_param)
+            except Exception as e:
+                print(f"Warning: Failed to map Swagger 2.0 body param: {e}")
 
         # Responses
         responses = {}
@@ -234,15 +247,49 @@ class DomainMapper:
         )
 
     @staticmethod
+    def _map_swagger2_body_param(body_param: Dict[str, Any]) -> RequestBody:
+        """Map Swagger 2.0 body parameter to RequestBody"""
+        schema = None
+        if 'schema' in body_param:
+            schema = DomainMapper._map_schema(body_param['schema'])
+
+        # In Swagger 2.0, body is always application/json
+        content = {
+            'application/json': MediaTypeObject(
+                schema=schema,
+                example=body_param.get('x-example') or body_param.get('example'),
+                examples=body_param.get('x-examples', {})
+            )
+        }
+
+        return RequestBody(
+            description=body_param.get('description'),
+            content=content,
+            required=body_param.get('required', False)
+        )
+
+    @staticmethod
     def _map_response(response_dict: Dict[str, Any]) -> Response:
         """Map response"""
         content = {}
-        for media_type, media_dict in response_dict.get('content', {}).items():
-            schema = DomainMapper._map_schema(media_dict.get('schema', {})) if 'schema' in media_dict else None
-            content[media_type] = MediaTypeObject(
+
+        # OpenAPI 3.0 style - has content object
+        if 'content' in response_dict:
+            for media_type, media_dict in response_dict.get('content', {}).items():
+                schema = DomainMapper._map_schema(media_dict.get('schema', {})) if 'schema' in media_dict else None
+                content[media_type] = MediaTypeObject(
+                    schema=schema,
+                    example=media_dict.get('example'),
+                    examples=media_dict.get('examples', {})
+                )
+        # Swagger 2.0 style - schema at root level
+        elif 'schema' in response_dict:
+            from src.domain.core.models.Response import MediaTypeObject as RespMediaTypeObject
+            schema = DomainMapper._map_schema(response_dict['schema'])
+            content['application/json'] = RespMediaTypeObject(
                 schema=schema,
-                example=media_dict.get('example'),
-                examples=media_dict.get('examples', {})
+                example=response_dict.get('examples', {}).get('application/json'),
+                examples=response_dict.get('examples', {})
             )
 
         return Response(

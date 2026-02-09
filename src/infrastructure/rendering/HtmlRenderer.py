@@ -1,12 +1,14 @@
 """
 HtmlRenderer - Renders API documentation as HTML
 """
+import json
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 from src.domain.core.models.ApiSpecification import ApiSpecification
 from src.domain.ports.rendering.DocumentationRenderer import DocumentationRenderer
 from src.domain.ports.rendering.RenderOptions import RenderOptions
 from src.domain.ports.rendering.RenderedDocument import RenderedDocument
+from src.domain.utils.ExampleGenerator import ExampleGenerator
 
 
 class HtmlRenderer(DocumentationRenderer):
@@ -26,10 +28,19 @@ class HtmlRenderer(DocumentationRenderer):
             raise FileNotFoundError(f"Templates directory not found: {self.templates_dir}")
         self.env = Environment(loader=FileSystemLoader(str(self.templates_dir)))
 
+        # Add custom filters
+        self.env.filters['tojson_pretty'] = lambda x: json.dumps(x, indent=2, ensure_ascii=False) if x else '{}'
+
     def render(self, spec: ApiSpecification, options: RenderOptions = None) -> RenderedDocument:
         """Render API specification to HTML (Confluence preview)"""
         if options is None:
             options = RenderOptions()
+
+        # Create example generator with available schemas
+        schemas = {}
+        if spec.components and spec.components.schemas:
+            schemas = spec.components.schemas
+        example_generator = ExampleGenerator(schemas)
 
         # Load Confluence-specific CSS
         css_path = self.templates_dir / "confluence-preview.css"
@@ -57,7 +68,9 @@ class HtmlRenderer(DocumentationRenderer):
             api=spec,
             css_content=css_content,
             options=options,
-            space_key='DDS'  # Using configured space key
+            space_key='DDS',  # Using configured space key
+            example_generator=example_generator,
+            schemas=schemas
         )
 
         return RenderedDocument(
