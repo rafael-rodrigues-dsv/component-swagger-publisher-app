@@ -6,7 +6,7 @@ from typing import Optional, Dict, List
 
 
 @dataclass
-class ServerVariable:
+class ServerVariableModel:
     """Server variable with possible values"""
     default: str
     enum: Optional[List[str]] = None
@@ -14,16 +14,16 @@ class ServerVariable:
 
 
 @dataclass
-class Server:
+class ServerModel:
     """API Server/Endpoint"""
     url: str
     description: Optional[str] = None
-    variables: Dict[str, ServerVariable] = field(default_factory=dict)
+    variables: Dict[str, ServerVariableModel] = field(default_factory=dict)
 
     def __post_init__(self):
         """Validate required fields"""
         if not self.url:
-            raise ValueError("Server.url is required")
+            raise ValueError("ServerModel.url is required")
 
 
 

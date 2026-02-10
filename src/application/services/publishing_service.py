@@ -2,7 +2,7 @@
 PublishingService - Main orchestration service
 """
 from pathlib import Path
-from src.domain.core.models.api_specification import ApiSpecification
+from src.domain.models.api_specification_model import ApiSpecificationModel
 from src.domain.ports.parsing.parsed_spec import ParsedSpec
 from src.domain.ports.rendering.render_options import RenderOptions
 from src.domain.ports.publishing.publish_target import PublishTarget

@@ -4,7 +4,7 @@ HtmlRenderer - Renders API documentation as HTML
 import json
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
-from src.domain.core.models.api_specification import ApiSpecification
+from src.domain.models.api_specification_model import ApiSpecificationModel
 from src.domain.ports.rendering.documentation_renderer import DocumentationRenderer
 from src.domain.ports.rendering.render_options import RenderOptions
 from src.domain.ports.rendering.rendered_document import RenderedDocument
@@ -31,7 +31,7 @@ class HtmlRenderer(DocumentationRenderer):
         # Add custom filters
         self.env.filters['tojson_pretty'] = lambda x: json.dumps(x, indent=2, ensure_ascii=False) if x else '{}'
 
-    def render(self, spec: ApiSpecification, options: RenderOptions = None) -> RenderedDocument:
+    def render(self, spec: ApiSpecificationModel, options: RenderOptions = None) -> RenderedDocument:
         """Render API specification to HTML (Confluence preview)"""
         if options is None:
             options = RenderOptions()

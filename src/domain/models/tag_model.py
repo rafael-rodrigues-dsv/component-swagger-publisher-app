@@ -6,7 +6,7 @@ from typing import Optional
 
 
 @dataclass
-class Tag:
+class TagModel:
     """Tag for grouping operations"""
     name: str
     description: Optional[str] = None
@@ -15,7 +15,7 @@ class Tag:
     def __post_init__(self):
         """Validate required fields"""
         if not self.name:
-            raise ValueError("Tag.name is required")
+            raise ValueError("TagModel.name is required")
 
 
 

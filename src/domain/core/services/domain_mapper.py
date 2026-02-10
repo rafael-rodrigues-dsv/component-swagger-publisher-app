@@ -3,25 +3,25 @@ DomainMapper - Convert ParsedSpec to ApiSpecification
 """
 from typing import Dict, Any, List, Optional
 from src.domain.ports.parsing.parsed_spec import ParsedSpec
-from src.domain.core.models.api_specification import ApiSpecification, Components
-from src.domain.core.models.info import Info, Contact, License
-from src.domain.core.models.server import Server, ServerVariable
-from src.domain.core.models.tag import Tag
-from src.domain.core.models.path_item import PathItem
-from src.domain.core.models.operation import Operation
-from src.domain.core.models.parameter import Parameter
-from src.domain.core.models.request_body import RequestBody, MediaTypeObject
-from src.domain.core.models.response import Response
-from src.domain.core.models.schema import Schema
-from src.domain.core.models.security_scheme import SecurityScheme, OAuthFlow
+from src.domain.models.api_specification_model import ApiSpecificationModel, ComponentsModel
+from src.domain.models.info_model import InfoModel, ContactModel, LicenseModel
+from src.domain.models.server_model import ServerModel, ServerVariableModel
+from src.domain.models.tag_model import TagModel
+from src.domain.models.path_item_model import PathItemModel
+from src.domain.models.operation_model import OperationModel
+from src.domain.models.parameter_model import ParameterModel
+from src.domain.models.request_body_model import RequestBodyModel, MediaTypeObjectModel
+from src.domain.models.response_model import ResponseModel
+from src.domain.models.schema_model import SchemaModel
+from src.domain.models.security_scheme_model import SecuritySchemeModel, OAuthFlowModel
 
 
 class DomainMapper:
-    """Map ParsedSpec to domain ApiSpecification"""
+    """Map ParsedSpec to domain ApiSpecificationModel"""
 
     @staticmethod
-    def to_domain(parsed_spec: ParsedSpec) -> ApiSpecification:
-        """Convert ParsedSpec to ApiSpecification"""
+    def to_domain(parsed_spec: ParsedSpec) -> ApiSpecificationModel:
+        """Convert ParsedSpec to ApiSpecificationModel"""
         raw = parsed_spec.raw_dict
         version = parsed_spec.version
 
@@ -43,7 +43,7 @@ class DomainMapper:
         # Security
         security = raw.get('security')
 
-        return ApiSpecification(
+        return ApiSpecificationModel(
             openapi_version=version,
             info=info,
             servers=servers,
@@ -55,22 +55,22 @@ class DomainMapper:
         )
 
     @staticmethod
-    def _map_info(info_dict: Dict[str, Any]) -> Info:
+    def _map_info(info_dict: Dict[str, Any]) -> InfoModel:
         """Map info section"""
         contact_dict = info_dict.get('contact', {})
-        contact = Contact(
+        contact = ContactModel(
             name=contact_dict.get('name'),
             url=contact_dict.get('url'),
             email=contact_dict.get('email')
         ) if contact_dict else None
 
         license_dict = info_dict.get('license', {})
-        license_obj = License(
+        license_obj = LicenseModel(
             name=license_dict.get('name', ''),
             url=license_dict.get('url')
         ) if license_dict else None
 
-        return Info(
+        return InfoModel(
             title=info_dict.get('title', 'Untitled API'),
             version=info_dict.get('version', '1.0.0'),
             description=info_dict.get('description'),
@@ -80,7 +80,7 @@ class DomainMapper:
         )
 
     @staticmethod
-    def _map_servers(raw: Dict[str, Any], version: str) -> List[Server]:
+    def _map_servers(raw: Dict[str, Any], version: str) -> List[ServerModel]:
         """Map servers section"""
         servers = []
 
@@ -89,13 +89,13 @@ class DomainMapper:
             for server_dict in raw['servers']:
                 variables = {}
                 for var_name, var_dict in server_dict.get('variables', {}).items():
-                    variables[var_name] = ServerVariable(
+                    variables[var_name] = ServerVariableModel(
                         default=var_dict.get('default', ''),
                         enum=var_dict.get('enum'),
                         description=var_dict.get('description')
                     )
 
-                servers.append(Server(
+                servers.append(ServerModel(
                     url=server_dict.get('url', ''),
                     description=server_dict.get('description'),
                     variables=variables
@@ -109,16 +109,16 @@ class DomainMapper:
 
             for scheme in schemes:
                 url = f"{scheme}://{host}{base_path}"
-                servers.append(Server(url=url))
+                servers.append(ServerModel(url=url))
 
         return servers
 
     @staticmethod
-    def _map_tags(tags_list: List[Dict[str, Any]]) -> List[Tag]:
+    def _map_tags(tags_list: List[Dict[str, Any]]) -> List[TagModel]:
         """Map tags"""
         tags = []
         for tag_dict in tags_list:
-            tags.append(Tag(
+            tags.append(TagModel(
                 name=tag_dict.get('name', ''),
                 description=tag_dict.get('description'),
                 external_docs=tag_dict.get('externalDocs')
@@ -126,7 +126,7 @@ class DomainMapper:
         return tags
 
     @staticmethod
-    def _map_paths(paths_dict: Dict[str, Any]) -> Dict[str, PathItem]:
+    def _map_paths(paths_dict: Dict[str, Any]) -> Dict[str, PathItemModel]:
         """Map paths"""
         paths = {}
         for path, path_item_dict in paths_dict.items():
@@ -141,7 +141,7 @@ class DomainMapper:
             # Common parameters
             parameters = [DomainMapper._map_parameter(p) for p in path_item_dict.get('parameters', [])]
 
-            paths[path] = PathItem(
+            paths[path] = PathItemModel(
                 path=path,
                 summary=path_item_dict.get('summary'),
                 description=path_item_dict.get('description'),
@@ -152,7 +152,7 @@ class DomainMapper:
         return paths
 
     @staticmethod
-    def _map_operation(method: str, path: str, op_dict: Dict[str, Any]) -> Operation:
+    def _map_operation(method: str, path: str, op_dict: Dict[str, Any]) -> OperationModel:
         """Map operation"""
         # Parameters - filter out invalid ones
         parameters = []
@@ -197,7 +197,7 @@ class DomainMapper:
                 print(f"Warning: Skipping response {status}: {e}")
                 continue
 
-        return Operation(
+        return OperationModel(
             method=method,
             path=path,
             operation_id=op_dict.get('operationId'),
@@ -212,13 +212,13 @@ class DomainMapper:
         )
 
     @staticmethod
-    def _map_parameter(param_dict: Dict[str, Any]) -> Parameter:
+    def _map_parameter(param_dict: Dict[str, Any]) -> ParameterModel:
         """Map parameter"""
         schema = None
         if 'schema' in param_dict:
             schema = DomainMapper._map_schema(param_dict['schema'])
 
-        return Parameter(
+        return ParameterModel(
             name=param_dict.get('name', ''),
             location=param_dict.get('in', 'query'),
             description=param_dict.get('description'),
@@ -229,47 +229,47 @@ class DomainMapper:
         )
 
     @staticmethod
-    def _map_request_body(rb_dict: Dict[str, Any]) -> RequestBody:
+    def _map_request_body(rb_dict: Dict[str, Any]) -> RequestBodyModel:
         """Map request body"""
         content = {}
         for media_type, media_dict in rb_dict.get('content', {}).items():
             schema = DomainMapper._map_schema(media_dict.get('schema', {})) if 'schema' in media_dict else None
-            content[media_type] = MediaTypeObject(
+            content[media_type] = MediaTypeObjectModel(
                 schema=schema,
                 example=media_dict.get('example'),
                 examples=media_dict.get('examples', {})
             )
 
-        return RequestBody(
+        return RequestBodyModel(
             description=rb_dict.get('description'),
             content=content,
             required=rb_dict.get('required', False)
         )
 
     @staticmethod
-    def _map_swagger2_body_param(body_param: Dict[str, Any]) -> RequestBody:
-        """Map Swagger 2.0 body parameter to RequestBody"""
+    def _map_swagger2_body_param(body_param: Dict[str, Any]) -> RequestBodyModel:
+        """Map Swagger 2.0 body parameter to RequestBodyModel"""
         schema = None
         if 'schema' in body_param:
             schema = DomainMapper._map_schema(body_param['schema'])
 
         # In Swagger 2.0, body is always application/json
         content = {
-            'application/json': MediaTypeObject(
+            'application/json': MediaTypeObjectModel(
                 schema=schema,
                 example=body_param.get('x-example') or body_param.get('example'),
                 examples=body_param.get('x-examples', {})
             )
         }
 
-        return RequestBody(
+        return RequestBodyModel(
             description=body_param.get('description'),
             content=content,
             required=body_param.get('required', False)
         )
 
     @staticmethod
-    def _map_response(response_dict: Dict[str, Any]) -> Response:
+    def _map_response(response_dict: Dict[str, Any]) -> ResponseModel:
         """Map response"""
         content = {}
 
@@ -277,33 +277,32 @@ class DomainMapper:
         if 'content' in response_dict:
             for media_type, media_dict in response_dict.get('content', {}).items():
                 schema = DomainMapper._map_schema(media_dict.get('schema', {})) if 'schema' in media_dict else None
-                content[media_type] = MediaTypeObject(
+                content[media_type] = MediaTypeObjectModel(
                     schema=schema,
                     example=media_dict.get('example'),
                     examples=media_dict.get('examples', {})
                 )
         # Swagger 2.0 style - schema at root level
         elif 'schema' in response_dict:
-            from src.domain.core.models.response import MediaTypeObject as RespMediaTypeObject
             schema = DomainMapper._map_schema(response_dict['schema'])
-            content['application/json'] = RespMediaTypeObject(
+            content['application/json'] = MediaTypeObjectModel(
                 schema=schema,
                 example=response_dict.get('examples', {}).get('application/json'),
                 examples=response_dict.get('examples', {})
             )
 
-        return Response(
+        return ResponseModel(
             description=response_dict.get('description', ''),
             content=content,
             headers=response_dict.get('headers', {})
         )
 
     @staticmethod
-    def _map_schema(schema_dict: Dict[str, Any]) -> Schema:
+    def _map_schema(schema_dict: Dict[str, Any]) -> SchemaModel:
         """Map schema"""
         # Handle $ref
         if '$ref' in schema_dict:
-            return Schema(ref=schema_dict['$ref'])
+            return SchemaModel(ref=schema_dict['$ref'])
 
         # Properties
         properties = {}
@@ -320,7 +319,7 @@ class DomainMapper:
         one_of = [DomainMapper._map_schema(s) for s in schema_dict.get('oneOf', [])]
         any_of = [DomainMapper._map_schema(s) for s in schema_dict.get('anyOf', [])]
 
-        return Schema(
+        return SchemaModel(
             type=schema_dict.get('type'),
             format=schema_dict.get('format'),
             title=schema_dict.get('title'),
@@ -346,7 +345,7 @@ class DomainMapper:
         )
 
     @staticmethod
-    def _map_components(raw: Dict[str, Any], version: str) -> Components:
+    def _map_components(raw: Dict[str, Any], version: str) -> ComponentsModel:
         """Map components"""
         components_dict = raw.get('components', {}) if version.startswith('3.') else raw.get('definitions', {})
 
@@ -362,7 +361,7 @@ class DomainMapper:
         for scheme_name, scheme_dict in sec_source.items():
             security_schemes[scheme_name] = DomainMapper._map_security_scheme(scheme_dict)
 
-        return Components(
+        return ComponentsModel(
             schemas=schemas,
             security_schemes=security_schemes,
             responses=components_dict.get('responses', {}),
@@ -373,20 +372,20 @@ class DomainMapper:
         )
 
     @staticmethod
-    def _map_security_scheme(scheme_dict: Dict[str, Any]) -> SecurityScheme:
+    def _map_security_scheme(scheme_dict: Dict[str, Any]) -> SecuritySchemeModel:
         """Map security scheme"""
         flows = None
         if 'flows' in scheme_dict:
             flows = {}
             for flow_name, flow_dict in scheme_dict['flows'].items():
-                flows[flow_name] = OAuthFlow(
+                flows[flow_name] = OAuthFlowModel(
                     authorization_url=flow_dict.get('authorizationUrl'),
                     token_url=flow_dict.get('tokenUrl'),
                     refresh_url=flow_dict.get('refreshUrl'),
                     scopes=flow_dict.get('scopes', {})
                 )
 
-        return SecurityScheme(
+        return SecuritySchemeModel(
             type=scheme_dict.get('type', 'apiKey'),
             description=scheme_dict.get('description'),
             name=scheme_dict.get('name'),

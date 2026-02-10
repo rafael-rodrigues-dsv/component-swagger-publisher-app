@@ -3,18 +3,18 @@ ExampleGenerator - Generate JSON examples from OpenAPI schemas
 """
 import json
 from typing import Any, Dict, Optional
-from src.domain.core.models.schema import Schema
+from src.domain.models.schema_model import SchemaModel
 
 
 class ExampleGenerator:
     """Generate JSON examples from OpenAPI schemas"""
 
-    def __init__(self, schemas: Dict[str, Schema] = None):
+    def __init__(self, schemas: Dict[str, SchemaModel] = None):
         """Initialize with available schemas for resolving $ref"""
         self.schemas = schemas or {}
         self._visited_refs = set()  # Prevent infinite recursion
 
-    def generate_example(self, schema: Schema) -> Any:
+    def generate_example(self, schema: SchemaModel) -> Any:
         """Generate an example value from a schema"""
         if schema is None:
             return {}
@@ -45,7 +45,7 @@ class ExampleGenerator:
         else:
             return {}
 
-    def generate_example_json(self, schema: Schema, pretty: bool = True) -> str:
+    def generate_example_json(self, schema: SchemaModel, pretty: bool = True) -> str:
         """Generate example as JSON string"""
         example = self.generate_example(schema)
         if pretty:
@@ -72,7 +72,7 @@ class ExampleGenerator:
         self._visited_refs.discard(ref)
         return {}
 
-    def _generate_object_example(self, schema: Schema) -> Dict[str, Any]:
+    def _generate_object_example(self, schema: SchemaModel) -> Dict[str, Any]:
         """Generate example for object type"""
         result = {}
 
@@ -82,13 +82,13 @@ class ExampleGenerator:
 
         return result
 
-    def _generate_array_example(self, schema: Schema) -> list:
+    def _generate_array_example(self, schema: SchemaModel) -> list:
         """Generate example for array type"""
         if schema.items:
             return [self.generate_example(schema.items)]
         return []
 
-    def _generate_string_example(self, schema: Schema) -> str:
+    def _generate_string_example(self, schema: SchemaModel) -> str:
         """Generate example for string type"""
         # Use enum if available
         if schema.enum:
@@ -118,7 +118,7 @@ class ExampleGenerator:
 
         return 'string'
 
-    def _generate_integer_example(self, schema: Schema) -> int:
+    def _generate_integer_example(self, schema: SchemaModel) -> int:
         """Generate example for integer type"""
         # Use enum if available
         if schema.enum:
@@ -136,7 +136,7 @@ class ExampleGenerator:
 
         return 0
 
-    def _generate_number_example(self, schema: Schema) -> float:
+    def _generate_number_example(self, schema: SchemaModel) -> float:
         """Generate example for number type"""
         # Use enum if available
         if schema.enum:

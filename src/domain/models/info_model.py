@@ -7,7 +7,7 @@ from typing import Optional
 
 
 @dataclass
-class Contact:
+class ContactModel:
     """Contact information"""
     name: Optional[str] = None
     url: Optional[str] = None
@@ -15,28 +15,28 @@ class Contact:
 
 
 @dataclass
-class License:
+class LicenseModel:
     """License information"""
     name: str = ""
     url: Optional[str] = None
 
 
 @dataclass
-class Info:
+class InfoModel:
     """API Information and Metadata"""
     title: str
     version: str
     description: Optional[str] = None
     terms_of_service: Optional[str] = None
-    contact: Optional[Contact] = None
-    license: Optional[License] = None
+    contact: Optional[ContactModel] = None
+    license: Optional[LicenseModel] = None
 
     def __post_init__(self):
         """Validate required fields"""
         if not self.title:
-            raise ValueError("Info.title is required")
+            raise ValueError("InfoModel.title is required")
         if not self.version:
-            raise ValueError("Info.version is required")
+            raise ValueError("InfoModel.version is required")
 
 
 

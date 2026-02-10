@@ -6,7 +6,7 @@ from typing import Optional, Dict, List, Any
 
 
 @dataclass
-class Schema:
+class SchemaModel:
     """Schema/Type definition"""
     type: Optional[str] = None
     format: Optional[str] = None
@@ -22,17 +22,17 @@ class Schema:
     maximum: Optional[float] = None
 
     # Object properties
-    properties: Dict[str, 'Schema'] = field(default_factory=dict)
+    properties: Dict[str, 'SchemaModel'] = field(default_factory=dict)
     required: List[str] = field(default_factory=list)
-    additional_properties: Optional['Schema'] = None
+    additional_properties: Optional['SchemaModel'] = None
 
     # Array items
-    items: Optional['Schema'] = None
+    items: Optional['SchemaModel'] = None
 
     # Composition
-    all_of: Optional[List['Schema']] = None
-    one_of: Optional[List['Schema']] = None
-    any_of: Optional[List['Schema']] = None
+    all_of: Optional[List['SchemaModel']] = None
+    one_of: Optional[List['SchemaModel']] = None
+    any_of: Optional[List['SchemaModel']] = None
 
     # Reference
     ref: Optional[str] = None

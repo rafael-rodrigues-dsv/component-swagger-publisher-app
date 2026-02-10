@@ -2,7 +2,7 @@
 DocumentationRenderer - Interface for rendering documentation
 """
 from abc import ABC, abstractmethod
-from src.domain.core.models.api_specification import ApiSpecification
+from src.domain.models.api_specification_model import ApiSpecificationModel
 from src.domain.ports.rendering.render_options import RenderOptions
 from src.domain.ports.rendering.rendered_document import RenderedDocument
 
@@ -11,7 +11,7 @@ class DocumentationRenderer(ABC):
     """Abstract renderer for documentation"""
 
     @abstractmethod
-    def render(self, spec: ApiSpecification, options: RenderOptions = None) -> RenderedDocument:
+    def render(self, spec: ApiSpecificationModel, options: RenderOptions = None) -> RenderedDocument:
         """
         Render API specification to documentation format
 

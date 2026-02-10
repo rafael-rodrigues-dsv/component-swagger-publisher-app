@@ -3,11 +3,11 @@ Parameter Model - Operation parameters
 """
 from dataclasses import dataclass
 from typing import Optional, Any
-from src.domain.core.models.schema import Schema
+from src.domain.models.schema_model import SchemaModel
 
 
 @dataclass
-class Parameter:
+class ParameterModel:
     """Parameter for operations"""
     name: str
     location: str  # query, header, path, cookie
@@ -17,7 +17,7 @@ class Parameter:
     allow_empty_value: bool = False
 
     # Schema
-    schema: Optional[Schema] = None
+    schema: Optional[SchemaModel] = None
 
     # Style
     style: Optional[str] = None
