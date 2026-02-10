@@ -2,9 +2,9 @@
 Publisher - Interface for publishing documentation
 """
 from abc import ABC, abstractmethod
-from src.domain.ports.rendering.RenderedDocument import RenderedDocument
-from src.domain.ports.publishing.PublishTarget import PublishTarget
-from src.domain.ports.publishing.PublishResult import PublishResult
+from src.domain.ports.rendering.rendered_document import RenderedDocument
+from src.domain.ports.publishing.publish_target import PublishTarget
+from src.domain.ports.publishing.publish_result import PublishResult
 
 
 class Publisher(ABC):
@@ -49,4 +49,7 @@ class Publisher(ABC):
             bool: True if valid, False otherwise
         """
         pass
+
+
+
 

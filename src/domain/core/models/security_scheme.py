@@ -37,3 +37,6 @@ class SecurityScheme:
         if self.type == 'apiKey' and not self.location:
             raise ValueError("SecurityScheme.location is required for apiKey")
 
+
+
+

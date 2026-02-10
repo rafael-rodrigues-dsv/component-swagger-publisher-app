@@ -3,7 +3,7 @@ ExampleGenerator - Generate JSON examples from OpenAPI schemas
 """
 import json
 from typing import Any, Dict, Optional
-from src.domain.core.models.Schema import Schema
+from src.domain.core.models.schema import Schema
 
 
 class ExampleGenerator:
@@ -153,4 +153,7 @@ class ExampleGenerator:
             return float(schema.maximum) - 0.1
 
         return 0.0
+
+
+
 

@@ -4,11 +4,11 @@ HtmlRenderer - Renders API documentation as HTML
 import json
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
-from src.domain.core.models.ApiSpecification import ApiSpecification
-from src.domain.ports.rendering.DocumentationRenderer import DocumentationRenderer
-from src.domain.ports.rendering.RenderOptions import RenderOptions
-from src.domain.ports.rendering.RenderedDocument import RenderedDocument
-from src.domain.utils.ExampleGenerator import ExampleGenerator
+from src.domain.core.models.api_specification import ApiSpecification
+from src.domain.ports.rendering.documentation_renderer import DocumentationRenderer
+from src.domain.ports.rendering.render_options import RenderOptions
+from src.domain.ports.rendering.rendered_document import RenderedDocument
+from src.domain.utils.example_generator import ExampleGenerator
 
 
 class HtmlRenderer(DocumentationRenderer):
@@ -86,4 +86,7 @@ class HtmlRenderer(DocumentationRenderer):
     def get_format_name(self) -> str:
         """Get format name"""
         return "html"
+
+
+
 

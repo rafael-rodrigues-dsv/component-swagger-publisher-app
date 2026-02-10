@@ -3,7 +3,7 @@ RequestBody Model - Request body specification
 """
 from dataclasses import dataclass, field
 from typing import Optional, Dict
-from src.domain.core.models.Schema import Schema
+from src.domain.core.models.schema import Schema
 
 
 @dataclass
@@ -20,4 +20,7 @@ class RequestBody:
     description: Optional[str] = None
     content: Dict[str, MediaTypeObject] = field(default_factory=dict)
     required: bool = False
+
+
+
 

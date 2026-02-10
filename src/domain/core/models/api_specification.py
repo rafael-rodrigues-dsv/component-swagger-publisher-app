@@ -3,12 +3,12 @@ ApiSpecification Model - Root canonical model
 """
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
-from src.domain.core.models.Info import Info
-from src.domain.core.models.Server import Server
-from src.domain.core.models.PathItem import PathItem
-from src.domain.core.models.Tag import Tag
-from src.domain.core.models.SecurityScheme import SecurityScheme
-from src.domain.core.models.Schema import Schema
+from src.domain.core.models.info import Info
+from src.domain.core.models.server import Server
+from src.domain.core.models.path_item import PathItem
+from src.domain.core.models.tag import Tag
+from src.domain.core.models.security_scheme import SecurityScheme
+from src.domain.core.models.schema import Schema
 
 
 @dataclass
@@ -57,4 +57,7 @@ class ApiSpecification:
             if tag_name in operation.tags:
                 operations.append(operation)
         return operations
+
+
+
 

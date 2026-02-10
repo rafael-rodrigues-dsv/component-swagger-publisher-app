@@ -3,8 +3,8 @@ PathItem Model - Path with operations
 """
 from dataclasses import dataclass, field
 from typing import Optional, List, Dict
-from src.domain.core.models.Operation import Operation
-from src.domain.core.models.Parameter import Parameter
+from src.domain.core.models.operation import Operation
+from src.domain.core.models.parameter import Parameter
 
 
 @dataclass
@@ -28,4 +28,7 @@ class PathItem:
     def add_operation(self, method: str, operation: Operation):
         """Add operation"""
         self.operations[method.upper()] = operation
+
+
+
 

@@ -3,7 +3,7 @@ OpenApiParser - Interface for parsing OpenAPI specifications
 """
 from abc import ABC, abstractmethod
 from typing import Union
-from src.domain.ports.parsing.ParsedSpec import ParsedSpec
+from src.domain.ports.parsing.parsed_spec import ParsedSpec
 
 
 class OpenApiParser(ABC):
@@ -48,4 +48,7 @@ class OpenApiParser(ABC):
             str: Version string (e.g., "2.0", "3.0", "3.1")
         """
         pass
+
+
+
 

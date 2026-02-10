@@ -3,7 +3,7 @@ Parameter Model - Operation parameters
 """
 from dataclasses import dataclass
 from typing import Optional, Any
-from src.domain.core.models.Schema import Schema
+from src.domain.core.models.schema import Schema
 
 
 @dataclass
@@ -42,4 +42,7 @@ class Parameter:
         if self.location == 'path' and not self.required:
             # Fix path parameters to be required
             object.__setattr__(self, 'required', True)
+
+
+
 

@@ -10,7 +10,7 @@ from colorama import init, Fore, Style
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from src.application.services.PublishingService import PublishingService
+from src.application.services.publishing_service import PublishingService
 
 # Initialize colorama
 init(autoreset=True)

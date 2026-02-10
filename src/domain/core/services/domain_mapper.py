@@ -2,18 +2,18 @@
 DomainMapper - Convert ParsedSpec to ApiSpecification
 """
 from typing import Dict, Any, List, Optional
-from src.domain.ports.parsing.ParsedSpec import ParsedSpec
-from src.domain.core.models.ApiSpecification import ApiSpecification, Components
-from src.domain.core.models.Info import Info, Contact, License
-from src.domain.core.models.Server import Server, ServerVariable
-from src.domain.core.models.Tag import Tag
-from src.domain.core.models.PathItem import PathItem
-from src.domain.core.models.Operation import Operation
-from src.domain.core.models.Parameter import Parameter
-from src.domain.core.models.RequestBody import RequestBody, MediaTypeObject
-from src.domain.core.models.Response import Response
-from src.domain.core.models.Schema import Schema
-from src.domain.core.models.SecurityScheme import SecurityScheme, OAuthFlow
+from src.domain.ports.parsing.parsed_spec import ParsedSpec
+from src.domain.core.models.api_specification import ApiSpecification, Components
+from src.domain.core.models.info import Info, Contact, License
+from src.domain.core.models.server import Server, ServerVariable
+from src.domain.core.models.tag import Tag
+from src.domain.core.models.path_item import PathItem
+from src.domain.core.models.operation import Operation
+from src.domain.core.models.parameter import Parameter
+from src.domain.core.models.request_body import RequestBody, MediaTypeObject
+from src.domain.core.models.response import Response
+from src.domain.core.models.schema import Schema
+from src.domain.core.models.security_scheme import SecurityScheme, OAuthFlow
 
 
 class DomainMapper:
@@ -284,7 +284,7 @@ class DomainMapper:
                 )
         # Swagger 2.0 style - schema at root level
         elif 'schema' in response_dict:
-            from src.domain.core.models.Response import MediaTypeObject as RespMediaTypeObject
+            from src.domain.core.models.response import MediaTypeObject as RespMediaTypeObject
             schema = DomainMapper._map_schema(response_dict['schema'])
             content['application/json'] = RespMediaTypeObject(
                 schema=schema,
@@ -396,4 +396,7 @@ class DomainMapper:
             flows=flows,
             open_id_connect_url=scheme_dict.get('openIdConnectUrl')
         )
+
+
+
 

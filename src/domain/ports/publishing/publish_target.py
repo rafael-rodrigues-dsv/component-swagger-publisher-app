@@ -15,3 +15,6 @@ class PublishTarget:
     space_key: Optional[str] = None  # For Confluence
     parent_page_id: Optional[str] = None  # For Confluence
 
+
+
+

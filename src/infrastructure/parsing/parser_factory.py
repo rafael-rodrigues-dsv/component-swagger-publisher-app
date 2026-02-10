@@ -2,10 +2,10 @@
 ParserFactory - Factory to select appropriate parser
 """
 from typing import Union
-from src.domain.ports.parsing.OpenApiParser import OpenApiParser
-from src.domain.utils.JsonLoader import JsonLoader
-from src.infrastructure.parsing.Swagger2Parser import Swagger2Parser
-from src.infrastructure.parsing.OpenApi3Parser import OpenApi3Parser
+from src.domain.ports.parsing.open_api_parser import OpenApiParser
+from src.domain.utils.json_loader import JsonLoader
+from src.infrastructure.parsing.swagger2_parser import Swagger2Parser
+from src.infrastructure.parsing.open_api3_parser import OpenApi3Parser
 
 
 class ParserFactory:
@@ -56,4 +56,7 @@ class ParserFactory:
             return spec_dict['openapi']
         else:
             raise ValueError("Cannot detect OpenAPI version")
+
+
+
 

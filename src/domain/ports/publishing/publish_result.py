@@ -16,3 +16,6 @@ class PublishResult:
     url: Optional[str] = None  # Published URL (for remote publishers)
     duration_seconds: float = 0.0
 
+
+
+

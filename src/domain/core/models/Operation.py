@@ -3,9 +3,9 @@ Operation Model - HTTP Operation (GET, POST, etc.)
 """
 from dataclasses import dataclass, field
 from typing import Optional, List, Dict
-from src.domain.core.models.Parameter import Parameter
-from src.domain.core.models.RequestBody import RequestBody
-from src.domain.core.models.Response import Response
+from src.domain.core.models.parameter import Parameter
+from src.domain.core.models.request_body import RequestBody
+from src.domain.core.models.response import Response
 
 
 @dataclass
@@ -31,4 +31,7 @@ class Operation:
             raise ValueError("Operation.path is required")
         if self.method not in ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD', 'TRACE']:
             raise ValueError(f"Invalid HTTP method: {self.method}")
+
+
+
 

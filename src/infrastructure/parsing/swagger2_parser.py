@@ -2,9 +2,9 @@
 Swagger2Parser - Parser for OpenAPI 2.0 (Swagger) specifications
 """
 from typing import Union, Dict, Any
-from src.domain.ports.parsing.OpenApiParser import OpenApiParser
-from src.domain.ports.parsing.ParsedSpec import ParsedSpec
-from src.domain.utils.JsonLoader import JsonLoader
+from src.domain.ports.parsing.open_api_parser import OpenApiParser
+from src.domain.ports.parsing.parsed_spec import ParsedSpec
+from src.domain.utils.json_loader import JsonLoader
 
 
 class Swagger2Parser(OpenApiParser):
@@ -39,4 +39,7 @@ class Swagger2Parser(OpenApiParser):
     def get_version(self) -> str:
         """Get supported version"""
         return "2.0"
+
+
+
 

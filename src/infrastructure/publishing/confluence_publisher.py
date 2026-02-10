@@ -6,12 +6,12 @@ import json
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional
-from src.domain.ports.publishing.Publisher import Publisher
-from src.domain.ports.rendering.RenderedDocument import RenderedDocument
-from src.domain.ports.publishing.PublishTarget import PublishTarget
-from src.domain.ports.publishing.PublishResult import PublishResult
+from src.domain.ports.publishing.publisher import Publisher
+from src.domain.ports.rendering.rendered_document import RenderedDocument
+from src.domain.ports.publishing.publish_target import PublishTarget
+from src.domain.ports.publishing.publish_result import PublishResult
 from src.infrastructure.config.config import config
-from src.domain.utils.ExampleGenerator import ExampleGenerator
+from src.domain.utils.example_generator import ExampleGenerator
 
 
 class ConfluencePublisher(Publisher):
@@ -1125,4 +1125,7 @@ class ConfluencePublisher(Publisher):
         if not target.title:
             return False
         return True
+
+
+
 

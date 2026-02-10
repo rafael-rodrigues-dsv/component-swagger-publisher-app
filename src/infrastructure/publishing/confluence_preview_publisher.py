@@ -3,10 +3,10 @@ ConfluencePreviewPublisher - Saves documentation locally as preview
 """
 from pathlib import Path
 from datetime import datetime
-from src.domain.ports.publishing.Publisher import Publisher
-from src.domain.ports.rendering.RenderedDocument import RenderedDocument
-from src.domain.ports.publishing.PublishTarget import PublishTarget
-from src.domain.ports.publishing.PublishResult import PublishResult
+from src.domain.ports.publishing.publisher import Publisher
+from src.domain.ports.rendering.rendered_document import RenderedDocument
+from src.domain.ports.publishing.publish_target import PublishTarget
+from src.domain.ports.publishing.publish_result import PublishResult
 
 
 class ConfluencePreviewPublisher(Publisher):
@@ -93,4 +93,7 @@ class ConfluencePreviewPublisher(Publisher):
         if not target.output_path:
             return False
         return True
+
+
+
 

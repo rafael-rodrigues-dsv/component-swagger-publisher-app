@@ -3,7 +3,7 @@ Response Model - Response specification
 """
 from dataclasses import dataclass, field
 from typing import Optional, Dict
-from src.domain.core.models.Schema import Schema
+from src.domain.core.models.schema import Schema
 
 
 @dataclass
@@ -25,4 +25,7 @@ class Response:
         """Validate required fields"""
         if not self.description:
             raise ValueError("Response.description is required")
+
+
+
 

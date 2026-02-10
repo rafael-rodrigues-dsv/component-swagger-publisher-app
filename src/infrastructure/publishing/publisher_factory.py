@@ -1,9 +1,9 @@
 """
 PublisherFactory - Factory to get appropriate publisher
 """
-from src.domain.ports.publishing.Publisher import Publisher
-from src.infrastructure.publishing.ConfluencePreviewPublisher import ConfluencePreviewPublisher
-from src.infrastructure.publishing.ConfluencePublisher import ConfluencePublisher
+from src.domain.ports.publishing.publisher import Publisher
+from src.infrastructure.publishing.confluence_preview_publisher import ConfluencePreviewPublisher
+from src.infrastructure.publishing.confluence_publisher import ConfluencePublisher
 
 
 class PublisherFactory:
@@ -36,4 +36,7 @@ class PublisherFactory:
     def get_available_publishers():
         """Get list of available publishers"""
         return ['confluence']
+
+
+
 

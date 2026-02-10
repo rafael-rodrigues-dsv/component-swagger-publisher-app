@@ -2,9 +2,9 @@
 DocumentationRenderer - Interface for rendering documentation
 """
 from abc import ABC, abstractmethod
-from src.domain.core.models.ApiSpecification import ApiSpecification
-from src.domain.ports.rendering.RenderOptions import RenderOptions
-from src.domain.ports.rendering.RenderedDocument import RenderedDocument
+from src.domain.core.models.api_specification import ApiSpecification
+from src.domain.ports.rendering.render_options import RenderOptions
+from src.domain.ports.rendering.rendered_document import RenderedDocument
 
 
 class DocumentationRenderer(ABC):
@@ -36,4 +36,7 @@ class DocumentationRenderer(ABC):
             str: Format name (e.g., "html", "confluence-xml")
         """
         pass
+
+
+
 

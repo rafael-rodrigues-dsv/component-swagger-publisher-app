@@ -6,8 +6,55 @@
   <component name="ChangeListManager">
     <list default="true" id="801b8284-ebbb-49d7-94fb-70d36f3a6b09" name="Changes" comment="Cria scripts de inicialização">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/publishing/ConfluencePublisher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/publishing/ConfluencePublisher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/confluence-preview.html.j2" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/confluence-preview.html.j2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/application/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/application/services/PublishingService.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/application/services/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/services/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/models/ApiSpecification.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Info.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/Info.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Operation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/Operation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Parameter.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/Parameter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/models/PathItem.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/models/RequestBody.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Response.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/Response.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/Schema.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/models/SecurityScheme.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/Server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Tag.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/Tag.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/services/DomainMapper.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/services/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/services/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/ports/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/ports/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/ports/parsing/OpenApiParser.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/ports/parsing/ParsedSpec.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/ports/parsing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/ports/parsing/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/ports/publishing/PublishResult.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/ports/publishing/PublishTarget.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/ports/publishing/Publisher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/ports/publishing/Publisher.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/ports/publishing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/ports/publishing/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/ports/rendering/DocumentationRenderer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/ports/rendering/RenderOptions.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/ports/rendering/RenderedDocument.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/ports/rendering/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/ports/rendering/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/utils/ExampleGenerator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/utils/JsonLoader.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/utils/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/config/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/config/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/config/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/config/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/parsing/OpenApi3Parser.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/parsing/ParserFactory.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/parsing/Swagger2Parser.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/parsing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/parsing/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/publishing/ConfluencePreviewPublisher.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/publishing/ConfluencePublisher.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/publishing/PublisherFactory.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/publishing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/publishing/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/rendering/HtmlRenderer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/rendering/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/rendering/__init__.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,30 +108,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/GIT/Python/component-swagger-publisher-app&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.ApplicationConfigurable&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.main.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "ai.playground.ignore.import.keys.banner.in.settings": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "master",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/GIT/Python/component-swagger-publisher-app",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="component-swagger-publisher-app" />
