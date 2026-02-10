@@ -1,4 +1,4 @@
-"""
+﻿"""
 ConfluencePublisher - Publishes to real Confluence server via REST API
 """
 import requests
@@ -11,7 +11,7 @@ from src.domain.ports.rendering.rendered_document import RenderedDocument
 from src.domain.ports.publishing.publish_target import PublishTarget
 from src.domain.ports.publishing.publish_result import PublishResult
 from src.infrastructure.config.config import config
-from src.domain.utils.example_generator import ExampleGenerator
+from src.domain.utils.example_generator_utils import ExampleGeneratorUtils
 
 
 class ConfluencePublisher(Publisher):
@@ -670,7 +670,7 @@ class ConfluencePublisher(Publisher):
         schemas = {}
         if api_spec.components and api_spec.components.schemas:
             schemas = api_spec.components.schemas
-        example_generator = ExampleGenerator(schemas)
+        example_generator = ExampleGeneratorUtils(schemas)
 
         # Method color mapping
         method_colors = {
@@ -1030,7 +1030,7 @@ class ConfluencePublisher(Publisher):
         schemas = {}
         if api_spec and api_spec.components and api_spec.components.schemas:
             schemas = api_spec.components.schemas
-        example_generator = ExampleGenerator(schemas)
+        example_generator = ExampleGeneratorUtils(schemas)
 
         # Try to generate from request body content
         for content_type, media_obj in request_body.content.items():
@@ -1125,6 +1125,7 @@ class ConfluencePublisher(Publisher):
         if not target.title:
             return False
         return True
+
 
 
 

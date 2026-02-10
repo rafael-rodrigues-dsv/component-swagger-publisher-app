@@ -1,12 +1,12 @@
 """
-ExampleGenerator - Generate JSON examples from OpenAPI schemas
+ExampleGeneratorUtils - Generate JSON examples from OpenAPI schemas
 """
 import json
 from typing import Any, Dict, Optional
 from src.domain.models.schema_model import SchemaModel
 
 
-class ExampleGenerator:
+class ExampleGeneratorUtils:
     """Generate JSON examples from OpenAPI schemas"""
 
     def __init__(self, schemas: Dict[str, SchemaModel] = None):

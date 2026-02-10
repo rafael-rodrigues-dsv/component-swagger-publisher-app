@@ -1,7 +1,7 @@
+﻿"""
+DomainMapperUtils - Convert ParsedSpec to ApiSpecification
 """
-DomainMapper - Convert ParsedSpec to ApiSpecification
-"""
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from src.domain.ports.parsing.parsed_spec import ParsedSpec
 from src.domain.models.api_specification_model import ApiSpecificationModel, ComponentsModel
 from src.domain.models.info_model import InfoModel, ContactModel, LicenseModel
@@ -16,7 +16,7 @@ from src.domain.models.schema_model import SchemaModel
 from src.domain.models.security_scheme_model import SecuritySchemeModel, OAuthFlowModel
 
 
-class DomainMapper:
+class DomainMapperUtils:
     """Map ParsedSpec to domain ApiSpecificationModel"""
 
     @staticmethod
@@ -26,19 +26,19 @@ class DomainMapper:
         version = parsed_spec.version
 
         # Map Info
-        info = DomainMapper._map_info(raw.get('info', {}))
+        info = DomainMapperUtils._map_info(raw.get('info', {}))
 
         # Map Servers
-        servers = DomainMapper._map_servers(raw, version)
+        servers = DomainMapperUtils._map_servers(raw, version)
 
         # Map Tags
-        tags = DomainMapper._map_tags(raw.get('tags', []))
+        tags = DomainMapperUtils._map_tags(raw.get('tags', []))
 
         # Map Paths
-        paths = DomainMapper._map_paths(raw.get('paths', {}))
+        paths = DomainMapperUtils._map_paths(raw.get('paths', {}))
 
         # Map Components
-        components = DomainMapper._map_components(raw, version)
+        components = DomainMapperUtils._map_components(raw, version)
 
         # Security
         security = raw.get('security')
@@ -136,10 +136,10 @@ class DomainMapper:
             for method in ['get', 'post', 'put', 'delete', 'patch', 'options', 'head', 'trace']:
                 if method in path_item_dict:
                     op_dict = path_item_dict[method]
-                    operations[method.upper()] = DomainMapper._map_operation(method.upper(), path, op_dict)
+                    operations[method.upper()] = DomainMapperUtils._map_operation(method.upper(), path, op_dict)
 
             # Common parameters
-            parameters = [DomainMapper._map_parameter(p) for p in path_item_dict.get('parameters', [])]
+            parameters = [DomainMapperUtils._map_parameter(p) for p in path_item_dict.get('parameters', [])]
 
             paths[path] = PathItemModel(
                 path=path,
@@ -165,7 +165,7 @@ class DomainMapper:
                     body_param = p
                     continue  # Don't add to regular parameters
 
-                param = DomainMapper._map_parameter(p)
+                param = DomainMapperUtils._map_parameter(p)
                 # Only add if parameter has a valid name
                 if param.name and param.name != 'unnamed_parameter':
                     parameters.append(param)
@@ -178,13 +178,13 @@ class DomainMapper:
         request_body = None
         if 'requestBody' in op_dict:
             try:
-                request_body = DomainMapper._map_request_body(op_dict['requestBody'])
+                request_body = DomainMapperUtils._map_request_body(op_dict['requestBody'])
             except Exception as e:
                 print(f"Warning: Failed to map request body: {e}")
         # Swagger 2.0 style - body parameter
         elif body_param:
             try:
-                request_body = DomainMapper._map_swagger2_body_param(body_param)
+                request_body = DomainMapperUtils._map_swagger2_body_param(body_param)
             except Exception as e:
                 print(f"Warning: Failed to map Swagger 2.0 body param: {e}")
 
@@ -192,7 +192,7 @@ class DomainMapper:
         responses = {}
         for status, response_dict in op_dict.get('responses', {}).items():
             try:
-                responses[status] = DomainMapper._map_response(response_dict)
+                responses[status] = DomainMapperUtils._map_response(response_dict)
             except Exception as e:
                 print(f"Warning: Skipping response {status}: {e}")
                 continue
@@ -216,7 +216,7 @@ class DomainMapper:
         """Map parameter"""
         schema = None
         if 'schema' in param_dict:
-            schema = DomainMapper._map_schema(param_dict['schema'])
+            schema = DomainMapperUtils._map_schema(param_dict['schema'])
 
         return ParameterModel(
             name=param_dict.get('name', ''),
@@ -233,7 +233,7 @@ class DomainMapper:
         """Map request body"""
         content = {}
         for media_type, media_dict in rb_dict.get('content', {}).items():
-            schema = DomainMapper._map_schema(media_dict.get('schema', {})) if 'schema' in media_dict else None
+            schema = DomainMapperUtils._map_schema(media_dict.get('schema', {})) if 'schema' in media_dict else None
             content[media_type] = MediaTypeObjectModel(
                 schema=schema,
                 example=media_dict.get('example'),
@@ -251,7 +251,7 @@ class DomainMapper:
         """Map Swagger 2.0 body parameter to RequestBodyModel"""
         schema = None
         if 'schema' in body_param:
-            schema = DomainMapper._map_schema(body_param['schema'])
+            schema = DomainMapperUtils._map_schema(body_param['schema'])
 
         # In Swagger 2.0, body is always application/json
         content = {
@@ -276,7 +276,7 @@ class DomainMapper:
         # OpenAPI 3.0 style - has content object
         if 'content' in response_dict:
             for media_type, media_dict in response_dict.get('content', {}).items():
-                schema = DomainMapper._map_schema(media_dict.get('schema', {})) if 'schema' in media_dict else None
+                schema = DomainMapperUtils._map_schema(media_dict.get('schema', {})) if 'schema' in media_dict else None
                 content[media_type] = MediaTypeObjectModel(
                     schema=schema,
                     example=media_dict.get('example'),
@@ -284,7 +284,7 @@ class DomainMapper:
                 )
         # Swagger 2.0 style - schema at root level
         elif 'schema' in response_dict:
-            schema = DomainMapper._map_schema(response_dict['schema'])
+            schema = DomainMapperUtils._map_schema(response_dict['schema'])
             content['application/json'] = MediaTypeObjectModel(
                 schema=schema,
                 example=response_dict.get('examples', {}).get('application/json'),
@@ -307,17 +307,17 @@ class DomainMapper:
         # Properties
         properties = {}
         for prop_name, prop_dict in schema_dict.get('properties', {}).items():
-            properties[prop_name] = DomainMapper._map_schema(prop_dict)
+            properties[prop_name] = DomainMapperUtils._map_schema(prop_dict)
 
         # Items (for arrays)
         items = None
         if 'items' in schema_dict:
-            items = DomainMapper._map_schema(schema_dict['items'])
+            items = DomainMapperUtils._map_schema(schema_dict['items'])
 
         # Composition
-        all_of = [DomainMapper._map_schema(s) for s in schema_dict.get('allOf', [])]
-        one_of = [DomainMapper._map_schema(s) for s in schema_dict.get('oneOf', [])]
-        any_of = [DomainMapper._map_schema(s) for s in schema_dict.get('anyOf', [])]
+        all_of = [DomainMapperUtils._map_schema(s) for s in schema_dict.get('allOf', [])]
+        one_of = [DomainMapperUtils._map_schema(s) for s in schema_dict.get('oneOf', [])]
+        any_of = [DomainMapperUtils._map_schema(s) for s in schema_dict.get('anyOf', [])]
 
         return SchemaModel(
             type=schema_dict.get('type'),
@@ -353,13 +353,13 @@ class DomainMapper:
         schemas = {}
         schema_source = components_dict.get('schemas', {}) if version.startswith('3.') else raw.get('definitions', {})
         for schema_name, schema_dict in schema_source.items():
-            schemas[schema_name] = DomainMapper._map_schema(schema_dict)
+            schemas[schema_name] = DomainMapperUtils._map_schema(schema_dict)
 
         # Security schemes
         security_schemes = {}
         sec_source = components_dict.get('securitySchemes', {}) if version.startswith('3.') else raw.get('securityDefinitions', {})
         for scheme_name, scheme_dict in sec_source.items():
-            security_schemes[scheme_name] = DomainMapper._map_security_scheme(scheme_dict)
+            security_schemes[scheme_name] = DomainMapperUtils._map_security_scheme(scheme_dict)
 
         return ComponentsModel(
             schemas=schemas,
@@ -395,6 +395,8 @@ class DomainMapper:
             flows=flows,
             open_id_connect_url=scheme_dict.get('openIdConnectUrl')
         )
+
+
 
 
 

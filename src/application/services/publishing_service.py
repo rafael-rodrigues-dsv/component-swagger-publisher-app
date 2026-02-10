@@ -8,7 +8,7 @@ from src.domain.ports.rendering.render_options import RenderOptions
 from src.domain.ports.publishing.publish_target import PublishTarget
 from src.domain.ports.publishing.publish_result import PublishResult
 from src.infrastructure.parsing.parser_factory import ParserFactory
-from src.domain.core.services.domain_mapper import DomainMapper
+from src.domain.utils.domain_mapper_utils import DomainMapperUtils
 from src.infrastructure.rendering.html_renderer import HtmlRenderer
 from src.infrastructure.publishing.publisher_factory import PublisherFactory
 
@@ -44,7 +44,7 @@ class PublishingService:
             parsed_spec = parser.parse(source_url)
 
             # 2. Map to domain model
-            api_spec = DomainMapper.to_domain(parsed_spec)
+            api_spec = DomainMapperUtils.to_domain(parsed_spec)
 
             # 3. Render HTML
             render_options = RenderOptions(
@@ -94,7 +94,7 @@ class PublishingService:
         try:
             parser = ParserFactory.get_parser(source_url)
             parsed_spec = parser.parse(source_url)
-            api_spec = DomainMapper.to_domain(parsed_spec)
+            api_spec = DomainMapperUtils.to_domain(parsed_spec)
 
             return {
                 'title': api_spec.info.title,

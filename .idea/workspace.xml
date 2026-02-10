@@ -4,24 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="801b8284-ebbb-49d7-94fb-70d36f3a6b09" name="Changes" comment="Ambiente virtual com dependencias">
+    <list default="true" id="801b8284-ebbb-49d7-94fb-70d36f3a6b09" name="Changes" comment="Refatora pasta utils">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/application/services/publishing_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/services/publishing_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Info.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Operation.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Parameter.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Response.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Schema.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Server.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Tag.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/api_specification.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/path_item.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/request_body.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/security_scheme.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/services/domain_mapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/services/domain_mapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/ports/rendering/documentation_renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/ports/rendering/documentation_renderer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/utils/example_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/utils/example_generator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/utils/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/utils/example_generator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/utils/json_loader.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/parsing/open_api3_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/parsing/open_api3_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/parsing/parser_factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/parsing/parser_factory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/parsing/swagger2_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/parsing/swagger2_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/publishing/confluence_publisher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/publishing/confluence_publisher.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/infrastructure/rendering/html_renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/rendering/html_renderer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -175,7 +166,7 @@
       <workItem from="1770666810420" duration="174000" />
       <workItem from="1770666995760" duration="10074000" />
       <workItem from="1770692567752" duration="455000" />
-      <workItem from="1770765317742" duration="1141000" />
+      <workItem from="1770765317742" duration="1835000" />
     </task>
     <task id="LOCAL-00001" summary="Commit inicial">
       <option name="closed" value="true" />
@@ -409,7 +400,23 @@
       <option name="project" value="LOCAL" />
       <updated>1770693066093</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Refatora pasta model">
+      <option name="closed" value="true" />
+      <created>1770766532941</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1770766532941</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Refatora pasta utils">
+      <option name="closed" value="true" />
+      <created>1770766869187</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1770766869187</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -420,10 +427,12 @@
     <MESSAGE value="Commit inicial" />
     <MESSAGE value="Cria scripts de inicialização" />
     <MESSAGE value="Ambiente virtual com dependencias" />
-    <option name="LAST_COMMIT_MESSAGE" value="Ambiente virtual com dependencias" />
+    <MESSAGE value="Refatora pasta model" />
+    <MESSAGE value="Refatora pasta utils" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refatora pasta utils" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/component_swagger_publisher_app$main.coverage" NAME="main Coverage Results" MODIFIED="1770766488214" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/component_swagger_publisher_app$main.coverage" NAME="main Coverage Results" MODIFIED="1770767191516" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

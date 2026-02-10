@@ -4,7 +4,7 @@ Swagger2Parser - Parser for OpenAPI 2.0 (Swagger) specifications
 from typing import Union, Dict, Any
 from src.domain.ports.parsing.open_api_parser import OpenApiParser
 from src.domain.ports.parsing.parsed_spec import ParsedSpec
-from src.domain.utils.json_loader import JsonLoader
+from src.domain.utils.json_loader_utils import JsonLoaderUtils
 
 
 class Swagger2Parser(OpenApiParser):
@@ -13,7 +13,7 @@ class Swagger2Parser(OpenApiParser):
     def parse(self, source: Union[str, dict]) -> ParsedSpec:
         """Parse Swagger 2.0 specification"""
         # Load the spec
-        spec_dict = JsonLoader.load(source)
+        spec_dict = JsonLoaderUtils.load(source)
 
         # Validate version
         if not self.can_parse(spec_dict):

@@ -8,7 +8,7 @@ from src.domain.models.api_specification_model import ApiSpecificationModel
 from src.domain.ports.rendering.documentation_renderer import DocumentationRenderer
 from src.domain.ports.rendering.render_options import RenderOptions
 from src.domain.ports.rendering.rendered_document import RenderedDocument
-from src.domain.utils.example_generator import ExampleGenerator
+from src.domain.utils.example_generator_utils import ExampleGeneratorUtils
 
 
 class HtmlRenderer(DocumentationRenderer):
@@ -40,7 +40,7 @@ class HtmlRenderer(DocumentationRenderer):
         schemas = {}
         if spec.components and spec.components.schemas:
             schemas = spec.components.schemas
-        example_generator = ExampleGenerator(schemas)
+        example_generator = ExampleGeneratorUtils(schemas)
 
         # Load Confluence-specific CSS
         css_path = self.templates_dir / "confluence-preview.css"

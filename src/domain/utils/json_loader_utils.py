@@ -1,5 +1,5 @@
-"""
-JsonLoader - Utility to load JSON/YAML from URL, file, or string
+﻿"""
+JsonLoaderUtils - Utility to load JSON/YAML from URL, file, or string
 """
 import json
 import yaml
@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Union, Dict, Any
 
 
-class JsonLoader:
+class JsonLoaderUtils:
     """Load JSON/YAML from various sources"""
 
     @staticmethod
@@ -32,12 +32,12 @@ class JsonLoader:
         if isinstance(source, str):
             # Check if it's a URL
             if source.startswith('http://') or source.startswith('https://'):
-                return JsonLoader._load_from_url(source)
+                return JsonLoaderUtils._load_from_url(source)
 
             # Check if it's a file
             path = Path(source)
             if path.exists():
-                return JsonLoader._load_from_file(str(path))
+                return JsonLoaderUtils._load_from_file(str(path))
 
             # Try to parse as JSON string
             try:
@@ -94,6 +94,7 @@ class JsonLoader:
 
         except Exception as e:
             raise Exception(f"Failed to load from file {file_path}: {str(e)}")
+
 
 
 

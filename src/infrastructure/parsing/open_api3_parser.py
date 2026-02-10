@@ -4,7 +4,7 @@ OpenApi3Parser - Parser for OpenAPI 3.x specifications
 from typing import Union, Dict, Any
 from src.domain.ports.parsing.open_api_parser import OpenApiParser
 from src.domain.ports.parsing.parsed_spec import ParsedSpec
-from src.domain.utils.json_loader import JsonLoader
+from src.domain.utils.json_loader_utils import JsonLoaderUtils
 
 
 class OpenApi3Parser(OpenApiParser):
