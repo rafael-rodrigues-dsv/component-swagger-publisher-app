@@ -60,26 +60,9 @@ else
 
     print_success "Virtual environment created successfully!"
     echo ""
-
-    # Activate and install dependencies
-    print_info "Installing dependencies from requirements.txt..."
-    echo ""
-
-    source .venv/bin/activate
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-
-    if [ $? -ne 0 ]; then
-        print_error "Failed to install dependencies!"
-        exit 1
-    fi
-
-    echo ""
-    print_success "Dependencies installed successfully!"
-    echo ""
 fi
 
-# Activate virtual environment
+# Activate virtual environment first
 print_info "Activating virtual environment..."
 source .venv/bin/activate
 
@@ -89,6 +72,21 @@ if [ $? -ne 0 ]; then
 fi
 
 print_success "Virtual environment activated"
+echo ""
+
+# Always check and install dependencies
+print_info "Checking and installing dependencies from requirements.txt..."
+echo ""
+
+python -m pip install --upgrade pip --quiet
+pip install -r requirements.txt --quiet
+
+if [ $? -ne 0 ]; then
+    print_error "Failed to install dependencies!"
+    exit 1
+fi
+
+print_success "Dependencies are up to date!"
 echo ""
 
 # Execute main.py

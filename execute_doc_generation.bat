@@ -31,35 +31,26 @@ if exist ".venv\" (
 
     echo [OK] Virtual environment created successfully!
     echo.
-
-    REM Activate and install dependencies
-    echo [INFO] Installing dependencies from requirements.txt...
-    echo.
-    call .venv\Scripts\activate.bat
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-
-    if errorlevel 1 (
-        echo [ERROR] Failed to install dependencies!
-        pause
-        exit /b 1
-    )
-
-    echo.
-    echo [OK] Dependencies installed successfully!
-    echo.
 )
 
-REM Activate virtual environment
-echo [INFO] Activating virtual environment...
+REM Activate virtual environment first
 call .venv\Scripts\activate.bat
 
-REM Check if activation was successful
+REM Always check and install dependencies
+echo [INFO] Checking and installing dependencies from requirements.txt...
+echo.
+python -m pip install --upgrade pip --quiet
+pip install -r requirements.txt --quiet
+
 if errorlevel 1 (
-    echo [ERROR] Failed to activate virtual environment!
+    echo [ERROR] Failed to install dependencies!
     pause
     exit /b 1
 )
+
+echo [OK] Dependencies are up to date!
+echo.
+
 
 echo [OK] Virtual environment activated
 echo.

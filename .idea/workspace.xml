@@ -6,55 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="801b8284-ebbb-49d7-94fb-70d36f3a6b09" name="Changes" comment="Cria scripts de inicialização">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/application/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/application/services/PublishingService.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/application/services/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/services/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/ApiSpecification.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Info.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/Info.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Operation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/Operation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Parameter.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/Parameter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/PathItem.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/RequestBody.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Response.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/Response.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/Schema.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/SecurityScheme.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/Server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/Tag.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/Tag.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/models/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/services/DomainMapper.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/services/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/services/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/ports/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/ports/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/ports/parsing/OpenApiParser.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/ports/parsing/ParsedSpec.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/ports/parsing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/ports/parsing/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/ports/publishing/PublishResult.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/ports/publishing/PublishTarget.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/ports/publishing/Publisher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/ports/publishing/Publisher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/ports/publishing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/ports/publishing/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/ports/rendering/DocumentationRenderer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/ports/rendering/RenderOptions.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/ports/rendering/RenderedDocument.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/ports/rendering/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/ports/rendering/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/utils/ExampleGenerator.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/utils/JsonLoader.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/utils/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/config/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/config/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/config/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/config/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/parsing/OpenApi3Parser.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/parsing/ParserFactory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/parsing/Swagger2Parser.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/parsing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/parsing/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/publishing/ConfluencePreviewPublisher.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/publishing/ConfluencePublisher.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/publishing/PublisherFactory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/publishing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/publishing/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/rendering/HtmlRenderer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/rendering/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/rendering/__init__.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,6 +71,7 @@
     "ai.playground.ignore.import.keys.banner.in.settings": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "C:/GIT/Python/component-swagger-publisher-app",
     "node.js.detected.package.eslint": "true",
@@ -127,7 +79,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
@@ -205,6 +157,7 @@
       <workItem from="1770560743547" duration="17398000" />
       <workItem from="1770666810420" duration="174000" />
       <workItem from="1770666995760" duration="10074000" />
+      <workItem from="1770692567752" duration="351000" />
     </task>
     <task id="LOCAL-00001" summary="Commit inicial">
       <option name="closed" value="true" />
@@ -443,7 +396,7 @@
     <option name="LAST_COMMIT_MESSAGE" value="Cria scripts de inicialização" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/component_swagger_publisher_app$main.coverage" NAME="main Coverage Results" MODIFIED="1770678382337" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/component_swagger_publisher_app$main.coverage" NAME="main Coverage Results" MODIFIED="1770692804265" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
