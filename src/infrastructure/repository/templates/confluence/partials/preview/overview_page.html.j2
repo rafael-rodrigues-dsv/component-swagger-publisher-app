@@ -1,0 +1,86 @@
+{# Overview Page Content #}
+<div id="page-overview" class="page-content">
+    <div class="page-header">
+        <h1 class="page-title">{{ api.info.title }}</h1>
+        <div class="page-metadata">
+            Version {{ api.info.version }} • OpenAPI {{ api.openapi_version }}
+        </div>
+        {% if api.tags %}
+        <div class="page-labels">
+            {% for tag in api.tags %}
+            <span class="label">{{ tag.name }}</span>
+            {% endfor %}
+            <span class="label">v{{ api.info.version }}</span>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if api.info.description %}
+    <div class="content-section">
+        <p>{{ api.info.description }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Info Macro: Base URLs -->
+    {% if api.servers %}
+    <div class="info-macro">
+        <span class="info-macro-icon">ℹ️</span>
+        <strong>Base URLs</strong>
+        <ul style="margin: 8px 0 0 24px;">
+            {% for server in api.servers %}
+            <li><code>{{ server.url }}</code>{% if server.description %} - {{ server.description }}{% endif %}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Summary Table -->
+    <div class="content-section">
+        <h2 class="section-title">API Summary</h2>
+        <table class="confluence-table">
+            <tr>
+                <th style="width: 30%;">Property</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td><strong>Title</strong></td>
+                <td>{{ api.info.title }}</td>
+            </tr>
+            <tr>
+                <td><strong>Version</strong></td>
+                <td>{{ api.info.version }}</td>
+            </tr>
+            <tr>
+                <td><strong>OpenAPI Version</strong></td>
+                <td>{{ api.openapi_version }}</td>
+            </tr>
+            <tr>
+                <td><strong>Total Endpoints</strong></td>
+                <td>{{ api.paths|length }}</td>
+            </tr>
+            {% if api.tags %}
+            <tr>
+                <td><strong>Tags</strong></td>
+                <td>{{ api.tags|length }}</td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="content-section">
+        <h2 class="section-title">Quick Navigation</h2>
+        <ul>
+            {% for tag in api.tags %}
+            <li><a href="#tag-{{ tag.name }}" onclick="showPage('tag-{{ tag.name }}')">{{ tag.name }} Endpoints</a></li>
+            {% endfor %}
+            {% if api.components.schemas %}
+            <li><a href="#schemas" onclick="showPage('schemas')">Data Models</a></li>
+            {% endif %}
+            {% if api.components.security_schemes %}
+            <li><a href="#security" onclick="showPage('security')">Security Configuration</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+

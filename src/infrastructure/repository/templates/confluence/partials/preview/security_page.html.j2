@@ -1,0 +1,26 @@
+{# Security Page #}
+{% if api.components.security_schemes %}
+<div id="page-security" class="page-content" style="display:none;">
+    <div class="page-header">
+        <h1 class="page-title">Security</h1>
+        <div class="page-metadata">Authentication & Authorization</div>
+        <div class="page-labels">
+            <span class="label">security</span>
+            <span class="label">authentication</span>
+        </div>
+    </div>
+
+    <div class="content-section">
+        {% for scheme_name, scheme in api.components.security_schemes.items() %}
+        <div class="panel-macro" style="margin-bottom: 16px;">
+            <div class="panel-header">{{ scheme_name }}</div>
+            <p><strong>Type:</strong> {{ scheme.type }}</p>
+            {% if scheme.description %}
+            <p>{{ scheme.description }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+

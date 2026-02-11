@@ -61,10 +61,13 @@ def main():
 
     # Get OpenAPI specification URL
     print(f"{Fore.CYAN}>>> Step 1: OpenAPI Specification{Style.RESET_ALL}")
-    spec_url = get_user_input(
-        "Enter URL or path to OpenAPI specification",
-        default="https://petstore.swagger.io/v2/swagger.json"
-    )
+    print(f"{Fore.YELLOW}ℹ️  Examples:{Style.RESET_ALL}")
+    print(f"   Swagger 2.0: https://petstore.swagger.io/v2/swagger.json (default)")
+    print(f"   Swagger 3.0: https://petstore3.swagger.io/api/v3/openapi.json")
+    print()
+    spec_url = input(f"{Fore.YELLOW}Enter URL or path (press Enter for default): {Style.RESET_ALL}").strip()
+    if not spec_url:
+        spec_url = "https://petstore.swagger.io/v2/swagger.json"
 
     if not spec_url:
         print_error("Specification URL is required!")

@@ -1,0 +1,12 @@
+{# Tags Section #}
+{% if api.tags %}
+<div class="tags-section">
+    <h2 class="section-title">🏷️ Tags</h2>
+    <div class="tags-container">
+        {% for tag in api.tags %}
+        <span class="tag-badge">{{ tag.name }}</span>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+

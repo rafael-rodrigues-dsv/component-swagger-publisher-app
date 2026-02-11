@@ -4,27 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="801b8284-ebbb-49d7-94fb-70d36f3a6b09" name="Changes" comment="Refatora pasta core e domains">
+    <list default="true" id="801b8284-ebbb-49d7-94fb-70d36f3a6b09" name="Changes" comment="Refatora template">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application/services/publishing_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/services/publishing_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/parsing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/parsing/contracts/parser_contract.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/contracts/parser_contract.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/parsing/dtos/parsed_spec.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/dtos/parsed_spec_dto.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/parsing/parsers/open_api3_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/parsers/open_api3_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/parsing/parsers/swagger2_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/parsers/swagger2_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/publishing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/publishing/contracts/publisher_contract.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/contracts/publisher_contract.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/publishing/dtos/publish_result.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/dtos/publish_result_dto.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/publishing/dtos/publish_target.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/dtos/publish_target_dto.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/publishing/publishers/confluence_preview_publisher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/publishers/confluence_preview_publisher.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/domain/core/publishing/publishers/confluence_publisher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/publishers/confluence_publisher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/rendering/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/rendering/contracts/renderer_contract.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/contracts/renderer_contract.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/rendering/dtos/render_options.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/dtos/render_options_dto.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/rendering/dtos/rendered_document.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/dtos/rendered_document_dto.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/rendering/renderers/html_renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/renderers/html_renderer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/workflow/documentation_workflow.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/workflow/documentation_workflow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/utils/domain_mapper_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/utils/domain_mapper_utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,7 +174,7 @@
       <workItem from="1770692567752" duration="455000" />
       <workItem from="1770765317742" duration="5387000" />
       <workItem from="1770771421756" duration="1188000" />
-      <workItem from="1770821308849" duration="496000" />
+      <workItem from="1770821308849" duration="10121000" />
     </task>
     <task id="LOCAL-00001" summary="Commit inicial">
       <option name="closed" value="true" />
@@ -489,7 +472,79 @@
       <option name="project" value="LOCAL" />
       <updated>1770772468146</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="Refatora pasta dto">
+      <option name="closed" value="true" />
+      <created>1770821817801</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1770821817801</updated>
+    </task>
+    <task id="LOCAL-00039" summary="Refatora template">
+      <option name="closed" value="true" />
+      <created>1770822636446</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1770822636446</updated>
+    </task>
+    <task id="LOCAL-00040" summary="Refatora template">
+      <option name="closed" value="true" />
+      <created>1770823098538</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1770823098538</updated>
+    </task>
+    <task id="LOCAL-00041" summary="Refatora template">
+      <option name="closed" value="true" />
+      <created>1770823143416</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1770823143416</updated>
+    </task>
+    <task id="LOCAL-00042" summary="Refatora template">
+      <option name="closed" value="true" />
+      <created>1770830289062</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1770830289062</updated>
+    </task>
+    <task id="LOCAL-00043" summary="Refatora template">
+      <option name="closed" value="true" />
+      <created>1770831277128</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1770831277128</updated>
+    </task>
+    <task id="LOCAL-00044" summary="Refatora template">
+      <option name="closed" value="true" />
+      <created>1770833743989</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1770833743989</updated>
+    </task>
+    <task id="LOCAL-00045" summary="Refatora template">
+      <option name="closed" value="true" />
+      <created>1770834437748</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1770834437748</updated>
+    </task>
+    <task id="LOCAL-00046" summary="Refatora template">
+      <option name="closed" value="true" />
+      <created>1770836338880</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1770836338880</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -503,10 +558,12 @@
     <MESSAGE value="Refatora pasta model" />
     <MESSAGE value="Refatora pasta utils" />
     <MESSAGE value="Refatora pasta core e domains" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refatora pasta core e domains" />
+    <MESSAGE value="Refatora pasta dto" />
+    <MESSAGE value="Refatora template" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refatora template" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/component_swagger_publisher_app$main.coverage" NAME="main Coverage Results" MODIFIED="1770772538098" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/component_swagger_publisher_app$main.coverage" NAME="main Coverage Results" MODIFIED="1770837036656" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

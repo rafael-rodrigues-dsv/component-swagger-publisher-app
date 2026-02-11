@@ -1,0 +1,108 @@
+{# JavaScript for Confluence Preview Navigation #}
+<script>
+    function showPage(pageId) {
+        // Hide all pages
+        document.querySelectorAll('.page-content').forEach(page => {
+            page.style.display = 'none';
+        });
+
+        // Remove active class from all links
+        document.querySelectorAll('.page-tree-link').forEach(link => {
+            link.classList.remove('active');
+        });
+
+        // Show selected page
+        const page = document.getElementById('page-' + pageId);
+        if (page) {
+            page.style.display = 'block';
+        }
+
+        // Add active class to clicked link
+        const activeLink = document.querySelector(`a[href="#${pageId}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
+
+        // Scroll to top
+        document.querySelector('.confluence-content').scrollTop = 0;
+    }
+
+    function scrollToSchema(schemaName, e) {
+        // Prevent default anchor behavior
+        if (e) {
+            e.preventDefault();
+        }
+
+        // Check if we're already on the schemas page
+        const schemasPage = document.getElementById('page-schemas');
+        const isOnSchemasPage = schemasPage && schemasPage.style.display !== 'none';
+
+        // If not on schemas page, show it first (without scrolling to top)
+        if (!isOnSchemasPage) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.style.display = 'none';
+            });
+            // Show schemas page
+            schemasPage.style.display = 'block';
+        }
+
+        // Scroll to the schema element
+        setTimeout(function() {
+            const schemaElement = document.getElementById('schema-' + schemaName);
+            const contentArea = document.querySelector('.confluence-content');
+
+            console.log('Scrolling to schema:', schemaName, schemaElement);
+
+            if (schemaElement && contentArea) {
+                // Calculate the position relative to the content area
+                const elementRect = schemaElement.getBoundingClientRect();
+                const contentRect = contentArea.getBoundingClientRect();
+                const scrollTop = contentArea.scrollTop + elementRect.top - contentRect.top - 20;
+
+                console.log('Scroll position:', scrollTop);
+
+                // Scroll the content area to the schema
+                contentArea.scrollTo({
+                    top: scrollTop,
+                    behavior: 'smooth'
+                });
+
+                // Highlight the schema briefly
+                schemaElement.style.backgroundColor = '#fff3cd';
+                schemaElement.style.transition = 'background-color 0.3s ease';
+                setTimeout(function() {
+                    schemaElement.style.backgroundColor = '';
+                }, 2000);
+            }
+        }, 100);
+
+        return false;
+    }
+
+    function toggleFolder(folderId) {
+        const folder = document.getElementById(folderId);
+        const arrow = event.currentTarget.querySelector('.folder-arrow');
+
+        if (folder) {
+            if (folder.style.display === 'none') {
+                folder.style.display = 'block';
+                if (arrow) arrow.textContent = '▼';
+            } else {
+                folder.style.display = 'none';
+                if (arrow) arrow.textContent = '▶';
+            }
+        }
+    }
+
+    // Expand all folders on page load
+    window.addEventListener('load', function() {
+        document.querySelectorAll('[id^="folder-"]').forEach(folder => {
+            folder.style.display = 'block';
+        });
+        document.querySelectorAll('.folder-arrow').forEach(arrow => {
+            arrow.textContent = '▼';
+        });
+    });
+</script>
+

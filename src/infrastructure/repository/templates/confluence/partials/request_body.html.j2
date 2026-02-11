@@ -1,0 +1,73 @@
+{# Request Body Section #}
+{# Works for both simple and preview templates #}
+{% if operation.request_body %}
+<div class="parameters-section">
+    <h3 class="subsection-title">Request Body</h3>
+
+    {% if confluence_preview %}
+        <table class="confluence-table">
+            <thead>
+                <tr>
+                    <th>Content Type</th>
+                    <th>Schema</th>
+                    <th>Required</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for content_type, media_obj in operation.request_body.content.items() %}
+                <tr>
+                    <td><code>{{ content_type }}</code></td>
+                    <td>
+                        {% if media_obj.schema %}
+                            {% if media_obj.schema.ref %}
+                                {% set model_name = media_obj.schema.ref.split('/')[-1] %}
+                                <a href="javascript:showPage('schemas')" class="schema-link" title="View in Data Models">{{ model_name }}</a>
+                            {% elif media_obj.schema.type == 'array' and media_obj.schema.items %}
+                                {% if media_obj.schema.items.ref %}
+                                    {% set item_model_name = media_obj.schema.items.ref.split('/')[-1] %}
+                                    array[<a href="javascript:showPage('schemas')" class="schema-link" title="View in Data Models">{{ item_model_name }}</a>]
+                                {% else %}
+                                    <code>array[{{ media_obj.schema.items.type or 'object' }}]</code>
+                                {% endif %}
+                            {% elif media_obj.schema.type %}
+                                <code>{{ media_obj.schema.type }}</code>
+                            {% else %}
+                                <code>object</code>
+                            {% endif %}
+                        {% else %}
+                            <code>object</code>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if operation.request_body.required %}
+                        <span class="status-lozenge status-warning">Required</span>
+                        {% else %}
+                        <span class="status-lozenge status-default">Optional</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if operation.request_body.description %}
+        <p style="margin-top: 8px; font-style: italic; color: #6B778C;">{{ operation.request_body.description }}</p>
+        {% endif %}
+
+        {# Request Body JSON Example #}
+        {% for content_type, media_obj in operation.request_body.content.items() %}
+            {% if 'json' in content_type %}
+            <h3 class="subsection-title" style="margin-top: 16px;">Request Body Example</h3>
+            <div class="code-block">
+                <pre><code class="language-json">{% if media_obj.example %}{{ media_obj.example | tojson_pretty }}{% elif media_obj.schema %}{{ example_generator.generate_example_json(media_obj.schema) }}{% else %}{}{% endif %}</code></pre>
+            </div>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        {% if operation.request_body.description %}
+        <p class="text-muted mb-10">{{ operation.request_body.description }}</p>
+        {% endif %}
+        <div><strong>Content Types:</strong> {{ operation.request_body.content.keys() | join(', ') }}</div>
+    {% endif %}
+</div>
+{% endif %}
+

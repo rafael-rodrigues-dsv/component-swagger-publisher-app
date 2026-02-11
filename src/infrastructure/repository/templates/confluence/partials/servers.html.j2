@@ -1,0 +1,15 @@
+{# Servers Section #}
+{% if api.servers %}
+<div class="servers-section">
+    <h2 class="section-title">🌐 Base URLs</h2>
+    {% for server in api.servers %}
+    <div class="server-item">
+        <div class="server-url">{{ server.url }}</div>
+        {% if server.description %}
+        <div class="text-muted">{{ server.description }}</div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+

@@ -1,0 +1,9 @@
+{# API Header Section #}
+<div class="api-header">
+    <h1 class="api-title">{{ api.info.title }}</h1>
+    <span class="api-version">Version {{ api.info.version }}</span>
+    {% if api.info.description %}
+    <p class="api-description">{{ api.info.description }}</p>
+    {% endif %}
+</div>
+

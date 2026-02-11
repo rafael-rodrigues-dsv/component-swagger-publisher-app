@@ -55,10 +55,17 @@ class PublishingService:
             # Add API specification to metadata for publisher to use
             rendered_doc.metadata['api_spec'] = api_spec
 
-            # 4. Prepare publish target
+            # 4. Prepare publish target and clean output directory if needed
             if output_dir is None:
                 base_dir = Path.cwd()
-                output_dir = base_dir / "output" / "publisher" / publisher_type
+                # Separate folder structure based on mode
+                if mode == 'preview':
+                    output_dir = base_dir / "output" / "publisher" / publisher_type / "preview"
+                    # Clean preview directory before each run (only one version needed)
+                    self._clean_preview_directory(output_dir)
+                else:  # publish mode
+                    output_dir = base_dir / "output" / "publisher" / publisher_type / "server"
+                    # DON'T clean server directory - keep history with timestamps
 
             target = PublishTargetDTO(
                 publisher_type=publisher_type,
@@ -106,6 +113,19 @@ class PublishingService:
         except Exception as e:
             return {'error': str(e)}
 
+    def _clean_preview_directory(self, preview_dir: Path):
+        """
+        Clean preview directory before generating new preview
+        Only cleans preview mode - server mode keeps history
+        """
+        import shutil
 
-
+        if preview_dir.exists():
+            try:
+                # Remove all contents
+                shutil.rmtree(preview_dir)
+                print(f"🧹 Cleaned preview directory: {preview_dir}")
+            except Exception as e:
+                print(f"⚠️ Could not clean preview directory: {e}")
+                # Continue anyway - will overwrite files
 

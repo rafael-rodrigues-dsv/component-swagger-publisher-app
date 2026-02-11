@@ -10,211 +10,26 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <div class="api-header">
-            <h1 class="api-title">{{ api.info.title }}</h1>
-            <span class="api-version">Version {{ api.info.version }}</span>
-            {% if api.info.description %}
-            <p class="api-description">{{ api.info.description }}</p>
-            {% endif %}
-        </div>
+        {# Header Section #}
+        {% include 'partials/header.html.j2' %}
 
-        <!-- Servers -->
-        {% if api.servers %}
-        <div class="servers-section">
-            <h2 class="section-title">🌐 Base URLs</h2>
-            {% for server in api.servers %}
-            <div class="server-item">
-                <div class="server-url">{{ server.url }}</div>
-                {% if server.description %}
-                <div class="text-muted">{{ server.description }}</div>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
+        {# Servers Section #}
+        {% include 'partials/servers.html.j2' %}
 
-        <!-- Tags -->
-        {% if api.tags %}
-        <div class="tags-section">
-            <h2 class="section-title">🏷️ Tags</h2>
-            <div class="tags-container">
-                {% for tag in api.tags %}
-                <span class="tag-badge">{{ tag.name }}</span>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
+        {# Tags Section #}
+        {% include 'partials/tags.html.j2' %}
 
-        <!-- Operations -->
-        <div class="operations-section">
-            <h2 class="section-title">🔌 Endpoints</h2>
+        {# Operations/Endpoints Section #}
+        {% include 'partials/operations.html.j2' %}
 
-            {% for path, path_item in api.paths.items() %}
-                {% for method, operation in path_item.operations.items() %}
-                <div class="operation-card">
-                    <div class="operation-header">
-                        <span class="http-method method-{{ method.lower() }}">{{ method }}</span>
-                        <span class="operation-path">{{ path }}</span>
-                    </div>
-                    <div class="operation-body">
-                        {% if operation.summary %}
-                        <div class="operation-summary mb-10">{{ operation.summary }}</div>
-                        {% endif %}
+        {# Data Schemas Section #}
+        {% include 'partials/schemas.html.j2' %}
 
-                        {% if operation.description %}
-                        <div class="operation-description">{{ operation.description }}</div>
-                        {% endif %}
+        {# Security Section #}
+        {% include 'partials/security.html.j2' %}
 
-                        {% if operation.tags %}
-                        <div class="mb-20">
-                            <strong>Tags:</strong>
-                            {% for tag in operation.tags %}
-                            <span class="tag-badge">{{ tag }}</span>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-
-                        <!-- Parameters -->
-                        {% if operation.parameters %}
-                        <div class="parameters-section">
-                            <h3 class="subsection-title">Parameters</h3>
-                            <table class="parameter-table">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Location</th>
-                                        <th>Type</th>
-                                        <th>Required</th>
-                                        <th>Description</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for param in operation.parameters %}
-                                    <tr>
-                                        <td><span class="param-name">{{ param.name }}</span></td>
-                                        <td>{{ param.location }}</td>
-                                        <td>
-                                            {% if param.schema %}
-                                            <span class="param-type">{{ param.schema.type or 'object' }}</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if param.required %}
-                                            <span class="param-required">required</span>
-                                            {% else %}
-                                            <span class="text-muted">optional</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ param.description or '-' }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        {% endif %}
-
-                        <!-- Request Body -->
-                        {% if operation.request_body %}
-                        <div class="parameters-section">
-                            <h3 class="subsection-title">Request Body</h3>
-                            {% if operation.request_body.description %}
-                            <p class="text-muted mb-10">{{ operation.request_body.description }}</p>
-                            {% endif %}
-                            <div><strong>Content Types:</strong> {{ operation.request_body.content.keys() | join(', ') }}</div>
-                        </div>
-                        {% endif %}
-
-                        <!-- Responses -->
-                        {% if operation.responses %}
-                        <div class="parameters-section">
-                            <h3 class="subsection-title">Responses</h3>
-                            <table class="response-table">
-                                <thead>
-                                    <tr>
-                                        <th>Status</th>
-                                        <th>Description</th>
-                                        <th>Content Types</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for status, response in operation.responses.items() %}
-                                    <tr>
-                                        <td>
-                                            {% set status_class = 'status-2xx' if status.startswith('2') else ('status-4xx' if status.startswith('4') else 'status-5xx') %}
-                                            <span class="status-code {{ status_class }}">{{ status }}</span>
-                                        </td>
-                                        <td>{{ response.description }}</td>
-                                        <td>
-                                            {% if response.content %}
-                                            {{ response.content.keys() | join(', ') }}
-                                            {% else %}
-                                            -
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-                {% endfor %}
-            {% endfor %}
-        </div>
-
-        <!-- Schemas -->
-        {% if api.components.schemas %}
-        <div class="schemas-section">
-            <h2 class="section-title">📊 Data Schemas</h2>
-            {% for schema_name, schema in api.components.schemas.items() %}
-            <div class="schema-card">
-                <div class="schema-name">{{ schema_name }}</div>
-                {% if schema.description %}
-                <div class="text-muted mb-10">{{ schema.description }}</div>
-                {% endif %}
-
-                {% if schema.properties %}
-                <div class="schema-properties">
-                    <strong>Properties:</strong>
-                    {% for prop_name, prop in schema.properties.items() %}
-                    <div class="property-item">
-                        <span class="property-name">{{ prop_name }}</span>
-                        <span class="property-type">{{ prop.type or 'object' }}</span>
-                        {% if prop_name in schema.required %}
-                        <span class="param-required">required</span>
-                        {% endif %}
-                        <span class="property-description">{{ prop.description or '' }}</span>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        <!-- Security -->
-        {% if api.components.security_schemes %}
-        <div class="security-section">
-            <h2 class="section-title">🔐 Security Schemes</h2>
-            {% for scheme_name, scheme in api.components.security_schemes.items() %}
-            <div class="security-scheme">
-                <strong>{{ scheme_name }}</strong> ({{ scheme.type }})
-                {% if scheme.description %}
-                <div class="text-muted mt-10">{{ scheme.description }}</div>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        <!-- Footer -->
-        <div class="api-footer">
-            Generated by OpenAPI Documentation Publisher<br>
-            OpenAPI Version: {{ api.openapi_version }}
-        </div>
+        {# Footer Section #}
+        {% include 'partials/footer.html.j2' %}
     </div>
 </body>
 </html>

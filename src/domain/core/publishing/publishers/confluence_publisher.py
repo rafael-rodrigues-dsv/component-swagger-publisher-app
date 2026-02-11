@@ -63,12 +63,23 @@ class ConfluencePublisher(PublisherContract):
                 return self._error_result(errors, start_time)
 
             api_title = target.title or api_spec.info.title
+            api_version = api_spec.info.version
+
+            # Extract major.minor version (e.g., "1.0.7" -> "1.0")
+            version_parts = api_version.split('.')
+            major_minor = '.'.join(version_parts[:2]) if len(version_parts) >= 2 else api_version
 
             print(f"🚀 Publishing to Confluence: {self.space_key}")
             print(f"📍 Base URL: {self.base_url}")
 
             # 1. Create or update root page with rich content
-            root_title = f"{api_title} API"
+            # Check if title already contains "API" or version
+            root_title = api_title
+            if " API" not in root_title.upper():
+                root_title = f"{root_title} API"
+            if major_minor not in root_title:
+                root_title = f"{root_title} {major_minor}"
+
             print(f"\n📄 Creating root page: {root_title}...")
             root_content = self._generate_overview_content(api_spec, root_title)
             root_page = self._create_or_update_page(
@@ -87,13 +98,19 @@ class ConfluencePublisher(PublisherContract):
             created_pages['root'] = page_url
             print(f"✅ Root page created: {page_url}")
 
-            # Use short API identifier for child page prefixes to ensure uniqueness across APIs
-            # This prevents conflicts when multiple APIs have same endpoint paths (e.g., POST /users)
-            api_prefix = api_title
+            # Create unique prefix for child pages to avoid title conflicts in same space
+            # Confluence doesn't allow duplicate titles in same space, even with different parents
+            # Use API name + version as prefix: [Swagger Petstore 1.0]
+            if major_minor not in api_title:
+                api_prefix = f"[{api_title} {major_minor}]"
+            else:
+                api_prefix = f"[{api_title}]"
 
-            # 2. Create "Endpoints" folder page
+            api_identifier = api_title  # Used only for internal references
+
+            # 2. Create "Endpoints" folder page with unique prefix
             print(f"\n📁 Creating Endpoints folder...")
-            endpoints_folder_title = f"[{api_prefix}] Endpoints"
+            endpoints_folder_title = f"{api_prefix} Endpoints"
             endpoints_folder_content = self._generate_endpoints_folder_content(api_spec)
             endpoints_folder = self._create_or_update_page(
                 title=endpoints_folder_title,
@@ -111,17 +128,27 @@ class ConfluencePublisher(PublisherContract):
                 created_pages['endpoints_folder'] = endpoints_url
                 print(f"✅ Endpoints folder created")
 
+            # Initialize dictionary to collect ALL generated contents
+            generated_contents = {
+                'root': (root_title, root_content),
+                'endpoints_folder': (endpoints_folder_title, endpoints_folder_content),
+            }
+
             # 3. Create hierarchy: Endpoints → Tag folders → Individual endpoints
             if api_spec.tags:
                 print(f"\n🔌 Creating endpoint structure...")
                 total_endpoints = 0
                 
                 for tag in api_spec.tags:
-                    # Create tag folder with API prefix for uniqueness
-                    tag_folder_title = f"[{api_prefix}] {tag.name.capitalize()}"
+                    # Create tag folder with unique prefix
+                    tag_folder_title = f"{api_prefix} {tag.name.capitalize()}"
                     print(f"   📁 Creating tag folder: {tag_folder_title}...")
                     
                     tag_folder_content = self._generate_tag_folder_content(tag)
+
+                    # Save tag folder content
+                    generated_contents[f'tag_{tag.name}'] = (tag_folder_title, tag_folder_content)
+
                     tag_folder = self._create_or_update_page(
                         title=tag_folder_title,
                         content=tag_folder_content,
@@ -146,14 +173,18 @@ class ConfluencePublisher(PublisherContract):
                                 endpoint_count += 1
                                 total_endpoints += 1
                                 
-                                # Generate endpoint title with API prefix for uniqueness
-                                endpoint_title = f"[{api_prefix}] {method.upper()} {path}"
+                                # Generate endpoint title with unique prefix
+                                endpoint_title = f"{api_prefix} {method.upper()} {path}"
                                 print(f"      📄 Creating: {endpoint_title}...")
                                 
                                 endpoint_content = self._generate_single_endpoint_content(
                                     api_spec, path, method, operation, api_prefix
                                 )
                                 
+                                # Save endpoint content
+                                safe_endpoint_key = f"{tag.name}_{method}_{path}".replace('/', '_').replace('{', '').replace('}', '')
+                                generated_contents[f'endpoint_{safe_endpoint_key}'] = (endpoint_title, endpoint_content)
+
                                 endpoint_page = self._create_or_update_page(
                                     title=endpoint_title,
                                     content=endpoint_content,
@@ -175,8 +206,12 @@ class ConfluencePublisher(PublisherContract):
             # 4. Create Data Models page if schemas exist
             if api_spec.components and api_spec.components.schemas:
                 print(f"\n📊 Creating Data Models page...")
-                models_title = f"[{api_prefix}] Data Models"
+                models_title = f"{api_prefix} Data Models"
                 models_content = self._generate_models_content(api_spec, api_prefix)
+
+                # Save models content
+                generated_contents['models'] = (models_title, models_content)
+
                 models_page = self._create_or_update_page(
                     title=models_title,
                     content=models_content,
@@ -192,8 +227,12 @@ class ConfluencePublisher(PublisherContract):
             # 5. Create Security page if security schemes exist
             if api_spec.components and api_spec.components.security_schemes:
                 print(f"\n🔐 Creating Security page...")
-                security_title = f"[{api_prefix}] Security"
+                security_title = f"{api_prefix} Security"
                 security_content = self._generate_security_content(api_spec)
+
+                # Save security content
+                generated_contents['security'] = (security_title, security_content)
+
                 security_page = self._create_or_update_page(
                     title=security_title,
                     content=security_content,
@@ -210,6 +249,10 @@ class ConfluencePublisher(PublisherContract):
             duration = (datetime.now() - start_time).total_seconds()
 
             print(f"\n✅ Published {len(created_pages)} pages in {duration:.2f}s")
+
+            # Save ALL generated Confluence Storage Format to files
+            # generated_contents already has all pages collected during creation
+            self._save_storage_format(api_spec, target, generated_contents)
 
             return PublishResultDTO(
                 success=True,
@@ -241,17 +284,18 @@ class ConfluencePublisher(PublisherContract):
         parent_id: Optional[str] = None,
         labels: List[str] = None
     ) -> Optional[Dict]:
-        """Create a new page or update if exists"""
+        """Create a new page or update if exists with same title AND parent"""
 
-        # Check if page already exists
-        existing_page = self._find_page_by_title(title)
+        # Check if page already exists with this title AND parent
+        existing_page = self._find_page_by_title(title, parent_id)
 
         if existing_page:
             # Update existing page
-            print(f"   ↻ Updating existing page...")
+            print(f"   ↻ Updating existing page (ID: {existing_page['id']}, Parent: {parent_id})...")
             return self._update_page(existing_page['id'], title, content, existing_page['version']['number'])
         else:
             # Create new page
+            print(f"   ➕ Creating NEW page (Title: '{title}', Parent: {parent_id})...")
             return self._create_page(title, content, parent_id, labels)
 
     def _create_page(
@@ -360,14 +404,14 @@ class ConfluencePublisher(PublisherContract):
             print(f"   ❌ Exception: {str(e)}")
             return None
 
-    def _find_page_by_title(self, title: str) -> Optional[Dict]:
-        """Find a page by title in the configured space"""
+    def _find_page_by_title(self, title: str, parent_id: Optional[str] = None) -> Optional[Dict]:
+        """Find a page by title in the configured space, optionally filtered by parent"""
 
         try:
             params = {
                 'spaceKey': self.space_key,
                 'title': title,
-                'expand': 'version'
+                'expand': 'version,ancestors'
             }
 
             response = requests.get(
@@ -379,7 +423,42 @@ class ConfluencePublisher(PublisherContract):
 
             if response.status_code == 200:
                 results = response.json().get('results', [])
-                return results[0] if results else None
+
+                # If no parent_id specified, return first result
+                if not parent_id:
+                    return results[0] if results else None
+
+                # If parent_id is specified, filter results to match parent
+                if results:
+                    for page in results:
+                        page_id = page.get('id')
+
+                        # Get full page details to verify parent
+                        try:
+                            page_detail_response = requests.get(
+                                f"{self.api_url}/{page_id}",
+                                headers=self.headers,
+                                params={'expand': 'ancestors'},
+                                timeout=30
+                            )
+
+                            if page_detail_response.status_code == 200:
+                                page_detail = page_detail_response.json()
+                                ancestors = page_detail.get('ancestors', [])
+
+                                # Check if the immediate parent (last ancestor) matches
+                                if ancestors and len(ancestors) > 0:
+                                    immediate_parent_id = ancestors[-1].get('id')
+                                    if immediate_parent_id == parent_id:
+                                        return page
+                        except Exception:
+                            # If detail fetch fails, skip this page
+                            continue
+
+                    # No page with matching parent found
+                    return None
+
+                return None
             else:
                 return None
 
@@ -426,7 +505,7 @@ class ConfluencePublisher(PublisherContract):
         return storage.strip()
 
     def _generate_overview_content(self, api_spec, title: str) -> str:
-        """Generate rich overview content for root page"""
+        """Generate rich overview content for root page with centered layout"""
         version = api_spec.info.version
         description = api_spec.info.description or "API Documentation"
 
@@ -442,8 +521,7 @@ class ConfluencePublisher(PublisherContract):
                 servers_html += f"<li><code>{server.url}</code>{desc}</li>"
             servers_html += "</ul>"
 
-        content = f"""
-<h1>{title}</h1>
+        content = f"""<h1>{title}</h1>
 <p><strong>Version:</strong> {version}</p>
 
 <ac:structured-macro ac:name="info" ac:schema-version="1">
@@ -660,10 +738,10 @@ class ConfluencePublisher(PublisherContract):
         operation,
         api_prefix: str = ""
     ) -> str:
-        """Generate content for a single endpoint page"""
+        """Generate content for a single endpoint page with consistent layout structure"""
 
         # Data Models page title with API prefix for correct linking
-        data_models_title = f"[{api_prefix}] Data Models" if api_prefix else "Data Models"
+        data_models_title = f"{api_prefix} Data Models" if api_prefix else "Data Models"
 
         # Create example generator with available schemas
         schemas = {}
@@ -684,127 +762,174 @@ class ConfluencePublisher(PublisherContract):
         summary = operation.summary or f"{method.upper()} {path}"
         description = operation.description or ""
 
-        # Start content
-        content = f"""
-<h1><ac:structured-macro ac:name="status" ac:schema-version="1">
+        # No wrapper div - let Confluence use native full-width layout
+        content = f"""<h1><ac:structured-macro ac:name="status" ac:schema-version="1">
   <ac:parameter ac:name="colour">{method_color}</ac:parameter>
   <ac:parameter ac:name="title">{method.upper()}</ac:parameter>
 </ac:structured-macro> {path}</h1>
 
 <p><strong>{summary}</strong></p>
 {f'<p>{description}</p>' if description else ''}
+
+<hr/>
 """
 
-        # Parameters
-        if operation.parameters:
-            content += "<h2>Parameters</h2><table><tr><th>Name</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>"
-            for param in operation.parameters:
-                # Extract type or schema reference
-                param_type = "string"
-                if param.schema:
-                    if hasattr(param.schema, 'ref') and param.schema.ref:
-                        model_name = param.schema.ref.split('/')[-1]
-                        param_type = f'<ac:link><ri:page ri:content-title="{data_models_title}"/><ac:plain-text-link-body><![CDATA[{model_name}]]></ac:plain-text-link-body></ac:link>'
-                    elif param.schema.type:
-                        param_type = param.schema.type
+        # Parameters Section
+        content += self._generate_parameters_section(operation, data_models_title)
 
-                required = "✅" if param.required else "❌"
-                param_desc = param.description or "-"
-                content += f"<tr><td><code>{param.name}</code></td><td>{param.location}</td><td>{param_type}</td><td>{required}</td><td>{param_desc}</td></tr>"
-            content += "</table>"
+        # Request Body Section
+        content += self._generate_request_body_section(operation, data_models_title, example_generator)
 
-        # Request Body
-        if operation.request_body:
-            content += "<h2>Request Body</h2>"
-            content += "<table><tr><th>Content Type</th><th>Schema</th><th>Required</th></tr>"
+        # Responses Section
+        content += self._generate_responses_section(operation, example_generator)
 
-            for content_type, media_obj in operation.request_body.content.items():
-                required_badge = "✅" if operation.request_body.required else "❌"
+        # cURL Example Section
+        content += self._generate_curl_section(api_spec, path, method, operation)
 
-                schema_info = "object"
-                if media_obj.schema:
-                    if hasattr(media_obj.schema, 'ref') and media_obj.schema.ref:
-                        model_name = media_obj.schema.ref.split('/')[-1]
-                        schema_info = f'<ac:link><ri:page ri:content-title="{data_models_title}"/><ac:plain-text-link-body><![CDATA[{model_name}]]></ac:plain-text-link-body></ac:link>'
-                    elif hasattr(media_obj.schema, 'type') and media_obj.schema.type == 'array':
-                        # Handle array type with items reference
-                        if media_obj.schema.items and hasattr(media_obj.schema.items, 'ref') and media_obj.schema.items.ref:
-                            item_model_name = media_obj.schema.items.ref.split('/')[-1]
-                            schema_info = f'array[<ac:link><ri:page ri:content-title="{data_models_title}"/><ac:plain-text-link-body><![CDATA[{item_model_name}]]></ac:plain-text-link-body></ac:link>]'
-                        elif media_obj.schema.items and hasattr(media_obj.schema.items, 'type'):
-                            schema_info = f'array[{media_obj.schema.items.type}]'
-                        else:
-                            schema_info = 'array[object]'
-                    elif hasattr(media_obj.schema, 'type'):
-                        schema_info = media_obj.schema.type
 
-                content += f"<tr><td><code>{content_type}</code></td><td>{schema_info}</td><td>{required_badge}</td></tr>"
+        return content
 
-            content += "</table>"
+    def _generate_parameters_section(self, operation, data_models_title: str) -> str:
+        """Generate parameters section with consistent structure"""
+        if not operation.parameters:
+            return ""
 
-            if operation.request_body.description:
-                content += f"<p><em>{operation.request_body.description}</em></p>"
+        content = "<h2>Parameters</h2>\n"
+        content += '<table><colgroup><col style="width: 20%;"/><col style="width: 15%;"/><col style="width: 20%;"/><col style="width: 10%;"/><col style="width: 35%;"/></colgroup>\n'
+        content += "<tr><th>Name</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>\n"
 
-            # Request Body JSON Example
-            for content_type, media_obj in operation.request_body.content.items():
-                if 'json' in content_type and media_obj.schema:
-                    example_json = ""
-                    if media_obj.example:
-                        example_json = json.dumps(media_obj.example, indent=2, ensure_ascii=False)
+        for param in operation.parameters:
+            # Extract type or schema reference
+            param_type = "string"
+            if param.schema:
+                if hasattr(param.schema, 'ref') and param.schema.ref:
+                    model_name = param.schema.ref.split('/')[-1]
+                    param_type = f'<ac:link><ri:page ri:content-title="{data_models_title}"/><ac:plain-text-link-body><![CDATA[{model_name}]]></ac:plain-text-link-body></ac:link>'
+                elif param.schema.type:
+                    param_type = param.schema.type
+
+            required = "✅" if param.required else "❌"
+            param_desc = param.description or "-"
+            content += f"<tr><td><code>{param.name}</code></td><td>{param.location}</td><td>{param_type}</td><td>{required}</td><td>{param_desc}</td></tr>\n"
+
+        content += "</table>\n<hr/>\n"
+        return content
+
+    def _generate_request_body_section(self, operation, data_models_title: str, example_generator) -> str:
+        """Generate request body section with consistent structure"""
+        if not operation.request_body:
+            return ""
+
+        content = "<h2>Request Body</h2>\n"
+        content += '<table><colgroup><col style="width: 30%;"/><col style="width: 50%;"/><col style="width: 20%;"/></colgroup>\n'
+        content += "<tr><th>Content Type</th><th>Schema</th><th>Required</th></tr>\n"
+
+        for content_type, media_obj in operation.request_body.content.items():
+            required_badge = "✅" if operation.request_body.required else "❌"
+
+            schema_info = "object"
+            if media_obj.schema:
+                if hasattr(media_obj.schema, 'ref') and media_obj.schema.ref:
+                    model_name = media_obj.schema.ref.split('/')[-1]
+                    schema_info = f'<ac:link><ri:page ri:content-title="{data_models_title}"/><ac:plain-text-link-body><![CDATA[{model_name}]]></ac:plain-text-link-body></ac:link>'
+                elif hasattr(media_obj.schema, 'type') and media_obj.schema.type == 'array':
+                    # Handle array type with items reference
+                    if media_obj.schema.items and hasattr(media_obj.schema.items, 'ref') and media_obj.schema.items.ref:
+                        item_model_name = media_obj.schema.items.ref.split('/')[-1]
+                        schema_info = f'array[<ac:link><ri:page ri:content-title="{data_models_title}"/><ac:plain-text-link-body><![CDATA[{item_model_name}]]></ac:plain-text-link-body></ac:link>]'
+                    elif media_obj.schema.items and hasattr(media_obj.schema.items, 'type'):
+                        schema_info = f'array[{media_obj.schema.items.type}]'
                     else:
-                        example_json = example_generator.generate_example_json(media_obj.schema)
+                        schema_info = 'array[object]'
+                elif hasattr(media_obj.schema, 'type'):
+                    schema_info = media_obj.schema.type
 
-                    # Escape for CDATA
-                    example_json_escaped = example_json.replace(']]>', ']]]]><![CDATA[>')
+            content += f"<tr><td><code>{content_type}</code></td><td>{schema_info}</td><td>{required_badge}</td></tr>\n"
 
-                    content += f"""
-<h3>Request Body Example</h3>
+        content += "</table>\n"
+
+        if operation.request_body.description:
+            content += f"<p><em>{operation.request_body.description}</em></p>\n"
+
+        # Request Body JSON Example - EXACT SAME STRUCTURE AS RESPONSE (which works!)
+        for content_type, media_obj in operation.request_body.content.items():
+            if 'json' in content_type and media_obj.schema:
+                example_json = ""
+                if media_obj.example:
+                    example_json = json.dumps(media_obj.example, indent=2, ensure_ascii=False)
+                else:
+                    example_json = example_generator.generate_example_json(media_obj.schema)
+
+                # Skip empty JSON examples
+                if example_json.strip() in ['{}', '""', 'null', '']:
+                    continue
+
+                # Escape for CDATA
+                example_json_escaped = example_json.replace(']]>', ']]]]><![CDATA[>')
+
+                # EXACT COPY of Response structure
+                content += f"""<div style="margin-top: 12px;">
+<p><strong>Request Body Example ({content_type}):</strong></p>
 <ac:structured-macro ac:name="code" ac:schema-version="1">
   <ac:parameter ac:name="language">json</ac:parameter>
   <ac:plain-text-body><![CDATA[{example_json_escaped}]]></ac:plain-text-body>
 </ac:structured-macro>
+</div>
 """
 
-        # Responses
-        if operation.responses:
-            content += "<h2>Responses</h2>"
-            for status, response in operation.responses.items():
-                status_color = "Green" if status.startswith('2') else "Yellow" if status.startswith('4') else "Red"
-                content += f"""
+        content += "<hr/>\n"
+        return content
+
+    def _generate_responses_section(self, operation, example_generator) -> str:
+        """Generate responses section with consistent structure"""
+        if not operation.responses:
+            return ""
+
+        content = "<h2>Responses</h2>\n"
+
+        for status, response in operation.responses.items():
+            status_color = "Green" if status.startswith('2') else "Yellow" if status.startswith('4') else "Red"
+            content += f"""
 <h3><ac:structured-macro ac:name="status" ac:schema-version="1">
   <ac:parameter ac:name="colour">{status_color}</ac:parameter>
   <ac:parameter ac:name="title">{status}</ac:parameter>
 </ac:structured-macro> {response.description}</h3>
 """
-                # Response Body Example
-                if response.content:
-                    for content_type, media_obj in response.content.items():
-                        if 'json' in content_type and media_obj.schema:
-                            example_json = ""
-                            if media_obj.example:
-                                example_json = json.dumps(media_obj.example, indent=2, ensure_ascii=False)
-                            else:
-                                example_json = example_generator.generate_example_json(media_obj.schema)
+            # Response Body Example
+            if response.content:
+                for content_type, media_obj in response.content.items():
+                    if 'json' in content_type and media_obj.schema:
+                        example_json = ""
+                        if media_obj.example:
+                            example_json = json.dumps(media_obj.example, indent=2, ensure_ascii=False)
+                        else:
+                            example_json = example_generator.generate_example_json(media_obj.schema)
 
-                            # Skip empty JSON examples
-                            if example_json.strip() in ['{}', '""', 'null', '']:
-                                continue
+                        # Skip empty JSON examples
+                        if example_json.strip() in ['{}', '""', 'null', '']:
+                            continue
 
-                            # Escape for CDATA
-                            example_json_escaped = example_json.replace(']]>', ']]]]><![CDATA[>')
+                        # Escape for CDATA
+                        example_json_escaped = example_json.replace(']]>', ']]]]><![CDATA[>')
 
-                            content += f"""
+                        content += f"""<div style="margin-top: 12px;">
 <p><strong>Response Example ({content_type}):</strong></p>
 <ac:structured-macro ac:name="code" ac:schema-version="1">
   <ac:parameter ac:name="language">json</ac:parameter>
   <ac:plain-text-body><![CDATA[{example_json_escaped}]]></ac:plain-text-body>
 </ac:structured-macro>
+</div>
 """
 
-        # cURL Example
+        content += "<hr/>\n"
+        return content
+
+    def _generate_curl_section(self, api_spec, path: str, method: str, operation) -> str:
+        """Generate cURL example section"""
         curl_example = self._generate_curl_example(api_spec, path, method, operation)
         curl_example_escaped = curl_example.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-        content += f"""
+
+        content = f"""
 <h2>cURL Example</h2>
 <ac:structured-macro ac:name="code" ac:schema-version="1">
   <ac:parameter ac:name="language">bash</ac:parameter>
@@ -818,7 +943,7 @@ class ConfluencePublisher(PublisherContract):
         """Generate content for Data Models page with schemas grouped by tag"""
 
         # Data Models page title with API prefix for internal links
-        data_models_title = f"[{api_prefix}] Data Models" if api_prefix else "Data Models"
+        data_models_title = f"{api_prefix} Data Models" if api_prefix else "Data Models"
 
         # Build a map of which schemas are used by which tags
         tag_schemas = {}
@@ -847,9 +972,8 @@ class ConfluencePublisher(PublisherContract):
                                     tag_schemas[tag.name].add(model_name)
                                     used_schemas.add(model_name)
 
-        # Generate content
-        content = """
-<h1>Data Models</h1>
+        # Generate content with full width layout
+        content = """<h1>Data Models</h1>
 
 <ac:structured-macro ac:name="info" ac:schema-version="1">
   <ac:rich-text-body>
@@ -1042,9 +1166,8 @@ class ConfluencePublisher(PublisherContract):
         return '{"key": "value"}'
 
     def _generate_endpoints_folder_content(self, api_spec) -> str:
-        """Generate content for Endpoints folder page"""
-        content = """
-<h1>Endpoints</h1>
+        """Generate content for Endpoints folder page with centered layout"""
+        content = """<h1>Endpoints</h1>
 
 <ac:structured-macro ac:name="info" ac:schema-version="1">
   <ac:rich-text-body>
@@ -1072,7 +1195,7 @@ class ConfluencePublisher(PublisherContract):
         return content
 
     def _generate_security_content(self, api_spec) -> str:
-        """Generate content for Security page"""
+        """Generate content for Security page with centered layout"""
         security_html = ""
 
         if api_spec.components and api_spec.components.security_schemes:
@@ -1087,8 +1210,7 @@ class ConfluencePublisher(PublisherContract):
 <hr/>
 """
 
-        content = f"""
-<h1>Security</h1>
+        content = f"""<h1>Security</h1>
 
 <ac:structured-macro ac:name="info" ac:schema-version="1">
   <ac:rich-text-body>
@@ -1124,6 +1246,187 @@ class ConfluencePublisher(PublisherContract):
         if not target.title:
             return False
         return True
+
+    def _save_storage_format(self, api_spec, target, generated_contents: dict):
+        """Save generated Confluence Storage Format to files for review/backup"""
+        from pathlib import Path
+
+        # Determine output directory based on mode (server/preview)
+        # Server mode = real Confluence publication
+        base_output_dir = Path("output/publisher/confluence/server")
+
+        # Use API title for folder name (sanitize)
+        api_title = target.title or api_spec.info.title
+        safe_title = "".join(c if c.isalnum() or c in (' ', '-', '_') else '_' for c in api_title)
+        safe_title = safe_title.replace(' ', '_')
+
+        # Add timestamp to avoid overwriting
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        api_output_dir = base_output_dir / f"{safe_title}_{timestamp}"
+        api_output_dir.mkdir(parents=True, exist_ok=True)
+
+        print(f"\n💾 Saving Confluence Storage Format...")
+        print(f"   📂 Directory: {api_output_dir}")
+
+        saved_files = []
+        file_counter = 1
+
+        # Save root page
+        if 'root' in generated_contents:
+            title, content = generated_contents['root']
+            root_file = api_output_dir / f"{file_counter:02d}_root_overview.xml"
+            with open(root_file, 'w', encoding='utf-8') as f:
+                f.write(f"<!-- Page Title: {title} -->\n")
+                f.write(f"<!-- Type: Root Overview -->\n")
+                f.write(f"<!-- Generated: {datetime.now().isoformat()} -->\n\n")
+                f.write(content)
+            print(f"   ✅ Saved: {root_file.name}")
+            saved_files.append(f"- `{root_file.name}` - {title}")
+            file_counter += 1
+
+        # Save endpoints folder
+        if 'endpoints_folder' in generated_contents:
+            title, content = generated_contents['endpoints_folder']
+            endpoints_file = api_output_dir / f"{file_counter:02d}_endpoints_folder.xml"
+            with open(endpoints_file, 'w', encoding='utf-8') as f:
+                f.write(f"<!-- Page Title: {title} -->\n")
+                f.write(f"<!-- Type: Folder -->\n")
+                f.write(f"<!-- Generated: {datetime.now().isoformat()} -->\n\n")
+                f.write(content)
+            print(f"   ✅ Saved: {endpoints_file.name}")
+            saved_files.append(f"- `{endpoints_file.name}` - {title}")
+            file_counter += 1
+
+        # Save tag folders
+        tag_files = {k: v for k, v in generated_contents.items() if k.startswith('tag_')}
+        if tag_files:
+            tags_dir = api_output_dir / "tags"
+            tags_dir.mkdir(exist_ok=True)
+            print(f"   📁 Saving {len(tag_files)} tag folders...")
+
+            for tag_key, (title, content) in sorted(tag_files.items()):
+                tag_name = tag_key.replace('tag_', '')
+                safe_tag_name = "".join(c if c.isalnum() or c == '_' else '_' for c in tag_name)
+                tag_file = tags_dir / f"{safe_tag_name}_folder.xml"
+
+                with open(tag_file, 'w', encoding='utf-8') as f:
+                    f.write(f"<!-- Page Title: {title} -->\n")
+                    f.write(f"<!-- Type: Tag Folder -->\n")
+                    f.write(f"<!-- Tag: {tag_name} -->\n")
+                    f.write(f"<!-- Generated: {datetime.now().isoformat()} -->\n\n")
+                    f.write(content)
+
+                saved_files.append(f"- `tags/{tag_file.name}` - {title}")
+
+            print(f"      ✅ Saved {len(tag_files)} tag folders")
+
+        # Save individual endpoints
+        endpoint_files = {k: v for k, v in generated_contents.items() if k.startswith('endpoint_')}
+        if endpoint_files:
+            endpoints_dir = api_output_dir / "endpoints"
+            endpoints_dir.mkdir(exist_ok=True)
+            print(f"   📄 Saving {len(endpoint_files)} endpoint pages...")
+
+            for endpoint_key, (title, content) in sorted(endpoint_files.items()):
+                # Extract tag, method, path from key: endpoint_pet_post__pet
+                endpoint_name = endpoint_key.replace('endpoint_', '')
+                safe_endpoint_name = "".join(c if c.isalnum() or c in ('_', '-') else '_' for c in endpoint_name)
+                endpoint_file = endpoints_dir / f"{safe_endpoint_name}.xml"
+
+                with open(endpoint_file, 'w', encoding='utf-8') as f:
+                    f.write(f"<!-- Page Title: {title} -->\n")
+                    f.write(f"<!-- Type: Endpoint -->\n")
+                    f.write(f"<!-- Generated: {datetime.now().isoformat()} -->\n\n")
+                    f.write(content)
+
+                saved_files.append(f"- `endpoints/{endpoint_file.name}` - {title}")
+
+            print(f"      ✅ Saved {len(endpoint_files)} endpoint pages")
+
+        # Save data models
+        if 'models' in generated_contents:
+            title, content = generated_contents['models']
+            models_file = api_output_dir / f"{file_counter:02d}_data_models.xml"
+            with open(models_file, 'w', encoding='utf-8') as f:
+                f.write(f"<!-- Page Title: {title} -->\n")
+                f.write(f"<!-- Type: Data Models -->\n")
+                f.write(f"<!-- Generated: {datetime.now().isoformat()} -->\n\n")
+                f.write(content)
+            print(f"   ✅ Saved: {models_file.name}")
+            saved_files.append(f"- `{models_file.name}` - {title}")
+            file_counter += 1
+
+        # Save security
+        if 'security' in generated_contents:
+            title, content = generated_contents['security']
+            security_file = api_output_dir / f"{file_counter:02d}_security.xml"
+            with open(security_file, 'w', encoding='utf-8') as f:
+                f.write(f"<!-- Page Title: {title} -->\n")
+                f.write(f"<!-- Type: Security -->\n")
+                f.write(f"<!-- Generated: {datetime.now().isoformat()} -->\n\n")
+                f.write(content)
+            print(f"   ✅ Saved: {security_file.name}")
+            saved_files.append(f"- `{security_file.name}` - {title}")
+
+        # Save README
+        readme_file = api_output_dir / "README.md"
+        total_pages = len(generated_contents)
+
+        with open(readme_file, 'w', encoding='utf-8') as f:
+            f.write(f"# Confluence Storage Format - {api_title}\n\n")
+            f.write(f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"**Mode:** Server (Real Confluence Publication)\n")
+            f.write(f"**Total Pages:** {total_pages}\n\n")
+
+            f.write(f"## 📊 Summary\n\n")
+            f.write(f"- Root page: 1\n")
+            f.write(f"- Endpoints folder: 1\n")
+            f.write(f"- Tag folders: {len(tag_files)}\n")
+            f.write(f"- Individual endpoints: {len(endpoint_files)}\n")
+            f.write(f"- Data Models: {1 if 'models' in generated_contents else 0}\n")
+            f.write(f"- Security: {1 if 'security' in generated_contents else 0}\n\n")
+
+            f.write(f"## 📁 Structure\n\n")
+            f.write(f"```\n")
+            f.write(f"{api_output_dir.name}/\n")
+            f.write(f"├── 01_root_overview.xml\n")
+            f.write(f"├── 02_endpoints_folder.xml\n")
+            if 'models' in generated_contents:
+                f.write(f"├── {file_counter:02d}_data_models.xml\n")
+            if 'security' in generated_contents:
+                f.write(f"├── {file_counter+1:02d}_security.xml\n")
+            if tag_files:
+                f.write(f"├── tags/\n")
+                for tag_key in sorted(tag_files.keys()):
+                    tag_name = tag_key.replace('tag_', '')
+                    f.write(f"│   └── {tag_name}_folder.xml\n")
+            if endpoint_files:
+                f.write(f"└── endpoints/\n")
+                f.write(f"    └── ... {len(endpoint_files)} endpoint XML files\n")
+            f.write(f"```\n\n")
+
+            f.write(f"## 📄 Files\n\n")
+            for file_desc in saved_files[:10]:  # First 10
+                f.write(f"{file_desc}\n")
+            if len(saved_files) > 10:
+                f.write(f"... and {len(saved_files) - 10} more files\n")
+
+            f.write(f"\n## About\n\n")
+            f.write(f"These XML files contain the Confluence Storage Format that was generated and published.\n\n")
+            f.write(f"**Each XML file represents ONE page** published to Confluence.\n\n")
+            f.write(f"You can use them to:\n\n")
+            f.write(f"- Review the exact HTML structure sent to Confluence\n")
+            f.write(f"- Debug layout issues on specific pages\n")
+            f.write(f"- Manually copy/paste into Confluence if needed\n")
+            f.write(f"- Backup of the complete documentation\n")
+            f.write(f"- Compare versions over time\n")
+            f.write(f"\n## Confluence Space\n\n")
+            f.write(f"- **Space Key:** {self.space_key}\n")
+            f.write(f"- **Base URL:** {self.base_url}\n")
+
+        print(f"   ✅ Saved: {readme_file.name}")
+        print(f"\n📍 Storage Format saved to: {api_output_dir.absolute()}")
+        print(f"📊 Total files saved: {len(saved_files)}")
 
 
 
