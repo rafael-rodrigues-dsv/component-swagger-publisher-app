@@ -2,16 +2,16 @@
 PublisherContract - Interface for publishing documentation
 """
 from abc import ABC, abstractmethod
-from src.domain.core.rendering.dtos.rendered_document import RenderedDocument
-from src.domain.core.publishing.dtos.publish_target import PublishTarget
-from src.domain.core.publishing.dtos.publish_result import PublishResult
+from src.domain.core.rendering.dtos.rendered_document_dto import RenderedDocumentDTO
+from src.domain.core.publishing.dtos.publish_target_dto import PublishTargetDTO
+from src.domain.core.publishing.dtos.publish_result_dto import PublishResultDTO
 
 
 class PublisherContract(ABC):
     """Abstract publisher for documentation"""
 
     @abstractmethod
-    def publish(self, document: RenderedDocument, target: PublishTarget) -> PublishResult:
+    def publish(self, document: RenderedDocumentDTO, target: PublishTargetDTO) -> PublishResultDTO:
         """
         Publish rendered documentation to target
 
@@ -20,7 +20,7 @@ class PublisherContract(ABC):
             target: Publishing target configuration
 
         Returns:
-            PublishResult: Result of publishing
+            PublishResultDTO: Result of publishing
 
         Raises:
             Exception: If publishing fails
@@ -38,7 +38,7 @@ class PublisherContract(ABC):
         pass
 
     @abstractmethod
-    def validate_target(self, target: PublishTarget) -> bool:
+    def validate_target(self, target: PublishTargetDTO) -> bool:
         """
         Validate publishing target configuration
 

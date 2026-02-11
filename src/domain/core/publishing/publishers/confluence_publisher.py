@@ -6,9 +6,9 @@ import json
 from datetime import datetime
 from typing import Dict, List, Optional
 from src.domain.core.publishing.contracts.publisher_contract import PublisherContract
-from src.domain.core.rendering.dtos.rendered_document import RenderedDocument
-from src.domain.core.publishing.dtos.publish_target import PublishTarget
-from src.domain.core.publishing.dtos.publish_result import PublishResult
+from src.domain.core.rendering.dtos.rendered_document_dto import RenderedDocumentDTO
+from src.domain.core.publishing.dtos.publish_target_dto import PublishTargetDTO
+from src.domain.core.publishing.dtos.publish_result_dto import PublishResultDTO
 from src.infrastructure.config.config import config
 from src.domain.utils.example_generator_utils import ExampleGeneratorUtils
 
@@ -41,7 +41,7 @@ class ConfluencePublisher(PublisherContract):
             'Accept': 'application/json'
         }
 
-    def publish(self, document: RenderedDocument, target: PublishTarget) -> PublishResult:
+    def publish(self, document: RenderedDocumentDTO, target: PublishTargetDTO) -> PublishResultDTO:
         """
         Publish documentation to real Confluence server with full structure
 
@@ -211,7 +211,7 @@ class ConfluencePublisher(PublisherContract):
 
             print(f"\n✅ Published {len(created_pages)} pages in {duration:.2f}s")
 
-            return PublishResult(
+            return PublishResultDTO(
                 success=True,
                 output_paths=created_pages,
                 warnings=warnings,
@@ -1104,10 +1104,10 @@ class ConfluencePublisher(PublisherContract):
 """
         return content
 
-    def _error_result(self, errors: List[str], start_time: datetime) -> PublishResult:
+    def _error_result(self, errors: List[str], start_time: datetime) -> PublishResultDTO:
         """Create an error result"""
         duration = (datetime.now() - start_time).total_seconds()
-        return PublishResult(
+        return PublishResultDTO(
             success=False,
             errors=errors,
             duration_seconds=duration
@@ -1117,7 +1117,7 @@ class ConfluencePublisher(PublisherContract):
         """Get publisher type"""
         return "confluence"
 
-    def validate_target(self, target: PublishTarget) -> bool:
+    def validate_target(self, target: PublishTargetDTO) -> bool:
         """Validate target and Confluence configuration"""
         if not config.is_confluence_configured():
             return False

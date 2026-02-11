@@ -4,15 +4,15 @@ ConfluencePreviewPublisher - Saves documentation locally as preview
 from pathlib import Path
 from datetime import datetime
 from src.domain.core.publishing.contracts.publisher_contract import PublisherContract
-from src.domain.core.rendering.dtos.rendered_document import RenderedDocument
-from src.domain.core.publishing.dtos.publish_target import PublishTarget
-from src.domain.core.publishing.dtos.publish_result import PublishResult
+from src.domain.core.rendering.dtos.rendered_document_dto import RenderedDocumentDTO
+from src.domain.core.publishing.dtos.publish_target_dto import PublishTargetDTO
+from src.domain.core.publishing.dtos.publish_result_dto import PublishResultDTO
 
 
 class ConfluencePreviewPublisher(PublisherContract):
     """Publisher for Confluence preview (local HTML generation)"""
 
-    def publish(self, document: RenderedDocument, target: PublishTarget) -> PublishResult:
+    def publish(self, document: RenderedDocumentDTO, target: PublishTargetDTO) -> PublishResultDTO:
         """
         Save documentation locally as HTML preview
 
@@ -21,7 +21,7 @@ class ConfluencePreviewPublisher(PublisherContract):
             target: Publishing target
 
         Returns:
-            PublishResult: Result with file paths
+            PublishResultDTO: Result with file paths
         """
         start_time = datetime.now()
         output_paths = {}
@@ -63,7 +63,7 @@ class ConfluencePreviewPublisher(PublisherContract):
 
             duration = (datetime.now() - start_time).total_seconds()
 
-            return PublishResult(
+            return PublishResultDTO(
                 success=True,
                 output_paths=output_paths,
                 warnings=warnings,
@@ -77,7 +77,7 @@ class ConfluencePreviewPublisher(PublisherContract):
 
         except Exception as e:
             duration = (datetime.now() - start_time).total_seconds()
-            return PublishResult(
+            return PublishResultDTO(
                 success=False,
                 output_paths=output_paths,
                 errors=[str(e)],
@@ -88,7 +88,7 @@ class ConfluencePreviewPublisher(PublisherContract):
         """Get publisher type"""
         return "confluence-preview"
 
-    def validate_target(self, target: PublishTarget) -> bool:
+    def validate_target(self, target: PublishTargetDTO) -> bool:
         """Validate target configuration"""
         if not target.output_path:
             return False

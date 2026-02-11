@@ -6,7 +6,7 @@ from typing import Dict, Optional
 
 
 @dataclass
-class RenderedDocument:
+class RenderedDocumentDTO:
     """Rendered documentation output"""
     html_content: str
     xml_content: Optional[str] = None

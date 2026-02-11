@@ -6,7 +6,7 @@ from typing import Dict, Any, Optional
 
 
 @dataclass
-class ParsedSpec:
+class ParsedSpecDTO:
     """Intermediate parsed specification"""
     version: str  # OpenAPI version (2.0, 3.0.0, 3.1.0, etc.)
     raw_dict: Dict[str, Any]  # Original parsed dict

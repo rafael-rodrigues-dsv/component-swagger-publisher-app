@@ -6,7 +6,7 @@ from typing import List, Dict, Optional
 
 
 @dataclass
-class PublishResult:
+class PublishResultDTO:
     """Result of publishing operation"""
     success: bool
     output_paths: Dict[str, str] = field(default_factory=dict)  # type -> path

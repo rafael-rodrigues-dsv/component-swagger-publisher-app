@@ -6,7 +6,7 @@ from typing import Optional
 
 
 @dataclass
-class RenderOptions:
+class RenderOptionsDTO:
     """Options for rendering documentation"""
     theme: str = "light"
     locale: str = "en-US"

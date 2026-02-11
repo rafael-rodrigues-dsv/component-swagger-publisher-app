@@ -3,14 +3,14 @@ ParserContract - Interface for parsing OpenAPI specifications
 """
 from abc import ABC, abstractmethod
 from typing import Union
-from src.domain.core.parsing.dtos.parsed_spec import ParsedSpec
+from src.domain.core.parsing.dtos.parsed_spec_dto import ParsedSpecDTO
 
 
 class ParserContract(ABC):
     """Abstract parser for OpenAPI specifications"""
 
     @abstractmethod
-    def parse(self, source: Union[str, dict]) -> ParsedSpec:
+    def parse(self, source: Union[str, dict]) -> ParsedSpecDTO:
         """
         Parse OpenAPI specification from URL, file path, or dict
 
@@ -18,7 +18,7 @@ class ParserContract(ABC):
             source: URL, file path, or dict
 
         Returns:
-            ParsedSpec: Intermediate parsed specification
+            ParsedSpecDTO: Intermediate parsed specification
 
         Raises:
             ValueError: If source is invalid

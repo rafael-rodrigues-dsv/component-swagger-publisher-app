@@ -3,14 +3,14 @@ Swagger2Parser - Parser for OpenAPI 2.0 (Swagger) specifications
 """
 from typing import Union
 from src.domain.core.parsing.contracts.parser_contract import ParserContract
-from src.domain.core.parsing.dtos.parsed_spec import ParsedSpec
+from src.domain.core.parsing.dtos.parsed_spec_dto import ParsedSpecDTO
 from src.domain.utils.json_loader_utils import JsonLoaderUtils
 
 
 class Swagger2Parser(ParserContract):
     """Parser for Swagger 2.0 specifications"""
 
-    def parse(self, source: Union[str, dict]) -> ParsedSpec:
+    def parse(self, source: Union[str, dict]) -> ParsedSpecDTO:
         """Parse Swagger 2.0 specification"""
         # Load the spec
         spec_dict = JsonLoaderUtils.load(source)
@@ -25,7 +25,7 @@ class Swagger2Parser(ParserContract):
         # Store source URL if applicable
         source_url = source if isinstance(source, str) and source.startswith('http') else None
 
-        return ParsedSpec(
+        return ParsedSpecDTO(
             version=version,
             raw_dict=spec_dict,
             refs={},  # TODO: Resolve $refs

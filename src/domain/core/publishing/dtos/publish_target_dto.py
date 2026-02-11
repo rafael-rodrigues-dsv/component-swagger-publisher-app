@@ -6,7 +6,7 @@ from typing import Optional
 
 
 @dataclass
-class PublishTarget:
+class PublishTargetDTO:
     """Configuration for publishing target"""
     publisher_type: str  # confluence, github-pages, etc.
     output_path: str

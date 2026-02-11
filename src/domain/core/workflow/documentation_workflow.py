@@ -3,12 +3,12 @@ DocumentationWorkflow - Define o fluxo completo de documentação
 Parse → Map → Render → Publish
 """
 from typing import Union
-from src.domain.core.parsing import ParsedSpec
+from src.domain.core.parsing import ParsedSpecDTO
 from src.domain.models.api_specification_model import ApiSpecificationModel
-from src.domain.core.rendering.dtos.rendered_document import RenderedDocument
-from src.domain.core.publishing import PublishResult
-from src.domain.core.publishing import PublishTarget
-from src.domain.core.rendering.dtos.render_options import RenderOptions
+from src.domain.core.rendering.dtos.rendered_document_dto import RenderedDocumentDTO
+from src.domain.core.publishing import PublishResultDTO
+from src.domain.core.publishing import PublishTargetDTO
+from src.domain.core.rendering.dtos.render_options_dto import RenderOptionsDTO
 from src.domain.utils.domain_mapper_utils import DomainMapperUtils
 from src.domain.core.parsing.parsers import ParserFactory
 from src.domain.core.rendering.renderers.html_renderer import HtmlRenderer
@@ -41,9 +41,9 @@ class DocumentationWorkflow:
         source: Union[str, dict],
         publisher_type: str = 'confluence',
         mode: str = 'preview',
-        target: PublishTarget = None,
-        render_options: RenderOptions = None
-    ) -> PublishResult:
+        target: PublishTargetDTO = None,
+        render_options: RenderOptionsDTO = None
+    ) -> PublishResultDTO:
         """
         Executa o workflow completo de documentação
 
@@ -55,7 +55,7 @@ class DocumentationWorkflow:
             render_options: Opções de renderização (tema, exemplos, etc)
 
         Returns:
-            PublishResult: Resultado da publicação com status e metadados
+            PublishResultDTO: Resultado da publicação com status e metadados
 
         Raises:
             Exception: Se alguma etapa do workflow falhar
@@ -73,7 +73,7 @@ class DocumentationWorkflow:
         # Step 1: Parse OpenAPI Specification
         # Detecta a versão (Swagger 2.0 ou OpenAPI 3.x) e converte para estrutura intermediária
         parser = self.parser_factory.get_parser(source)
-        parsed_spec: ParsedSpec = parser.parse(source)
+        parsed_spec: ParsedSpecDTO = parser.parse(source)
 
         # Step 2: Map to Domain Model
         # Converte a estrutura intermediária para o modelo de domínio canônico
@@ -83,17 +83,17 @@ class DocumentationWorkflow:
         # Step 3: Render to HTML
         # Gera documentação HTML responsiva com exemplos e navegação
         if render_options is None:
-            render_options = RenderOptions(
+            render_options = RenderOptionsDTO(
                 theme='light',
                 responsive=True,
                 include_examples=True
             )
-        rendered_doc: RenderedDocument = self.renderer.render(api_spec, render_options)
+        rendered_doc: RenderedDocumentDTO = self.renderer.render(api_spec, render_options)
 
         # Step 4: Publish
         # Publica a documentação no destino escolhido (local ou Confluence)
         publisher = self.publisher_factory.get_publisher(publisher_type, mode)
-        result: PublishResult = publisher.publish(rendered_doc, target)
+        result: PublishResultDTO = publisher.publish(rendered_doc, target)
 
         return result
 
@@ -117,8 +117,8 @@ class DocumentationWorkflow:
     def render_only(
         self,
         api_spec: ApiSpecificationModel,
-        render_options: RenderOptions = None
-    ) -> RenderedDocument:
+        render_options: RenderOptionsDTO = None
+    ) -> RenderedDocumentDTO:
         """
         Executa apenas a renderização de um modelo já parseado
 
@@ -129,9 +129,9 @@ class DocumentationWorkflow:
             render_options: Opções de renderização
 
         Returns:
-            RenderedDocument: Documento HTML renderizado
+            RenderedDocumentDTO: Documento HTML renderizado
         """
         if render_options is None:
-            render_options = RenderOptions()
+            render_options = RenderOptionsDTO()
         return self.renderer.render(api_spec, render_options)
 

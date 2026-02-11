@@ -2,7 +2,7 @@
 DomainMapperUtils - Convert ParsedSpec to ApiSpecification
 """
 from typing import Dict, Any, List
-from src.domain.core.parsing import ParsedSpec
+from src.domain.core.parsing import ParsedSpecDTO
 from src.domain.models.api_specification_model import ApiSpecificationModel, ComponentsModel
 from src.domain.models.info_model import InfoModel, ContactModel, LicenseModel
 from src.domain.models.server_model import ServerModel, ServerVariableModel
@@ -20,7 +20,7 @@ class DomainMapperUtils:
     """Map ParsedSpec to domain ApiSpecificationModel"""
 
     @staticmethod
-    def to_domain(parsed_spec: ParsedSpec) -> ApiSpecificationModel:
+    def to_domain(parsed_spec: ParsedSpecDTO) -> ApiSpecificationModel:
         """Convert ParsedSpec to ApiSpecificationModel"""
         raw = parsed_spec.raw_dict
         version = parsed_spec.version

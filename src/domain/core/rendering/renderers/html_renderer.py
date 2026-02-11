@@ -6,8 +6,8 @@ from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 from src.domain.models.api_specification_model import ApiSpecificationModel
 from src.domain.core.rendering.contracts.renderer_contract import RendererContract
-from src.domain.core.rendering.dtos.render_options import RenderOptions
-from src.domain.core.rendering.dtos.rendered_document import RenderedDocument
+from src.domain.core.rendering.dtos.render_options_dto import RenderOptionsDTO
+from src.domain.core.rendering.dtos.rendered_document_dto import RenderedDocumentDTO
 from src.domain.utils.example_generator_utils import ExampleGeneratorUtils
 
 
@@ -31,10 +31,10 @@ class HtmlRenderer(RendererContract):
         # Add custom filters
         self.env.filters['tojson_pretty'] = lambda x: json.dumps(x, indent=2, ensure_ascii=False) if x else '{}'
 
-    def render(self, spec: ApiSpecificationModel, options: RenderOptions = None) -> RenderedDocument:
+    def render(self, spec: ApiSpecificationModel, options: RenderOptionsDTO = None) -> RenderedDocumentDTO:
         """Render API specification to HTML (Confluence preview)"""
         if options is None:
-            options = RenderOptions()
+            options = RenderOptionsDTO()
 
         # Create example generator with available schemas
         schemas = {}
@@ -73,7 +73,7 @@ class HtmlRenderer(RendererContract):
             schemas=schemas
         )
 
-        return RenderedDocument(
+        return RenderedDocumentDTO(
             html_content=html_content,
             css_content=css_content,
             metadata={

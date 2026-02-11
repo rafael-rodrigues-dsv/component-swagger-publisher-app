@@ -3,14 +3,14 @@ OpenApi3Parser - Parser for OpenAPI 3.x specifications
 """
 from typing import Union
 from src.domain.core.parsing.contracts.parser_contract import ParserContract
-from src.domain.core.parsing.dtos.parsed_spec import ParsedSpec
+from src.domain.core.parsing.dtos.parsed_spec_dto import ParsedSpecDTO
 from src.domain.utils.json_loader_utils import JsonLoaderUtils
 
 
 class OpenApi3Parser(ParserContract):
     """Parser for OpenAPI 3.x specifications"""
 
-    def parse(self, source: Union[str, dict]) -> ParsedSpec:
+    def parse(self, source: Union[str, dict]) -> ParsedSpecDTO:
         """Parse OpenAPI 3.x specification"""
         # Load the spec
         spec_dict = JsonLoaderUtils.load(source)
@@ -25,7 +25,7 @@ class OpenApi3Parser(ParserContract):
         # Store source URL if applicable
         source_url = source if isinstance(source, str) and source.startswith('http') else None
 
-        return ParsedSpec(
+        return ParsedSpecDTO(
             version=version,
             raw_dict=spec_dict,
             refs={},  # TODO: Resolve $refs

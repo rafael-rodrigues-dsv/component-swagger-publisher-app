@@ -7,36 +7,24 @@
     <list default="true" id="801b8284-ebbb-49d7-94fb-70d36f3a6b09" name="Changes" comment="Refatora pasta core e domains">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/application/services/publishing_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/services/publishing_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/parsing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/parsing/contracts/parser_contract.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/contracts/parser_contract.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/parsing/dtos/parsed_spec.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/dtos/parsed_spec_dto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/parsing/parsers/open_api3_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/parsers/open_api3_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/parsing/parsers/swagger2_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/parsers/swagger2_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/publishing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/publishing/contracts/publisher_contract.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/contracts/publisher_contract.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/publishing/dtos/publish_result.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/dtos/publish_result_dto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/publishing/dtos/publish_target.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/dtos/publish_target_dto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/publishing/publishers/confluence_preview_publisher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/publishers/confluence_preview_publisher.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/publishing/publishers/confluence_publisher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/publishers/confluence_publisher.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/rendering/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/rendering/contracts/renderer_contract.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/contracts/renderer_contract.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/rendering/dtos/render_options.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/dtos/render_options_dto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/rendering/dtos/rendered_document.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/dtos/rendered_document_dto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/rendering/renderers/html_renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/renderers/html_renderer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/core/workflow/documentation_workflow.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/workflow/documentation_workflow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/domain/utils/domain_mapper_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/utils/domain_mapper_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/parsing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/parsing/contracts/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/contracts/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/parsing/contracts/parser_contract.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/contracts/parser_contract.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/parsing/dtos/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/dtos/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/parsing/dtos/parsed_spec.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/dtos/parsed_spec.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/parsing/implementations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/parsing/implementations/open_api3_parser.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/parsing/implementations/parser_factory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/parsing/implementations/swagger2_parser.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/publishing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/publishing/contracts/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/contracts/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/publishing/contracts/publisher_contract.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/contracts/publisher_contract.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/publishing/dtos/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/dtos/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/publishing/dtos/publish_result.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/dtos/publish_result.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/publishing/dtos/publish_target.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/dtos/publish_target.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/publishing/implementations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/publishing/implementations/confluence_preview_publisher.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/publishing/implementations/confluence_publisher.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/publishing/implementations/publisher_factory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/rendering/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/rendering/contracts/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/contracts/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/rendering/contracts/renderer_contract.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/contracts/renderer_contract.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/rendering/dtos/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/dtos/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/rendering/dtos/render_options.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/dtos/render_options.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/rendering/dtos/rendered_document.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/dtos/rendered_document.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/rendering/implementations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/rendering/implementations/html_renderer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/workflow/documentation_workflow.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/workflow/documentation_workflow.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -202,7 +190,8 @@
       <workItem from="1770666995760" duration="10074000" />
       <workItem from="1770692567752" duration="455000" />
       <workItem from="1770765317742" duration="5387000" />
-      <workItem from="1770771421756" duration="623000" />
+      <workItem from="1770771421756" duration="1188000" />
+      <workItem from="1770821308849" duration="496000" />
     </task>
     <task id="LOCAL-00001" summary="Commit inicial">
       <option name="closed" value="true" />
@@ -476,7 +465,31 @@
       <option name="project" value="LOCAL" />
       <updated>1770771190066</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Refatora pasta core e domains">
+      <option name="closed" value="true" />
+      <created>1770772150574</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1770772150574</updated>
+    </task>
+    <task id="LOCAL-00036" summary="Refatora pasta core e domains">
+      <option name="closed" value="true" />
+      <created>1770772198106</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1770772198106</updated>
+    </task>
+    <task id="LOCAL-00037" summary="Refatora pasta core e domains">
+      <option name="closed" value="true" />
+      <created>1770772468146</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1770772468146</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -493,7 +506,7 @@
     <option name="LAST_COMMIT_MESSAGE" value="Refatora pasta core e domains" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/component_swagger_publisher_app$main.coverage" NAME="main Coverage Results" MODIFIED="1770771602342" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/component_swagger_publisher_app$main.coverage" NAME="main Coverage Results" MODIFIED="1770772538098" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
