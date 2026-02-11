@@ -1,4 +1,6 @@
-{# Overview Page Content #}
+{# Overview Page: API Info + Servers + Tags + Summary #}
+{# Consolidates: overview_page.html.j2, servers.html.j2, tags.html.j2 #}
+
 <div id="page-overview" class="page-content">
     <div class="page-header">
         <h1 class="page-title">{{ api.info.title }}</h1>
@@ -21,7 +23,9 @@
     </div>
     {% endif %}
 
-    <!-- Info Macro: Base URLs -->
+    {# ============================================= #}
+    {# BASE URLS (SERVERS) #}
+    {# ============================================= #}
     {% if api.servers %}
     <div class="info-macro">
         <span class="info-macro-icon">ℹ️</span>
@@ -34,7 +38,9 @@
     </div>
     {% endif %}
 
-    <!-- Summary Table -->
+    {# ============================================= #}
+    {# API SUMMARY TABLE #}
+    {# ============================================= #}
     <div class="content-section">
         <h2 class="section-title">API Summary</h2>
         <table class="confluence-table">
@@ -67,20 +73,21 @@
         </table>
     </div>
 
-    <!-- Quick Links -->
+    {# ============================================= #}
+    {# TAGS QUICK NAVIGATION #}
+    {# ============================================= #}
     <div class="content-section">
         <h2 class="section-title">Quick Navigation</h2>
+        <p>Browse endpoints by category:</p>
         <ul>
             {% for tag in api.tags %}
-            <li><a href="#tag-{{ tag.name }}" onclick="showPage('tag-{{ tag.name }}')">{{ tag.name }} Endpoints</a></li>
+            <li>
+                <strong>{{ tag.name }}</strong>
+                {% if tag.description %} - {{ tag.description }}{% endif %}
+            </li>
             {% endfor %}
-            {% if api.components.schemas %}
-            <li><a href="#schemas" onclick="showPage('schemas')">Data Models</a></li>
-            {% endif %}
-            {% if api.components.security_schemes %}
-            <li><a href="#security" onclick="showPage('security')">Security Configuration</a></li>
-            {% endif %}
         </ul>
+        <p style="margin-top: 12px;"><em>💡 Tip: Each endpoint contains complete schema definitions and security requirements inline.</em></p>
     </div>
 </div>
 

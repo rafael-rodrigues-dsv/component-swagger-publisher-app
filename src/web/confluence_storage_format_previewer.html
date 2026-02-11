@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confluence Storage Format Previewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: #f4f5f7;
+        }
+
+        .header {
+            background: #0747a6;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .header p {
+            margin-top: 8px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            background: #253858;
+            color: white;
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toolbar {
+            background: #f4f5f7;
+            padding: 12px 20px;
+            border-bottom: 1px solid #dfe1e6;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #0052cc;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        button:hover {
+            background: #0747a6;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button.secondary {
+            background: #42526e;
+        }
+
+        button.secondary:hover {
+            background: #344563;
+        }
+
+        button.success {
+            background: #00875a;
+        }
+
+        button.success:hover {
+            background: #006644;
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #xml-input {
+            flex: 1;
+            border: none;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            resize: none;
+            background: #f8f9fa;
+            color: #172b4d;
+        }
+
+        #xml-input:focus {
+            outline: 2px solid #0052cc;
+            outline-offset: -2px;
+        }
+
+        #preview-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        #error-container {
+            margin-bottom: 16px;
+        }
+
+        .error-message {
+            background: #ffebe6;
+            border-left: 4px solid #de350b;
+            color: #bf2600;
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        .error-message strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .success-message {
+            background: #e3fcef;
+            border-left: 4px solid #00875a;
+            color: #006644;
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        .placeholder {
+            text-align: center;
+            padding: 60px 40px;
+            color: #6b778c;
+        }
+
+        .placeholder-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        /* Confluence-like rendering styles */
+        #html-output {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #172b4d;
+        }
+
+        #html-output h1 {
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: #172b4d;
+            border-bottom: 1px solid #dfe1e6;
+            padding-bottom: 12px;
+        }
+
+        #html-output h2 {
+            font-size: 22px;
+            font-weight: 500;
+            margin-top: 28px;
+            margin-bottom: 16px;
+            color: #172b4d;
+        }
+
+        #html-output h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            color: #172b4d;
+        }
+
+        #html-output p {
+            margin-bottom: 12px;
+            line-height: 1.8;
+        }
+
+        #html-output table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        #html-output table th,
+        #html-output table td {
+            border: 1px solid #dfe1e6;
+            padding: 12px 16px;
+            text-align: left;
+        }
+
+        #html-output table th {
+            background: #f4f5f7;
+            font-weight: 600;
+            color: #172b4d;
+        }
+
+        #html-output table tr:hover {
+            background: #f9fafb;
+        }
+
+        #html-output hr {
+            border: none;
+            border-top: 2px solid #dfe1e6;
+            margin: 24px 0;
+        }
+
+        #html-output code {
+            background: #f4f5f7;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 0.95em;
+            color: #172b4d;
+        }
+
+        #html-output pre {
+            background: #f4f5f7;
+            padding: 16px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 16px 0;
+            border: 1px solid #dfe1e6;
+        }
+
+        #html-output pre code {
+            background: none;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        #html-output ul, #html-output ol {
+            margin-left: 32px;
+            margin-bottom: 16px;
+        }
+
+        #html-output li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        #html-output strong {
+            font-weight: 600;
+            color: #172b4d;
+        }
+
+        /* Confluence Macros */
+        .status-macro {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .status-green { background: #00875a; color: white; }
+        .status-blue { background: #0052cc; color: white; }
+        .status-yellow { background: #ff991f; color: white; }
+        .status-red { background: #de350b; color: white; }
+        .status-grey, .status-gray { background: #42526e; color: white; }
+        .status-purple { background: #5243aa; color: white; }
+
+        .info-macro, .note-macro, .warning-macro, .tip-macro {
+            padding: 16px 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid;
+        }
+
+        .info-macro {
+            background: #deebff;
+            border-color: #0052cc;
+            color: #0747a6;
+        }
+
+        .note-macro {
+            background: #eae6ff;
+            border-color: #5243aa;
+            color: #403294;
+        }
+
+        .warning-macro {
+            background: #fffae6;
+            border-color: #ff991f;
+            color: #974f0c;
+        }
+
+        .tip-macro {
+            background: #e3fcef;
+            border-color: #00875a;
+            color: #006644;
+        }
+
+        .children-macro {
+            background: #f4f5f7;
+            border: 1px dashed #c1c7d0;
+            padding: 16px;
+            border-radius: 4px;
+            margin: 16px 0;
+            color: #6b778c;
+            font-style: italic;
+        }
+
+        #html-output a {
+            color: #0052cc;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        #html-output a:hover {
+            border-bottom-color: #0052cc;
+        }
+
+        .stats {
+            background: white;
+            padding: 16px 20px;
+            margin: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 600;
+            color: #0052cc;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6b778c;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📄 Confluence Storage Format Previewer</h1>
+        <p>Paste your XML and see how it will look in Confluence</p>
+    </div>
+
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-value" id="stat-chars">0</div>
+            <div class="stat-label">Characters</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="stat-lines">0</div>
+            <div class="stat-label">Lines</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="stat-macros">0</div>
+            <div class="stat-label">Macros</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Left Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                📝 Storage Format XML
+            </div>
+            <div class="toolbar">
+                <button onclick="renderPreview()" class="success">
+                    ▶️ Preview
+                </button>
+                <button onclick="loadExample()" class="secondary">
+                    📄 Example
+                </button>
+                <button onclick="loadFromFile()" class="secondary">
+                    📂 Load File
+                </button>
+                <button onclick="clearAll()" class="secondary">
+                    🗑️ Clear
+                </button>
+            </div>
+            <div class="panel-content">
+                <textarea
+                    id="xml-input"
+                    placeholder="Paste your Confluence Storage Format XML here...
+
+Example:
+<h1>My Page Title</h1>
+<p>Content here...</p>"
+                    spellcheck="false"
+                ></textarea>
+                <input type="file" id="file-input" accept=".xml" style="display: none;" onchange="handleFileLoad(event)">
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                👁️ Confluence Preview
+            </div>
+            <div class="toolbar">
+                <button onclick="copyHTML()">
+                    📋 Copy HTML
+                </button>
+                <button onclick="openInNewTab()" class="secondary">
+                    🔗 New Tab
+                </button>
+                <button onclick="downloadHTML()" class="secondary">
+                    💾 Download
+                </button>
+            </div>
+            <div class="panel-content">
+                <div id="preview-container">
+                    <div id="error-container"></div>
+                    <div id="html-output">
+                        <div class="placeholder">
+                            <div class="placeholder-icon">📄</div>
+                            <h3>Ready to Preview</h3>
+                            <p>Paste your Confluence Storage Format XML on the left<br>and click <strong>Preview</strong> to see how it will look</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function renderPreview() {
+            const xml = document.getElementById('xml-input').value.trim();
+            const output = document.getElementById('html-output');
+            const errorContainer = document.getElementById('error-container');
+
+            errorContainer.innerHTML = '';
+
+            if (!xml) {
+                output.innerHTML = '<div class="placeholder"><div class="placeholder-icon">⚠️</div><p>No XML content to preview</p></div>';
+                updateStats(0, 0, 0);
+                return;
+            }
+
+            try {
+                const lines = xml.split('\n').length;
+                const chars = xml.length;
+
+                let html = xml.replace(/<!--[\s\S]*?-->/g, '');
+                const macros = (html.match(/<ac:structured-macro/g) || []).length;
+
+                html = convertConfluenceMacros(html);
+                output.innerHTML = html;
+                updateStats(chars, lines, macros);
+
+                errorContainer.innerHTML = '<div class="success-message"><strong>✅ Preview rendered successfully!</strong></div>';
+                setTimeout(() => {
+                    errorContainer.innerHTML = '';
+                }, 3000);
+
+            } catch (error) {
+                errorContainer.innerHTML = `
+                    <div class="error-message">
+                        <strong>⚠️ Error rendering XML:</strong>
+                        ${error.message}
+                    </div>
+                `;
+                output.innerHTML = '<div class="placeholder"><div class="placeholder-icon">❌</div><p>Could not render preview</p></div>';
+                updateStats(0, 0, 0);
+            }
+        }
+
+        function convertConfluenceMacros(html) {
+            // Status macro
+            html = html.replace(
+                /<ac:structured-macro ac:name="status"[^>]*>[\s\S]*?<ac:parameter ac:name="colour">([^<]+)<\/ac:parameter>[\s\S]*?<ac:parameter ac:name="title">([^<]+)<\/ac:parameter>[\s\S]*?<\/ac:structured-macro>/gi,
+                (match, colour, title) => {
+                    const colorClass = colour.toLowerCase().replace(/\s/g, '');
+                    return `<span class="status-macro status-${colorClass}">${escapeHtml(title)}</span>`;
+                }
+            );
+
+            // Info macro
+            html = html.replace(
+                /<ac:structured-macro ac:name="info"[^>]*>[\s\S]*?<ac:rich-text-body>([\s\S]*?)<\/ac:rich-text-body>[\s\S]*?<\/ac:structured-macro>/gi,
+                '<div class="info-macro">$1</div>'
+            );
+
+            // Note macro
+            html = html.replace(
+                /<ac:structured-macro ac:name="note"[^>]*>[\s\S]*?<ac:rich-text-body>([\s\S]*?)<\/ac:rich-text-body>[\s\S]*?<\/ac:structured-macro>/gi,
+                '<div class="note-macro">$1</div>'
+            );
+
+            // Warning macro
+            html = html.replace(
+                /<ac:structured-macro ac:name="warning"[^>]*>[\s\S]*?<ac:rich-text-body>([\s\S]*?)<\/ac:rich-text-body>[\s\S]*?<\/ac:structured-macro>/gi,
+                '<div class="warning-macro">$1</div>'
+            );
+
+            // Tip macro
+            html = html.replace(
+                /<ac:structured-macro ac:name="tip"[^>]*>[\s\S]*?<ac:rich-text-body>([\s\S]*?)<\/ac:rich-text-body>[\s\S]*?<\/ac:structured-macro>/gi,
+                '<div class="tip-macro">$1</div>'
+            );
+
+            // Code macro
+            html = html.replace(
+                /<ac:structured-macro ac:name="code"[^>]*>[\s\S]*?<ac:parameter ac:name="language">([^<]*)<\/ac:parameter>[\s\S]*?<ac:plain-text-body><!\[CDATA\[([\s\S]*?)\]\]><\/ac:plain-text-body>[\s\S]*?<\/ac:structured-macro>/gi,
+                (match, lang, code) => {
+                    const escaped = escapeHtml(code);
+                    return `<pre><code class="language-${lang}">${escaped}</code></pre>`;
+                }
+            );
+
+            // Children macro
+            html = html.replace(
+                /<ac:structured-macro ac:name="children"[^>]*>[\s\S]*?<\/ac:structured-macro>/gi,
+                '<div class="children-macro">📄 Child pages will be listed here in Confluence</div>'
+            );
+
+            // Links with anchor
+            html = html.replace(
+                /<ac:link ac:anchor="([^"]+)">[\s\S]*?<ri:page ri:content-title="([^"]+)"[^>]*\/>[\s\S]*?<ac:plain-text-link-body><!\[CDATA\[([\s\S]*?)\]\]><\/ac:plain-text-link-body>[\s\S]*?<\/ac:link>/gi,
+                '<a href="#$1" title="Link to: $2">$3</a>'
+            );
+
+            // Simple page links
+            html = html.replace(
+                /<ac:link>[\s\S]*?<ri:page ri:content-title="([^"]+)"[^>]*\/>[\s\S]*?<ac:plain-text-link-body><!\[CDATA\[([\s\S]*?)\]\]><\/ac:plain-text-link-body>[\s\S]*?<\/ac:link>/gi,
+                '<a href="#" title="Links to page: $1">$2</a>'
+            );
+
+            // Page link without body
+            html = html.replace(
+                /<ac:link>[\s\S]*?<ri:page ri:content-title="([^"]+)"[^>]*\/>[\s\S]*?<\/ac:link>/gi,
+                '<a href="#" title="Links to page: $1">$1</a>'
+            );
+
+            return html;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function updateStats(chars, lines, macros) {
+            document.getElementById('stat-chars').textContent = chars.toLocaleString();
+            document.getElementById('stat-lines').textContent = lines.toLocaleString();
+            document.getElementById('stat-macros').textContent = macros;
+        }
+
+        function loadExample() {
+            const example = `<!-- Page Title: [Swagger Petstore 1.0] POST /pet -->
+<!-- Type: Endpoint -->
+
+<h1><ac:structured-macro ac:name="status" ac:schema-version="1">
+  <ac:parameter ac:name="colour">Green</ac:parameter>
+  <ac:parameter ac:name="title">POST</ac:parameter>
+</ac:structured-macro> /pet</h1>
+
+<p><strong>Add a new pet to the store</strong></p>
+
+<hr/>
+
+<h2>📋 Parameters</h2>
+<p>No parameters required</p>
+
+<h2>📤 Request Body</h2>
+<div style="margin-top: 12px;">
+<p><strong>Content-Type:</strong> application/json</p>
+<p><strong>Request Body Example:</strong></p>
+<ac:structured-macro ac:name="code" ac:schema-version="1">
+<ac:parameter ac:name="language">json</ac:parameter>
+<ac:plain-text-body><![CDATA[{
+  "id": 0,
+  "name": "doggie",
+  "status": "available"
+}]]></ac:plain-text-body>
+</ac:structured-macro>
+</div>
+
+<h2>📥 Responses</h2>
+<h3>✅ 200 - successful operation</h3>
+
+<ac:structured-macro ac:name="info" ac:schema-version="1">
+  <ac:rich-text-body>
+    <p>This is an info macro example!</p>
+  </ac:rich-text-body>
+</ac:structured-macro>
+
+<h2>📊 Data Models</h2>
+<table>
+<tr><th>Property</th><th>Type</th><th>Required</th></tr>
+<tr><td><code>id</code></td><td>integer</td><td>❌</td></tr>
+<tr><td><code>name</code></td><td>string</td><td>✅</td></tr>
+</table>`;
+
+            document.getElementById('xml-input').value = example;
+            renderPreview();
+        }
+
+        function clearAll() {
+            document.getElementById('xml-input').value = '';
+            document.getElementById('html-output').innerHTML = '<div class="placeholder"><div class="placeholder-icon">🗑️</div><p>Cleared</p></div>';
+            document.getElementById('error-container').innerHTML = '';
+            updateStats(0, 0, 0);
+        }
+
+        function copyHTML() {
+            const html = document.getElementById('html-output').innerHTML;
+            navigator.clipboard.writeText(html).then(() => {
+                alert('✅ HTML copied to clipboard!');
+            }).catch(err => {
+                alert('❌ Failed to copy: ' + err);
+            });
+        }
+
+        function openInNewTab() {
+            const html = document.getElementById('html-output').innerHTML;
+            const styles = document.querySelector('style').innerHTML;
+            const newWindow = window.open();
+            newWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Confluence Preview</title>
+                    <meta charset="UTF-8">
+                    <style>
+                        body {
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+                            padding: 40px;
+                            max-width: 1000px;
+                            margin: 0 auto;
+                            background: #f4f5f7;
+                        }
+                        #content {
+                            background: white;
+                            padding: 40px;
+                            border-radius: 8px;
+                            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                        }
+                        ${styles}
+                    </style>
+                </head>
+                <body>
+                    <div id="content">${html}</div>
+                </body>
+                </html>
+            `);
+        }
+
+        function downloadHTML() {
+            const html = document.getElementById('html-output').innerHTML;
+            const styles = document.querySelector('style').innerHTML;
+            const fullHTML = `<!DOCTYPE html>
+<html>
+<head>
+    <title>Confluence Preview</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #f4f5f7;
+        }
+        #content {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        ${styles}
+    </style>
+</head>
+<body>
+    <div id="content">${html}</div>
+</body>
+</html>`;
+
+            const blob = new Blob([fullHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'confluence-preview.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function loadFromFile() {
+            document.getElementById('file-input').click();
+        }
+
+        function handleFileLoad(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('xml-input').value = e.target.result;
+                    renderPreview();
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Auto-render on paste
+        document.getElementById('xml-input').addEventListener('paste', function() {
+            setTimeout(renderPreview, 200);
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                renderPreview();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+                e.preventDefault();
+                loadExample();
+            }
+        });
+    </script>
+</body>
+</html>
+

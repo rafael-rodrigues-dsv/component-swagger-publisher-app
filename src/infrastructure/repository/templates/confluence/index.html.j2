@@ -3,34 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ api.info.title }} - API Documentation</title>
+    <title>{{ api.info.title }} - Confluence Preview</title>
     <style>
         {{ css_content }}
     </style>
 </head>
 <body>
-    <div class="container">
-        {# Header Section #}
-        {% include 'partials/header.html.j2' %}
-
-        {# Servers Section #}
-        {% include 'partials/servers.html.j2' %}
-
-        {# Tags Section #}
-        {% include 'partials/tags.html.j2' %}
-
-        {# Operations/Endpoints Section #}
-        {% include 'partials/operations.html.j2' %}
-
-        {# Data Schemas Section #}
-        {% include 'partials/schemas.html.j2' %}
-
-        {# Security Section #}
-        {% include 'partials/security.html.j2' %}
-
-        {# Footer Section #}
-        {% include 'partials/footer.html.j2' %}
+    {# Confluence Header #}
+    <div class="confluence-header">
+        <div class="confluence-logo">⚡ Confluence Preview</div>
+        <div class="confluence-breadcrumb">
+            Space: {{ space_key }} / {{ api.info.title }}
+        </div>
     </div>
+
+    <!-- Main Layout -->
+    <div class="confluence-layout">
+        {# Sidebar Navigation #}
+        <nav class="confluence-sidebar">
+            <div class="space-info">
+                <div class="space-name">{{ api.info.title }}</div>
+                <div class="space-key">{{ space_key }}</div>
+            </div>
+
+            <ul class="page-tree">
+                <!-- Root Page -->
+                <li class="page-tree-item">
+                    <a href="#overview" class="page-tree-link active" onclick="showPage('overview')">
+                        <span class="page-icon">📄</span>
+                        <span>Overview</span>
+                    </a>
+                </li>
+
+                <!-- Endpoints by Tag -->
+                {% if api.tags %}
+                <li class="page-tree-item">
+                    <a href="#" class="page-tree-link">
+                        <span class="page-icon">📁</span>
+                        <span>Endpoints</span>
+                    </a>
+                    <ul class="page-tree-children">
+                        {% for tag in api.tags %}
+                        <li class="page-tree-item">
+                            <a href="javascript:void(0)" class="page-tree-link tag-folder" onclick="toggleFolder('folder-{{ tag.name }}')">
+                                <span class="page-icon">📁</span>
+                                <span>{{ tag.name }}</span>
+                                <span class="folder-arrow">▶</span>
+                            </a>
+                            <ul id="folder-{{ tag.name }}" class="page-tree-children" style="display:none;">
+                                {% for path, path_item in api.paths.items() %}
+                                    {% for method, operation in path_item.operations.items() %}
+                                        {% if tag.name in operation.tags %}
+                                        {% set endpoint_id = (tag.name + '-' + method + '-' + path)|replace('/', '-')|replace('{', '')|replace('}', '') %}
+                                        <li class="page-tree-item">
+                                            <a href="#endpoint-{{ endpoint_id }}" class="page-tree-link" onclick="showPage('endpoint-{{ endpoint_id }}')">
+                                                <span class="http-method-icon method-{{ method.lower() }}">{{ method[:1] }}</span>
+                                                <span class="endpoint-path">{{ method.upper() }} {{ path }}</span>
+                                            </a>
+                                        </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="confluence-content">
+            {# Preview Notice #}
+            {% include 'partials/_notice.html.j2' %}
+
+            {# Overview Page #}
+            {% include 'partials/_overview.html.j2' %}
+
+            {# All Endpoint Pages (with inline schemas and security) #}
+            {% include 'partials/_endpoints.html.j2' %}
+        </main>
+    </div>
+
+    {# JavaScript for navigation #}
+    {% include 'partials/scripts.html.j2' %}
 </body>
 </html>
 

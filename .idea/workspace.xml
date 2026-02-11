@@ -4,10 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="801b8284-ebbb-49d7-94fb-70d36f3a6b09" name="Changes" comment="Refatora template">
+    <list default="true" id="801b8284-ebbb-49d7-94fb-70d36f3a6b09" name="Changes" comment="Adiciona preview de confluence storage">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/application/services/publishing_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/services/publishing_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/core/publishing/publishers/confluence_publisher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/publishers/confluence_publisher.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/confluence-preview.html.j2" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/confluence-preview.html.j2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/index.html.j2" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/index.html.j2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/partials/_endpoints.html.j2" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/partials/_endpoints.html.j2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/partials/_overview.html.j2" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/partials/_overview.html.j2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/partials/_page_layout.html.j2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/partials/_schemas.html.j2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/partials/_security.html.j2" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,6 +100,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\GIT\Python\component-swagger-publisher-app\src\web" />
       <recent name="C:\GIT\Python\component-swagger-publisher-app\src\domain\core" />
     </key>
   </component>
@@ -544,7 +550,31 @@
       <option name="project" value="LOCAL" />
       <updated>1770836338880</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="Adiciona preview de confluence storage">
+      <option name="closed" value="true" />
+      <created>1770854669313</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1770854669313</updated>
+    </task>
+    <task id="LOCAL-00048" summary="Adiciona preview de confluence storage">
+      <option name="closed" value="true" />
+      <created>1770855121054</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1770855121054</updated>
+    </task>
+    <task id="LOCAL-00049" summary="Adiciona preview de confluence storage">
+      <option name="closed" value="true" />
+      <created>1770855187332</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1770855187332</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -560,10 +590,11 @@
     <MESSAGE value="Refatora pasta core e domains" />
     <MESSAGE value="Refatora pasta dto" />
     <MESSAGE value="Refatora template" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refatora template" />
+    <MESSAGE value="Adiciona preview de confluence storage" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adiciona preview de confluence storage" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/component_swagger_publisher_app$main.coverage" NAME="main Coverage Results" MODIFIED="1770837036656" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/component_swagger_publisher_app$main.coverage" NAME="main Coverage Results" MODIFIED="1770858017203" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
