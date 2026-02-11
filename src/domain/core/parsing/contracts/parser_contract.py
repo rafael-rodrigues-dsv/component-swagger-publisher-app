@@ -1,12 +1,12 @@
 """
-OpenApiParser - Interface for parsing OpenAPI specifications
+ParserContract - Interface for parsing OpenAPI specifications
 """
 from abc import ABC, abstractmethod
 from typing import Union
-from src.domain.ports.parsing.parsed_spec import ParsedSpec
+from src.domain.core.parsing.dtos.parsed_spec import ParsedSpec
 
 
-class OpenApiParser(ABC):
+class ParserContract(ABC):
     """Abstract parser for OpenAPI specifications"""
 
     @abstractmethod

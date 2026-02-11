@@ -3,18 +3,17 @@ ConfluencePublisher - Publishes to real Confluence server via REST API
 """
 import requests
 import json
-from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional
-from src.domain.ports.publishing.publisher import Publisher
-from src.domain.ports.rendering.rendered_document import RenderedDocument
-from src.domain.ports.publishing.publish_target import PublishTarget
-from src.domain.ports.publishing.publish_result import PublishResult
+from src.domain.core.publishing.contracts.publisher_contract import PublisherContract
+from src.domain.core.rendering.dtos.rendered_document import RenderedDocument
+from src.domain.core.publishing.dtos.publish_target import PublishTarget
+from src.domain.core.publishing.dtos.publish_result import PublishResult
 from src.infrastructure.config.config import config
 from src.domain.utils.example_generator_utils import ExampleGeneratorUtils
 
 
-class ConfluencePublisher(Publisher):
+class ConfluencePublisher(PublisherContract):
     """Publisher that creates real pages in Confluence"""
 
     def __init__(self):

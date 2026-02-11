@@ -1,13 +1,13 @@
 """
-DocumentationRenderer - Interface for rendering documentation
+RendererContract - Interface for rendering documentation
 """
 from abc import ABC, abstractmethod
 from src.domain.models.api_specification_model import ApiSpecificationModel
-from src.domain.ports.rendering.render_options import RenderOptions
-from src.domain.ports.rendering.rendered_document import RenderedDocument
+from src.domain.core.rendering.dtos.render_options import RenderOptions
+from src.domain.core.rendering.dtos.rendered_document import RenderedDocument
 
 
-class DocumentationRenderer(ABC):
+class RendererContract(ABC):
     """Abstract renderer for documentation"""
 
     @abstractmethod

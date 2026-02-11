@@ -3,13 +3,13 @@ ConfluencePreviewPublisher - Saves documentation locally as preview
 """
 from pathlib import Path
 from datetime import datetime
-from src.domain.ports.publishing.publisher import Publisher
-from src.domain.ports.rendering.rendered_document import RenderedDocument
-from src.domain.ports.publishing.publish_target import PublishTarget
-from src.domain.ports.publishing.publish_result import PublishResult
+from src.domain.core.publishing.contracts.publisher_contract import PublisherContract
+from src.domain.core.rendering.dtos.rendered_document import RenderedDocument
+from src.domain.core.publishing.dtos.publish_target import PublishTarget
+from src.domain.core.publishing.dtos.publish_result import PublishResult
 
 
-class ConfluencePreviewPublisher(Publisher):
+class ConfluencePreviewPublisher(PublisherContract):
     """Publisher for Confluence preview (local HTML generation)"""
 
     def publish(self, document: RenderedDocument, target: PublishTarget) -> PublishResult:

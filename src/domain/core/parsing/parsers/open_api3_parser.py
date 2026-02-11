@@ -1,26 +1,26 @@
 """
-Swagger2Parser - Parser for OpenAPI 2.0 (Swagger) specifications
+OpenApi3Parser - Parser for OpenAPI 3.x specifications
 """
-from typing import Union, Dict, Any
-from src.domain.ports.parsing.open_api_parser import OpenApiParser
-from src.domain.ports.parsing.parsed_spec import ParsedSpec
+from typing import Union
+from src.domain.core.parsing.contracts.parser_contract import ParserContract
+from src.domain.core.parsing.dtos.parsed_spec import ParsedSpec
 from src.domain.utils.json_loader_utils import JsonLoaderUtils
 
 
-class Swagger2Parser(OpenApiParser):
-    """Parser for Swagger 2.0 specifications"""
+class OpenApi3Parser(ParserContract):
+    """Parser for OpenAPI 3.x specifications"""
 
     def parse(self, source: Union[str, dict]) -> ParsedSpec:
-        """Parse Swagger 2.0 specification"""
+        """Parse OpenAPI 3.x specification"""
         # Load the spec
         spec_dict = JsonLoaderUtils.load(source)
 
         # Validate version
         if not self.can_parse(spec_dict):
-            raise ValueError(f"Not a valid Swagger 2.0 specification")
+            raise ValueError(f"Not a valid OpenAPI 3.x specification")
 
         # Get version
-        version = spec_dict.get('swagger', '2.0')
+        version = spec_dict.get('openapi', '3.0.0')
 
         # Store source URL if applicable
         source_url = source if isinstance(source, str) and source.startswith('http') else None
@@ -33,12 +33,12 @@ class Swagger2Parser(OpenApiParser):
         )
 
     def can_parse(self, spec_dict: dict) -> bool:
-        """Check if this is a Swagger 2.0 spec"""
-        return 'swagger' in spec_dict and spec_dict['swagger'].startswith('2.')
+        """Check if this is an OpenAPI 3.x spec"""
+        return 'openapi' in spec_dict and spec_dict['openapi'].startswith('3.')
 
     def get_version(self) -> str:
         """Get supported version"""
-        return "2.0"
+        return "3.0"
 
 
 

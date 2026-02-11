@@ -4,16 +4,39 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="801b8284-ebbb-49d7-94fb-70d36f3a6b09" name="Changes" comment="Refatora pasta utils">
+    <list default="true" id="801b8284-ebbb-49d7-94fb-70d36f3a6b09" name="Changes" comment="Refatora pasta core e domains">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/utils/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/utils/example_generator.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/domain/utils/json_loader.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/parsing/open_api3_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/parsing/open_api3_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/parsing/parser_factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/parsing/parser_factory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/parsing/swagger2_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/parsing/swagger2_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/publishing/confluence_publisher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/publishing/confluence_publisher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/rendering/html_renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/rendering/html_renderer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/application/services/publishing_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/application/services/publishing_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/domain/utils/domain_mapper_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/utils/domain_mapper_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/parsing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/parsing/contracts/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/contracts/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/parsing/contracts/parser_contract.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/contracts/parser_contract.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/parsing/dtos/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/dtos/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/parsing/dtos/parsed_spec.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/parsing/dtos/parsed_spec.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/parsing/implementations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/parsing/implementations/open_api3_parser.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/parsing/implementations/parser_factory.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/parsing/implementations/swagger2_parser.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/publishing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/publishing/contracts/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/contracts/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/publishing/contracts/publisher_contract.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/contracts/publisher_contract.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/publishing/dtos/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/dtos/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/publishing/dtos/publish_result.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/dtos/publish_result.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/publishing/dtos/publish_target.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/publishing/dtos/publish_target.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/publishing/implementations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/publishing/implementations/confluence_preview_publisher.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/publishing/implementations/confluence_publisher.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/publishing/implementations/publisher_factory.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/rendering/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/rendering/contracts/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/contracts/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/rendering/contracts/renderer_contract.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/contracts/renderer_contract.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/rendering/dtos/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/dtos/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/rendering/dtos/render_options.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/dtos/render_options.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/rendering/dtos/rendered_document.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/domain/core/rendering/dtos/rendered_document.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/rendering/implementations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/rendering/implementations/html_renderer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/workflow/documentation_workflow.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/workflow/documentation_workflow.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +54,13 @@
       <entry key="chat-panel" value="Claude Sonnet 4.5" />
       <entry key="agent-panel" value="Claude Sonnet 4.5" />
     </selectedModels>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="PREVIOUS_COMMIT_AUTHORS">
@@ -67,31 +97,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.main.executor": "Run",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "ai.playground.ignore.import.keys.banner.in.settings": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/GIT/Python/component-swagger-publisher-app",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.github.copilot.settings.completions.CompletionsConfigurable",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/GIT/Python/component-swagger-publisher-app&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.completions.CompletionsConfigurable&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\GIT\Python\component-swagger-publisher-app\src\domain\core" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="component-swagger-publisher-app" />
@@ -166,7 +201,8 @@
       <workItem from="1770666810420" duration="174000" />
       <workItem from="1770666995760" duration="10074000" />
       <workItem from="1770692567752" duration="455000" />
-      <workItem from="1770765317742" duration="1835000" />
+      <workItem from="1770765317742" duration="5387000" />
+      <workItem from="1770771421756" duration="623000" />
     </task>
     <task id="LOCAL-00001" summary="Commit inicial">
       <option name="closed" value="true" />
@@ -416,7 +452,31 @@
       <option name="project" value="LOCAL" />
       <updated>1770766869187</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Refatora pasta utils">
+      <option name="closed" value="true" />
+      <created>1770767344484</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1770767344484</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Refatora pasta core e domains">
+      <option name="closed" value="true" />
+      <created>1770768381215</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1770768381215</updated>
+    </task>
+    <task id="LOCAL-00034" summary="Refatora pasta core e domains">
+      <option name="closed" value="true" />
+      <created>1770771190066</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1770771190066</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -429,10 +489,11 @@
     <MESSAGE value="Ambiente virtual com dependencias" />
     <MESSAGE value="Refatora pasta model" />
     <MESSAGE value="Refatora pasta utils" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refatora pasta utils" />
+    <MESSAGE value="Refatora pasta core e domains" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refatora pasta core e domains" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/component_swagger_publisher_app$main.coverage" NAME="main Coverage Results" MODIFIED="1770767191516" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/component_swagger_publisher_app$main.coverage" NAME="main Coverage Results" MODIFIED="1770771602342" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

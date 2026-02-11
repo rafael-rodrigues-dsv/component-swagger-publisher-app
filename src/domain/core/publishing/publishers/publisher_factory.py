@@ -1,16 +1,16 @@
 """
 PublisherFactory - Factory to get appropriate publisher
 """
-from src.domain.ports.publishing.publisher import Publisher
-from src.infrastructure.publishing.confluence_preview_publisher import ConfluencePreviewPublisher
-from src.infrastructure.publishing.confluence_publisher import ConfluencePublisher
+from src.domain.core.publishing.contracts.publisher_contract import PublisherContract
+from src.domain.core.publishing.publishers.confluence_preview_publisher import ConfluencePreviewPublisher
+from src.domain.core.publishing.publishers.confluence_publisher import ConfluencePublisher
 
 
 class PublisherFactory:
     """Factory for getting publishers"""
 
     @staticmethod
-    def get_publisher(publisher_type: str, mode: str = 'preview') -> Publisher:
+    def get_publisher(publisher_type: str, mode: str = 'preview') -> PublisherContract:
         """
         Get publisher by type and mode
 

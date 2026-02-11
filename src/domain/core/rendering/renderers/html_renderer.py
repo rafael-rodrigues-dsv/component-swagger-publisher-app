@@ -5,23 +5,23 @@ import json
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 from src.domain.models.api_specification_model import ApiSpecificationModel
-from src.domain.ports.rendering.documentation_renderer import DocumentationRenderer
-from src.domain.ports.rendering.render_options import RenderOptions
-from src.domain.ports.rendering.rendered_document import RenderedDocument
+from src.domain.core.rendering.contracts.renderer_contract import RendererContract
+from src.domain.core.rendering.dtos.render_options import RenderOptions
+from src.domain.core.rendering.dtos.rendered_document import RenderedDocument
 from src.domain.utils.example_generator_utils import ExampleGeneratorUtils
 
 
-class HtmlRenderer(DocumentationRenderer):
+class HtmlRenderer(RendererContract):
     """Renders API documentation as responsive HTML"""
 
     def __init__(self, templates_dir: str = None):
         """Initialize renderer with templates directory"""
         if templates_dir is None:
             # Default to src/infrastructure/repository/templates/confluence
-            # This file is in src/infrastructure/rendering/HtmlRenderer.py
-            # We need to go up to infrastructure: ..
-            base_dir = Path(__file__).parent.parent
-            templates_dir = base_dir / "repository" / "templates" / "confluence"
+            # This file is in src/domain/core/rendering/renderers/html_renderer.py
+            # We need to go up 4 levels to reach src/, then into infrastructure
+            src_dir = Path(__file__).parent.parent.parent.parent.parent  # Go up to src/
+            templates_dir = src_dir / "infrastructure" / "repository" / "templates" / "confluence"
 
         self.templates_dir = Path(templates_dir)
         if not self.templates_dir.exists():

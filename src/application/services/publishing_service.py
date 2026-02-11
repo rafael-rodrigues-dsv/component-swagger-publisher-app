@@ -2,15 +2,13 @@
 PublishingService - Main orchestration service
 """
 from pathlib import Path
-from src.domain.models.api_specification_model import ApiSpecificationModel
-from src.domain.ports.parsing.parsed_spec import ParsedSpec
-from src.domain.ports.rendering.render_options import RenderOptions
-from src.domain.ports.publishing.publish_target import PublishTarget
-from src.domain.ports.publishing.publish_result import PublishResult
-from src.infrastructure.parsing.parser_factory import ParserFactory
+from src.domain.core.rendering.dtos.render_options import RenderOptions
+from src.domain.core.publishing import PublishTarget
+from src.domain.core.publishing import PublishResult
+from src.domain.core.parsing.parsers import ParserFactory
 from src.domain.utils.domain_mapper_utils import DomainMapperUtils
-from src.infrastructure.rendering.html_renderer import HtmlRenderer
-from src.infrastructure.publishing.publisher_factory import PublisherFactory
+from src.domain.core.rendering.renderers.html_renderer import HtmlRenderer
+from src.domain.core.publishing.publishers.publisher_factory import PublisherFactory
 
 
 class PublishingService:

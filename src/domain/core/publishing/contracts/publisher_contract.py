@@ -1,13 +1,13 @@
 """
-Publisher - Interface for publishing documentation
+PublisherContract - Interface for publishing documentation
 """
 from abc import ABC, abstractmethod
-from src.domain.ports.rendering.rendered_document import RenderedDocument
-from src.domain.ports.publishing.publish_target import PublishTarget
-from src.domain.ports.publishing.publish_result import PublishResult
+from src.domain.core.rendering.dtos.rendered_document import RenderedDocument
+from src.domain.core.publishing.dtos.publish_target import PublishTarget
+from src.domain.core.publishing.dtos.publish_result import PublishResult
 
 
-class Publisher(ABC):
+class PublisherContract(ABC):
     """Abstract publisher for documentation"""
 
     @abstractmethod

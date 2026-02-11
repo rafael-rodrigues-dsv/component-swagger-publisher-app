@@ -2,7 +2,7 @@
 DomainMapperUtils - Convert ParsedSpec to ApiSpecification
 """
 from typing import Dict, Any, List
-from src.domain.ports.parsing.parsed_spec import ParsedSpec
+from src.domain.core.parsing import ParsedSpec
 from src.domain.models.api_specification_model import ApiSpecificationModel, ComponentsModel
 from src.domain.models.info_model import InfoModel, ContactModel, LicenseModel
 from src.domain.models.server_model import ServerModel, ServerVariableModel

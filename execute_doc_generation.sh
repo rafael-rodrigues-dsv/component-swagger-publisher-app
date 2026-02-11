@@ -35,11 +35,27 @@ print_warning() {
     echo -e "${YELLOW}[WARNING]${NC} $1"
 }
 
-# Check if Python is installed
-if ! command -v python3 &> /dev/null; then
+# Find Python command
+PYTHON_CMD=""
+if command -v python3 &> /dev/null; then
+    PYTHON_CMD="python3"
+elif command -v python &> /dev/null; then
+    # Check if it's Python 3
+    PYTHON_VERSION=$(python --version 2>&1 | grep -oP '\d+\.\d+' | head -1)
+    MAJOR_VERSION=$(echo $PYTHON_VERSION | cut -d. -f1)
+    if [ "$MAJOR_VERSION" == "3" ]; then
+        PYTHON_CMD="python"
+    fi
+fi
+
+if [ -z "$PYTHON_CMD" ]; then
     print_error "Python 3 is not installed or not in PATH"
+    print_error "Please install Python 3.8 or higher"
     exit 1
 fi
+
+print_info "Using Python: $PYTHON_CMD ($($PYTHON_CMD --version))"
+echo ""
 
 # Check if .venv exists
 if [ -d ".venv" ]; then
@@ -50,7 +66,7 @@ else
     echo ""
 
     # Create virtual environment
-    python3 -m venv .venv
+    $PYTHON_CMD -m venv .venv
 
     if [ $? -ne 0 ]; then
         print_error "Failed to create virtual environment!"

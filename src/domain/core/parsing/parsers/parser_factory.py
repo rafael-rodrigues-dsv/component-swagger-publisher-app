@@ -2,17 +2,17 @@
 ParserFactory - Factory to select appropriate parser
 """
 from typing import Union
-from src.domain.ports.parsing.open_api_parser import OpenApiParser
+from src.domain.core.parsing.contracts.parser_contract import ParserContract
 from src.domain.utils.json_loader_utils import JsonLoaderUtils
-from src.infrastructure.parsing.swagger2_parser import Swagger2Parser
-from src.infrastructure.parsing.open_api3_parser import OpenApi3Parser
+from src.domain.core.parsing.parsers.swagger2_parser import Swagger2Parser
+from src.domain.core.parsing.parsers.open_api3_parser import OpenApi3Parser
 
 
 class ParserFactory:
     """Factory for selecting the right parser"""
 
     @staticmethod
-    def get_parser(source: Union[str, dict]) -> OpenApiParser:
+    def get_parser(source: Union[str, dict]) -> ParserContract:
         """
         Get appropriate parser for the specification
 

@@ -1,5 +1,0 @@
-"""Infrastructure rendering package"""
-
-
-
-
