@@ -17,11 +17,9 @@ class HtmlRenderer(RendererContract):
     def __init__(self, templates_dir: str = None):
         """Initialize renderer with templates directory"""
         if templates_dir is None:
-            # Default to src/infrastructure/repository/templates/confluence
-            # This file is in src/domain/core/rendering/renderers/html_renderer.py
-            # We need to go up 4 levels to reach src/, then into infrastructure
+            # Default to src/infrastructure/repository/templates/confluence/preview
             src_dir = Path(__file__).parent.parent.parent.parent.parent  # Go up to src/
-            templates_dir = src_dir / "infrastructure" / "repository" / "templates" / "confluence"
+            templates_dir = src_dir / "infrastructure" / "repository" / "templates" / "confluence" / "preview"
 
         self.templates_dir = Path(templates_dir)
         if not self.templates_dir.exists():

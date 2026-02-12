@@ -1,0 +1,91 @@
+{# Confluence Storage Format - Root Page (Overview) #}
+
+<h1>{{ api.info.title }}</h1>
+<p><strong>Version:</strong> {{ api.info.version }}</p>
+
+{% if api.info.description %}
+<ac:structured-macro ac:name="info" ac:schema-version="1">
+  <ac:rich-text-body>
+    <p>{{ api.info.description }}</p>
+  </ac:rich-text-body>
+</ac:structured-macro>
+{% endif %}
+
+<hr/>
+
+<h2>Base URLs</h2>
+{% if api.servers and api.servers|length > 0 %}
+<ul>
+  {% for server in api.servers %}
+  <li><code>{{ server.url }}</code>{% if server.description %} - {{ server.description }}{% endif %}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p><em>No servers specified</em></p>
+{% endif %}
+
+<hr/>
+
+<h2>API Summary</h2>
+<table>
+  <colgroup>
+    <col style="width: 40%;"/>
+    <col style="width: 60%;"/>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Total Endpoints</strong></td>
+      <td>{{ api.paths|length }}</td>
+    </tr>
+    <tr>
+      <td><strong>Tags/Categories</strong></td>
+      <td>{{ api.tags|length }}</td>
+    </tr>
+    {% if api.info.contact %}
+    <tr>
+      <td><strong>Contact</strong></td>
+      <td>
+        {% if api.info.contact.name %}{{ api.info.contact.name }}{% endif %}
+        {% if api.info.contact.email %}<br/>Email: <code>{{ api.info.contact.email }}</code>{% endif %}
+        {% if api.info.contact.url %}<br/>URL: <ac:link><ri:url ri:value="{{ api.info.contact.url }}"/></ac:link>{% endif %}
+      </td>
+    </tr>
+    {% endif %}
+    {% if api.info.license %}
+    <tr>
+      <td><strong>License</strong></td>
+      <td>
+        {{ api.info.license.name }}
+        {% if api.info.license.url %}<br/><ac:link><ri:url ri:value="{{ api.info.license.url }}"/></ac:link>{% endif %}
+      </td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>
+
+<hr/>
+
+<h2>Tags</h2>
+{% if api.tags %}
+<p>API endpoints are organized by the following categories:</p>
+<ul>
+  {% for tag in api.tags %}
+  <li><strong>{{ tag.name }}</strong>{% if tag.description %} - {{ tag.description }}{% endif %}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p><em>No tags defined</em></p>
+{% endif %}
+
+<ac:structured-macro ac:name="tip" ac:schema-version="1">
+  <ac:rich-text-body>
+    <p>💡 Navigate through the child pages to explore detailed endpoint documentation with inline schemas and examples.</p>
+  </ac:rich-text-body>
+</ac:structured-macro>
+

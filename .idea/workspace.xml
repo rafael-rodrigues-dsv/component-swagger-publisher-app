@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="801b8284-ebbb-49d7-94fb-70d36f3a6b09" name="Changes" comment="Adiciona preview de confluence storage">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/confluence-preview.html.j2" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/confluence-preview.html.j2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/index.html.j2" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/index.html.j2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/partials/_endpoints.html.j2" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/partials/_endpoints.html.j2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/partials/_overview.html.j2" beforeDir="false" afterPath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/partials/_overview.html.j2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/partials/_page_layout.html.j2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/partials/_schemas.html.j2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/infrastructure/repository/templates/confluence/partials/_security.html.j2" beforeDir="false" />
-    </list>
+    <list default="true" id="801b8284-ebbb-49d7-94fb-70d36f3a6b09" name="Changes" comment="Modificação de templates e forma de renderizar" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -181,14 +172,6 @@
       <workItem from="1770765317742" duration="5387000" />
       <workItem from="1770771421756" duration="1188000" />
       <workItem from="1770821308849" duration="10121000" />
-    </task>
-    <task id="LOCAL-00001" summary="Commit inicial">
-      <option name="closed" value="true" />
-      <created>1770463531150</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1770463531150</updated>
     </task>
     <task id="LOCAL-00002" summary="Commit inicial">
       <option name="closed" value="true" />
@@ -574,7 +557,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770855187332</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="Modificação de templates e forma de renderizar">
+      <option name="closed" value="true" />
+      <created>1770861184718</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1770861184718</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -591,10 +582,11 @@
     <MESSAGE value="Refatora pasta dto" />
     <MESSAGE value="Refatora template" />
     <MESSAGE value="Adiciona preview de confluence storage" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adiciona preview de confluence storage" />
+    <MESSAGE value="Modificação de templates e forma de renderizar" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modificação de templates e forma de renderizar" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/component_swagger_publisher_app$main.coverage" NAME="main Coverage Results" MODIFIED="1770858017203" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/component_swagger_publisher_app$main.coverage" NAME="main Coverage Results" MODIFIED="1770861045313" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

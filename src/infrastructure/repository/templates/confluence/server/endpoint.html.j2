@@ -1,0 +1,398 @@
+{# Confluence Storage Format Template for Single Endpoint #}
+{# This generates Confluence XML format for publishing to server #}
+
+<h1>
+  <ac:structured-macro ac:name="status" ac:schema-version="1">
+    <ac:parameter ac:name="colour">{{ method_color }}</ac:parameter>
+    <ac:parameter ac:name="title">{{ method.upper() }}</ac:parameter>
+  </ac:structured-macro> {{ path }}
+</h1>
+
+<p><strong>{{ operation.summary or (method.upper() + ' ' + path) }}</strong></p>
+{% if operation.description %}
+<p>{{ operation.description }}</p>
+{% endif %}
+
+<hr/>
+
+{# ============================================= #}
+{# SECURITY INLINE #}
+{# ============================================= #}
+{% if operation.security or (api.security and api.security|length > 0) %}
+<h2>🔐 Authentication</h2>
+<ac:structured-macro ac:name="info" ac:schema-version="1">
+  <ac:rich-text-body>
+    {% if api.components and api.components.security_schemes %}
+      {% for scheme_name, scheme in api.components.security_schemes.items() %}
+        <p><strong>Type:</strong> {{ scheme.type }}</p>
+        {% if scheme.type == 'http' %}
+          <p><strong>Scheme:</strong> {{ scheme.scheme or 'bearer' }}</p>
+          <p><strong>Header:</strong> <code>Authorization: Bearer {token}</code></p>
+        {% elif scheme.type == 'apiKey' %}
+          <p><strong>Header:</strong> <code>{{ scheme.name or 'X-API-Key' }}: {your-api-key}</code></p>
+          <p><strong>Location:</strong> {{ scheme['in'] or 'header' }}</p>
+        {% elif scheme.type == 'oauth2' %}
+          <p><strong>OAuth 2.0</strong> authentication required</p>
+        {% endif %}
+        {% if scheme.description %}
+        <p><em>{{ scheme.description }}</em></p>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <p><em>Authentication required</em></p>
+    {% endif %}
+  </ac:rich-text-body>
+</ac:structured-macro>
+<hr/>
+{% endif %}
+
+{# ============================================= #}
+{# PARAMETERS #}
+{# ============================================= #}
+{% if operation.parameters %}
+<h2>Parameters</h2>
+<table>
+  <colgroup>
+    <col style="width: 20%;"/>
+    <col style="width: 15%;"/>
+    <col style="width: 20%;"/>
+    <col style="width: 10%;"/>
+    <col style="width: 35%;"/>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Location</th>
+      <th>Type</th>
+      <th>Required</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for param in operation.parameters %}
+    <tr>
+      <td><code>{{ param.name }}</code></td>
+      <td>{{ param.location }}</td>
+      <td>
+        {% if param.schema %}
+          {% if param.schema.ref %}
+            <strong>{{ param.schema.ref.split('/')[-1] }}</strong>
+          {% elif param.schema.type %}
+            <code>{{ param.schema.type }}</code>
+          {% else %}
+            <code>object</code>
+          {% endif %}
+        {% else %}
+          <code>string</code>
+        {% endif %}
+      </td>
+      <td>{% if param.required %}✅{% else %}❌{% endif %}</td>
+      <td>{{ param.description or '-' }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<hr/>
+{% endif %}
+
+{# ============================================= #}
+{# REQUEST BODY - SIMPLE TABLE #}
+{# ============================================= #}
+{% if operation.request_body %}
+<h2>Request Body</h2>
+{% if operation.request_body.description %}
+<p><em>{{ operation.request_body.description }}</em></p>
+{% endif %}
+<table>
+  <colgroup>
+    <col style="width: 30%;"/>
+    <col style="width: 50%;"/>
+    <col style="width: 20%;"/>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Content Type</th>
+      <th>Schema</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for content_type, media_obj in operation.request_body.content.items() %}
+    <tr>
+      <td><code>{{ content_type }}</code></td>
+      <td>
+        {% if media_obj.schema %}
+          {% if media_obj.schema.ref %}
+            <strong>{{ media_obj.schema.ref.split('/')[-1] }}</strong>
+          {% elif media_obj.schema.type == 'array' and media_obj.schema.items %}
+            {% if media_obj.schema.items.ref %}
+              <strong>array[{{ media_obj.schema.items.ref.split('/')[-1] }}]</strong>
+            {% else %}
+              <code>array[{{ media_obj.schema.items.type or 'object' }}]</code>
+            {% endif %}
+          {% elif media_obj.schema.type %}
+            <code>{{ media_obj.schema.type }}</code>
+          {% else %}
+            <code>object</code>
+          {% endif %}
+        {% else %}
+          <code>object</code>
+        {% endif %}
+      </td>
+      <td>{% if operation.request_body.required %}✅{% else %}❌{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{# Request Body Example #}
+{% for content_type, media_obj in operation.request_body.content.items() %}
+  {% if 'json' in content_type %}
+    {% set example_json = media_obj.example | tojson_pretty if media_obj.example else (example_generator.generate_example_json(media_obj.schema) if media_obj.schema else '{}') %}
+    {% if example_json.strip() not in ['{}', '""', 'null', ''] %}
+<h3>Example</h3>
+<ac:structured-macro ac:name="code" ac:schema-version="1">
+  <ac:parameter ac:name="language">json</ac:parameter>
+  <ac:plain-text-body><![CDATA[{{ example_json }}]]></ac:plain-text-body>
+</ac:structured-macro>
+    {% endif %}
+  {% endif %}
+{% endfor %}
+<hr/>
+{% endif %}
+
+{# ============================================= #}
+{# RESPONSES - WITH SCHEMA TABLE #}
+{# ============================================= #}
+{% if operation.responses %}
+<h2>Responses</h2>
+{% for status, response in operation.responses.items() %}
+  {% set status_color = 'Green' if status.startswith('2') else ('Yellow' if status.startswith('4') else 'Red') %}
+<h3>
+  <ac:structured-macro ac:name="status" ac:schema-version="1">
+    <ac:parameter ac:name="colour">{{ status_color }}</ac:parameter>
+    <ac:parameter ac:name="title">{{ status }}</ac:parameter>
+  </ac:structured-macro> {{ response.description }}
+</h3>
+
+  {# Schema Reference Table #}
+  {% if response.content %}
+<table>
+  <colgroup>
+    <col style="width: 30%;"/>
+    <col style="width: 50%;"/>
+    <col style="width: 20%;"/>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Content Type</th>
+      <th>Schema</th>
+      <th>Has Content</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for content_type, media_obj in response.content.items() %}
+    <tr>
+      <td><code>{{ content_type }}</code></td>
+      <td>
+        {% if media_obj.schema %}
+          {% if media_obj.schema.ref %}
+            <strong>{{ media_obj.schema.ref.split('/')[-1] }}</strong>
+          {% elif media_obj.schema.type == 'array' and media_obj.schema.items %}
+            {% if media_obj.schema.items.ref %}
+              <strong>array[{{ media_obj.schema.items.ref.split('/')[-1] }}]</strong>
+            {% else %}
+              <code>array[{{ media_obj.schema.items.type or 'object' }}]</code>
+            {% endif %}
+          {% elif media_obj.schema.type %}
+            <code>{{ media_obj.schema.type }}</code>
+          {% else %}
+            <code>object</code>
+          {% endif %}
+        {% else %}
+          <code>-</code>
+        {% endif %}
+      </td>
+      <td>{% if media_obj.schema %}✅{% else %}❌{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+    {# Response Example #}
+    {% for content_type, media_obj in response.content.items() %}
+      {% if 'json' in content_type %}
+        {% set example_json = media_obj.example | tojson_pretty if media_obj.example else (example_generator.generate_example_json(media_obj.schema) if media_obj.schema else '{}') %}
+        {% if example_json.strip() not in ['{}', '""', 'null', ''] %}
+<p><strong>Response Example ({{ content_type }}):</strong></p>
+<ac:structured-macro ac:name="code" ac:schema-version="1">
+  <ac:parameter ac:name="language">json</ac:parameter>
+  <ac:plain-text-body><![CDATA[{{ example_json }}]]></ac:plain-text-body>
+</ac:structured-macro>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+<hr/>
+{% endif %}
+
+{# ============================================= #}
+{# CURL EXAMPLE #}
+{# ============================================= #}
+<h2>cURL Example</h2>
+<ac:structured-macro ac:name="code" ac:schema-version="1">
+  <ac:parameter ac:name="language">bash</ac:parameter>
+  <ac:plain-text-body><![CDATA[curl -X {{ method.upper() }} '{% if api.servers and api.servers|length > 0 %}{{ api.servers[0].url }}{% else %}https://api.example.com{% endif %}{{ path }}'{% if operation.parameters %}{% for param in operation.parameters %}{% if param.location == 'path' %} # Replace {{ param.name }}{% endif %}{% endfor %}{% endif %} \
+  -H 'Accept: application/json'{% if method.lower() in ['post', 'put', 'patch'] %} \
+  -H 'Content-Type: application/json'{% if operation.request_body %}{% for content_type, media_obj in operation.request_body.content.items() %}{% if 'json' in content_type %} \
+  -d '{% if media_obj.example %}{{ media_obj.example | tojson_pretty | replace("'", "\\'") }}{% elif media_obj.schema %}{{ example_generator.generate_example_json(media_obj.schema) | replace("'", "\\'") }}{% else %}{"key": "value"}{% endif %}'{% endif %}{% endfor %}{% endif %}{% endif %}]]></ac:plain-text-body>
+</ac:structured-macro>
+<hr/>
+
+{# ============================================= #}
+{# COMPLETE SCHEMA REFERENCE #}
+{# ============================================= #}
+<h2>📋 Complete Schema Reference</h2>
+<p><em>Detailed schema definitions for all objects and sub-objects used in this endpoint.</em></p>
+
+{% set all_schemas_to_display = [] %}
+{% set schemas_metadata = {} %}
+
+{# Collect schemas from Request Body #}
+{% if operation.request_body %}
+  {% for content_type, media_obj in operation.request_body.content.items() %}
+    {% if media_obj.schema %}
+      {% if media_obj.schema.ref %}
+        {% set model_name = media_obj.schema.ref.split('/')[-1] %}
+        {% if model_name not in all_schemas_to_display %}
+          {% set _ = all_schemas_to_display.append(model_name) %}
+          {% set _ = schemas_metadata.update({model_name: {'source': 'Request Body', 'is_array': false}}) %}
+        {% endif %}
+      {% elif media_obj.schema.type == 'array' and media_obj.schema.items and media_obj.schema.items.ref %}
+        {% set model_name = media_obj.schema.items.ref.split('/')[-1] %}
+        {% if model_name not in all_schemas_to_display %}
+          {% set _ = all_schemas_to_display.append(model_name) %}
+          {% set _ = schemas_metadata.update({model_name: {'source': 'Request Body', 'is_array': true}}) %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{# Collect schemas from Responses #}
+{% if operation.responses %}
+  {% for status, response in operation.responses.items() %}
+    {% if response.content %}
+      {% for content_type, media_obj in response.content.items() %}
+        {% if media_obj.schema %}
+          {% if media_obj.schema.ref %}
+            {% set model_name = media_obj.schema.ref.split('/')[-1] %}
+            {% if model_name not in all_schemas_to_display %}
+              {% set _ = all_schemas_to_display.append(model_name) %}
+              {% set _ = schemas_metadata.update({model_name: {'source': 'Response ' + status, 'is_array': false}}) %}
+            {% endif %}
+          {% elif media_obj.schema.type == 'array' and media_obj.schema.items and media_obj.schema.items.ref %}
+            {% set model_name = media_obj.schema.items.ref.split('/')[-1] %}
+            {% if model_name not in all_schemas_to_display %}
+              {% set _ = all_schemas_to_display.append(model_name) %}
+              {% set _ = schemas_metadata.update({model_name: {'source': 'Response ' + status, 'is_array': true}}) %}
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{# Display all schemas and collect sub-schemas #}
+{% set processed_schemas = [] %}
+{% for schema_name in all_schemas_to_display %}
+  {% if api.components.schemas and schema_name in api.components.schemas and schema_name not in processed_schemas %}
+    {% set schema = api.components.schemas[schema_name] %}
+    {% set metadata = schemas_metadata.get(schema_name, {'source': 'Referenced', 'is_array': false}) %}
+
+<ac:structured-macro ac:name="panel" ac:schema-version="1">
+  <ac:parameter ac:name="borderStyle">solid</ac:parameter>
+  <ac:parameter ac:name="borderColor">#0052CC</ac:parameter>
+  <ac:parameter ac:name="borderWidth">2</ac:parameter>
+  <ac:rich-text-body>
+    <h3>{{ schema_name }}{% if metadata.is_array %} <em>(array)</em>{% endif %}</h3>
+    <p><small>Used in: {{ metadata.source }}</small></p>
+    {% if schema.description %}
+    <p><em>{{ schema.description }}</em></p>
+    {% endif %}
+
+    {% if schema.properties %}
+    <table>
+      <colgroup>
+        <col style="width: 25%;"/>
+        <col style="width: 20%;"/>
+        <col style="width: 15%;"/>
+        <col style="width: 40%;"/>
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Type</th>
+          <th>Required</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for prop_name, prop in schema.properties.items() %}
+        <tr>
+          <td><code><strong>{{ prop_name }}</strong></code></td>
+          <td>
+            {% if prop.ref %}
+              {% set ref_schema_name = prop.ref.split('/')[-1] %}
+              <strong>{{ ref_schema_name }}</strong>
+              {% if ref_schema_name not in all_schemas_to_display %}
+                {% set _ = all_schemas_to_display.append(ref_schema_name) %}
+                {% set _ = schemas_metadata.update({ref_schema_name: {'source': schema_name + '.' + prop_name, 'is_array': false}}) %}
+              {% endif %}
+            {% elif prop.type == 'array' and prop.items %}
+              {% if prop.items.ref %}
+                {% set ref_schema_name = prop.items.ref.split('/')[-1] %}
+                <code>array[<strong>{{ ref_schema_name }}</strong>]</code>
+                {% if ref_schema_name not in all_schemas_to_display %}
+                  {% set _ = all_schemas_to_display.append(ref_schema_name) %}
+                  {% set _ = schemas_metadata.update({ref_schema_name: {'source': schema_name + '.' + prop_name, 'is_array': true}}) %}
+                {% endif %}
+              {% else %}
+                <code>array[{{ prop.items.type or 'object' }}]</code>
+              {% endif %}
+            {% else %}
+              <code>{{ prop.type or 'object' }}</code>
+              {% if prop.format %}
+              <br/><small>format: {{ prop.format }}</small>
+              {% endif %}
+            {% endif %}
+          </td>
+          <td>
+            {% if prop_name in (schema.required or []) %}
+            ✅
+            {% else %}
+            ❌
+            {% endif %}
+          </td>
+          <td>
+            {{ prop.description or '-' }}
+            {% if prop.enum %}
+            <br/><small><strong>Allowed:</strong> {{ prop.enum|join(', ') }}</small>
+            {% endif %}
+            {% if prop.default %}
+            <br/><small><strong>Default:</strong> {{ prop.default }}</small>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </ac:rich-text-body>
+</ac:structured-macro>
+    {% set _ = processed_schemas.append(schema_name) %}
+  {% endif %}
+{% endfor %}
+

@@ -1,0 +1,23 @@
+{# Confluence Storage Format - Tag Folder Page #}
+
+<h1>{{ tag.name }}</h1>
+
+{% if tag.description %}
+<p>{{ tag.description }}</p>
+{% else %}
+<p>Endpoints related to <strong>{{ tag.name }}</strong></p>
+{% endif %}
+
+<ac:structured-macro ac:name="info" ac:schema-version="1">
+  <ac:rich-text-body>
+    <p>This section contains {{ endpoint_count }} endpoint(s) related to {{ tag.name }}.</p>
+    <p>Each endpoint page includes complete schema definitions, examples, and security requirements.</p>
+  </ac:rich-text-body>
+</ac:structured-macro>
+
+{% if tag.externalDocs %}
+<hr/>
+<h2>External Documentation</h2>
+<p>{{ tag.externalDocs.description or 'Additional documentation' }}: <ac:link><ri:url ri:value="{{ tag.externalDocs.url }}"/></ac:link></p>
+{% endif %}
+

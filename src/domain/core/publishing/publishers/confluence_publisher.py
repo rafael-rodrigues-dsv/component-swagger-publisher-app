@@ -5,6 +5,8 @@ import requests
 import json
 from datetime import datetime
 from typing import Dict, List, Optional
+from pathlib import Path
+from jinja2 import Environment, FileSystemLoader
 from src.domain.core.publishing.contracts.publisher_contract import PublisherContract
 from src.domain.core.rendering.dtos.rendered_document_dto import RenderedDocumentDTO
 from src.domain.core.publishing.dtos.publish_target_dto import PublishTargetDTO
@@ -17,7 +19,7 @@ class ConfluencePublisher(PublisherContract):
     """Publisher that creates real pages in Confluence"""
 
     def __init__(self):
-        """Initialize with Confluence configuration"""
+        """Initialize with Confluence configuration and Jinja2 templates"""
         self.base_url = config.confluence_base_url
         self.username = config.confluence_username
         self.token = config.confluence_token
@@ -40,6 +42,14 @@ class ConfluencePublisher(PublisherContract):
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         }
+
+        # Initialize Jinja2 template engine for server templates
+        # __file__ = .../src/domain/core/publishing/publishers/confluence_publisher.py
+        # Go up 5 levels to project root, then into src/infrastructure/...
+        project_root = Path(__file__).parent.parent.parent.parent.parent.parent  # Go to project root
+        templates_dir = project_root / "src" / "infrastructure" / "repository" / "templates" / "confluence" / "server"
+        self.jinja_env = Environment(loader=FileSystemLoader(str(templates_dir)))
+        self.jinja_env.filters['tojson_pretty'] = lambda x: json.dumps(x, indent=2, ensure_ascii=False) if x else '{}'
 
     def publish(self, document: RenderedDocumentDTO, target: PublishTargetDTO) -> PublishResultDTO:
         """
@@ -140,11 +150,18 @@ class ConfluencePublisher(PublisherContract):
                 total_endpoints = 0
                 
                 for tag in api_spec.tags:
+                    # Count endpoints for this tag first
+                    endpoint_count = sum(
+                        1 for path, path_item in api_spec.paths.items()
+                        for method, operation in path_item.operations.items()
+                        if tag.name in operation.tags
+                    )
+
                     # Create tag folder with unique prefix
                     tag_folder_title = f"{api_prefix} {tag.name.capitalize()}"
                     print(f"   📁 Creating tag folder: {tag_folder_title}...")
                     
-                    tag_folder_content = self._generate_tag_folder_content(tag)
+                    tag_folder_content = self._generate_tag_folder_content(tag, endpoint_count)
 
                     # Save tag folder content
                     generated_contents[f'tag_{tag.name}'] = (tag_folder_title, tag_folder_content)
@@ -166,11 +183,9 @@ class ConfluencePublisher(PublisherContract):
                     print(f"   ✅ Tag folder created: {tag_folder_title}")
                     
                     # Create individual endpoint pages under this tag
-                    endpoint_count = 0
                     for path, path_item in api_spec.paths.items():
                         for method, operation in path_item.operations.items():
                             if tag.name in operation.tags:
-                                endpoint_count += 1
                                 total_endpoints += 1
                                 
                                 # Generate endpoint title with unique prefix
@@ -203,49 +218,8 @@ class ConfluencePublisher(PublisherContract):
                 
                 print(f"\n✅ Total: {total_endpoints} endpoint pages created")
 
-            # 4. Create Data Models page if schemas exist
-            if api_spec.components and api_spec.components.schemas:
-                print(f"\n📊 Creating Data Models page...")
-                models_title = f"{api_prefix} Data Models"
-                models_content = self._generate_models_content(api_spec, api_prefix)
-
-                # Save models content
-                generated_contents['models'] = (models_title, models_content)
-
-                models_page = self._create_or_update_page(
-                    title=models_title,
-                    content=models_content,
-                    parent_id=root_id,
-                    labels=['schemas', 'models']
-                )
-
-                if models_page:
-                    models_url = f"{self.base_url}/spaces/{self.space_key}/pages/{models_page['id']}"
-                    created_pages['models'] = models_url
-                    print(f"✅ Created: {models_title}")
-
-            # 5. Create Security page if security schemes exist
-            if api_spec.components and api_spec.components.security_schemes:
-                print(f"\n🔐 Creating Security page...")
-                security_title = f"{api_prefix} Security"
-                security_content = self._generate_security_content(api_spec)
-
-                # Save security content
-                generated_contents['security'] = (security_title, security_content)
-
-                security_page = self._create_or_update_page(
-                    title=security_title,
-                    content=security_content,
-                    parent_id=root_id,
-                    labels=['security', 'authentication']
-                )
-
-                if security_page:
-                    security_url = f"{self.base_url}/spaces/{self.space_key}/pages/{security_page['id']}"
-                    created_pages['security'] = security_url
-                    print(f"✅ Created: {security_title}")
-
-            # Success
+            # Success - No separate Data Models or Security pages
+            # Everything is inline in endpoints now
             duration = (datetime.now() - start_time).total_seconds()
 
             print(f"\n✅ Published {len(created_pages)} pages in {duration:.2f}s")
@@ -505,230 +479,15 @@ class ConfluencePublisher(PublisherContract):
         return storage.strip()
 
     def _generate_overview_content(self, api_spec, title: str) -> str:
-        """Generate rich overview content for root page with centered layout"""
-        version = api_spec.info.version
-        description = api_spec.info.description or "API Documentation"
+        """Generate rich overview content for root page using Jinja2 template"""
+        template = self.jinja_env.get_template('root.html.j2')
+        return template.render(api=api_spec, title=title)
 
-        # Count endpoints
-        endpoint_count = sum(len(path.operations) for path in api_spec.paths.values())
 
-        # Server URLs
-        servers_html = ""
-        if api_spec.servers:
-            servers_html = "<ul>"
-            for server in api_spec.servers:
-                desc = f" - {server.description}" if server.description else ""
-                servers_html += f"<li><code>{server.url}</code>{desc}</li>"
-            servers_html += "</ul>"
-
-        content = f"""<h1>{title}</h1>
-<p><strong>Version:</strong> {version}</p>
-
-<ac:structured-macro ac:name="info" ac:schema-version="1">
-  <ac:rich-text-body>
-    <p>{description}</p>
-  </ac:rich-text-body>
-</ac:structured-macro>
-
-<h2>📋 API Summary</h2>
-<table>
-  <tr>
-    <th>Property</th>
-    <th>Value</th>
-  </tr>
-  <tr>
-    <td><strong>Title</strong></td>
-    <td>{title}</td>
-  </tr>
-  <tr>
-    <td><strong>Version</strong></td>
-    <td>{version}</td>
-  </tr>
-  <tr>
-    <td><strong>OpenAPI Version</strong></td>
-    <td>{api_spec.openapi_version}</td>
-  </tr>
-  <tr>
-    <td><strong>Total Endpoints</strong></td>
-    <td>{endpoint_count}</td>
-  </tr>
-  <tr>
-    <td><strong>Tags</strong></td>
-    <td>{len(api_spec.tags)}</td>
-  </tr>
-</table>
-
-<h2>🌐 Base URLs</h2>
-{servers_html if servers_html else "<p>No servers defined</p>"}
-
-<h2>📚 Documentation Structure</h2>
-<p>This documentation is organized into the following child pages:</p>
-
-<ac:structured-macro ac:name="children" ac:schema-version="2">
-  <ac:parameter ac:name="all">true</ac:parameter>
-  <ac:parameter ac:name="sort">title</ac:parameter>
-</ac:structured-macro>
-
-<h2>🏷️ Available Tags</h2>
-<ul>
-{"".join(f'<li><strong>{tag.name}</strong>{" - " + tag.description if tag.description else ""}</li>' for tag in api_spec.tags)}
-</ul>
-
-<p><em>Documentation generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</em></p>
-"""
-        return content
-
-    def _generate_tag_content(self, api_spec, tag) -> str:
-        """Generate content for a tag page with actual endpoints"""
-        tag_name = tag.name
-        tag_description = tag.description or f"Endpoints for {tag_name}"
-
-        # Find all endpoints with this tag
-        endpoints_html = ""
-        for path, path_item in api_spec.paths.items():
-            for method, operation in path_item.operations.items():
-                if tag_name in operation.tags:
-                    # Generate endpoint documentation
-                    summary = operation.summary or ""
-                    description = operation.description or ""
-
-                    # Method badge color
-                    method_colors = {
-                        'get': '#61affe',
-                        'post': '#49cc90',
-                        'put': '#fca130',
-                        'delete': '#f93e3e',
-                        'patch': '#50e3c2'
-                    }
-                    color = method_colors.get(method.lower(), '#999')
-
-                    endpoints_html += f"""
-<h3><ac:structured-macro ac:name="status" ac:schema-version="1">
-  <ac:parameter ac:name="colour">{'Green' if method.lower() == 'get' else 'Blue'}</ac:parameter>
-  <ac:parameter ac:name="title">{method.upper()}</ac:parameter>
-</ac:structured-macro> {path}</h3>
-
-<p><strong>{summary}</strong></p>
-{f'<p>{description}</p>' if description else ''}
-"""
-
-                    # Parameters
-                    if operation.parameters:
-                        endpoints_html += "<h4>Parameters</h4><table><tr><th>Name</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>"
-                        for param in operation.parameters:
-                            # Extract type or schema reference
-                            param_type = "string"  # default
-                            if param.schema:
-                                # Check if it's a reference to a model
-                                if hasattr(param.schema, 'ref') and param.schema.ref:
-                                    # Extract model name from $ref
-                                    model_name = param.schema.ref.split('/')[-1]
-                                    # Create link to Data Models page
-                                    param_type = f'<ac:link><ri:page ri:content-title="Data Models"/><ac:plain-text-link-body><![CDATA[{model_name}]]></ac:plain-text-link-body></ac:link>'
-                                elif param.schema.type:
-                                    param_type = param.schema.type
-
-                            required = "✅" if param.required else "❌"
-                            param_desc = param.description or "-"
-                            endpoints_html += f"<tr><td><code>{param.name}</code></td><td>{param.location}</td><td>{param_type}</td><td>{required}</td><td>{param_desc}</td></tr>"
-                        endpoints_html += "</table>"
-
-                    # Request Body
-                    if operation.request_body:
-                        endpoints_html += "<h4>Request Body</h4>"
-                        endpoints_html += "<table><tr><th>Content Type</th><th>Schema</th><th>Required</th></tr>"
-
-                        for content_type, media_obj in operation.request_body.content.items():
-                            required_badge = "✅" if operation.request_body.required else "❌"
-
-                            # Try to extract schema reference
-                            schema_info = "object"
-                            if media_obj.schema:
-                                # Check if it's a reference to a model
-                                if hasattr(media_obj.schema, 'ref') and media_obj.schema.ref:
-                                    # Extract model name from $ref (e.g., "#/components/schemas/Pet" -> "Pet")
-                                    model_name = media_obj.schema.ref.split('/')[-1]
-                                    # Create link to Data Models page
-                                    schema_info = f'<ac:link><ri:page ri:content-title="Data Models"/><ac:plain-text-link-body><![CDATA[{model_name}]]></ac:plain-text-link-body></ac:link>'
-                                elif hasattr(media_obj.schema, 'type'):
-                                    schema_info = media_obj.schema.type
-
-                            endpoints_html += f"<tr><td><code>{content_type}</code></td><td>{schema_info}</td><td>{required_badge}</td></tr>"
-
-                        endpoints_html += "</table>"
-
-                        # Add description if exists
-                        if operation.request_body.description:
-                            endpoints_html += f"<p><em>{operation.request_body.description}</em></p>"
-
-                    # Responses
-                    if operation.responses:
-                        endpoints_html += "<h4>Responses</h4><table><tr><th>Status</th><th>Description</th></tr>"
-                        for status, response in operation.responses.items():
-                            status_color = "Green" if status.startswith('2') else "Yellow" if status.startswith('4') else "Red"
-                            endpoints_html += f'<tr><td><ac:structured-macro ac:name="status" ac:schema-version="1"><ac:parameter ac:name="colour">{status_color}</ac:parameter><ac:parameter ac:name="title">{status}</ac:parameter></ac:structured-macro></td><td>{response.description}</td></tr>'
-                        endpoints_html += "</table>"
-
-                    # cURL Example
-                    curl_example = self._generate_curl_example(api_spec, path, method, operation)
-                    # Escape HTML entities in curl example
-                    curl_example_escaped = curl_example.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-                    endpoints_html += f"""
-<h4>cURL Example</h4>
-<ac:structured-macro ac:name="code">
-  <ac:parameter ac:name="language">bash</ac:parameter>
-  <ac:plain-text-body><![CDATA[{curl_example_escaped}]]></ac:plain-text-body>
-</ac:structured-macro>
-"""
-
-                    endpoints_html += "<hr/>"
-
-        content = f"""
-<h1>{tag_name}</h1>
-
-<ac:structured-macro ac:name="info" ac:schema-version="1">
-  <ac:rich-text-body>
-    <p>{tag_description}</p>
-  </ac:rich-text-body>
-</ac:structured-macro>
-
-<h2>🔌 Endpoints</h2>
-{endpoints_html if endpoints_html else '<p>No endpoints found for this tag.</p>'}
-"""
-        return content
-
-    def _generate_tag_folder_content(self, tag) -> str:
-        """Generate content for tag folder page (container for endpoints)"""
-        tag_name = tag.name
-        tag_description = tag.description or f"API endpoints for {tag_name} operations"
-
-        content = f"""
-<h1>{tag_name}</h1>
-
-<ac:structured-macro ac:name="info" ac:schema-version="1">
-  <ac:rich-text-body>
-    <p>{tag_description}</p>
-  </ac:rich-text-body>
-</ac:structured-macro>
-
-<h2>📋 Endpoints</h2>
-<p>Browse the child pages below to view detailed documentation for each endpoint:</p>
-
-<ac:structured-macro ac:name="children" ac:schema-version="2">
-  <ac:parameter ac:name="all">true</ac:parameter>
-  <ac:parameter ac:name="sort">title</ac:parameter>
-</ac:structured-macro>
-
-<h2>ℹ️ About</h2>
-<p>Each endpoint page contains:</p>
-<ul>
-  <li>Request parameters and schemas</li>
-  <li>Request body specifications</li>
-  <li>Response codes and descriptions</li>
-  <li>cURL examples for testing</li>
-</ul>
-"""
-        return content
+    def _generate_tag_folder_content(self, tag, endpoint_count: int = 0) -> str:
+        """Generate content for tag folder page using Jinja2 template"""
+        template = self.jinja_env.get_template('tag_folder.html.j2')
+        return template.render(tag=tag, endpoint_count=endpoint_count)
 
     def _generate_single_endpoint_content(
         self,
@@ -738,10 +497,7 @@ class ConfluencePublisher(PublisherContract):
         operation,
         api_prefix: str = ""
     ) -> str:
-        """Generate content for a single endpoint page with consistent layout structure"""
-
-        # Data Models page title with API prefix for correct linking
-        data_models_title = f"{api_prefix} Data Models" if api_prefix else "Data Models"
+        """Generate content for a single endpoint page using Jinja2 template"""
 
         # Create example generator with available schemas
         schemas = {}
@@ -759,306 +515,19 @@ class ConfluencePublisher(PublisherContract):
         }
         method_color = method_colors.get(method.lower(), 'Grey')
 
-        summary = operation.summary or f"{method.upper()} {path}"
-        description = operation.description or ""
-
-        # No wrapper div - let Confluence use native full-width layout
-        content = f"""<h1><ac:structured-macro ac:name="status" ac:schema-version="1">
-  <ac:parameter ac:name="colour">{method_color}</ac:parameter>
-  <ac:parameter ac:name="title">{method.upper()}</ac:parameter>
-</ac:structured-macro> {path}</h1>
-
-<p><strong>{summary}</strong></p>
-{f'<p>{description}</p>' if description else ''}
-
-<hr/>
-"""
-
-        # Parameters Section
-        content += self._generate_parameters_section(operation, data_models_title)
-
-        # Request Body Section
-        content += self._generate_request_body_section(operation, data_models_title, example_generator)
-
-        # Responses Section
-        content += self._generate_responses_section(operation, example_generator)
-
-        # cURL Example Section
-        content += self._generate_curl_section(api_spec, path, method, operation)
-
+        # Render template
+        template = self.jinja_env.get_template('endpoint.html.j2')
+        content = template.render(
+            api=api_spec,
+            path=path,
+            method=method,
+            operation=operation,
+            method_color=method_color,
+            example_generator=example_generator
+        )
 
         return content
 
-    def _generate_parameters_section(self, operation, data_models_title: str) -> str:
-        """Generate parameters section with consistent structure"""
-        if not operation.parameters:
-            return ""
-
-        content = "<h2>Parameters</h2>\n"
-        content += '<table><colgroup><col style="width: 20%;"/><col style="width: 15%;"/><col style="width: 20%;"/><col style="width: 10%;"/><col style="width: 35%;"/></colgroup>\n'
-        content += "<tr><th>Name</th><th>In</th><th>Type</th><th>Required</th><th>Description</th></tr>\n"
-
-        for param in operation.parameters:
-            # Extract type or schema reference
-            param_type = "string"
-            if param.schema:
-                if hasattr(param.schema, 'ref') and param.schema.ref:
-                    model_name = param.schema.ref.split('/')[-1]
-                    param_type = f'<ac:link><ri:page ri:content-title="{data_models_title}"/><ac:plain-text-link-body><![CDATA[{model_name}]]></ac:plain-text-link-body></ac:link>'
-                elif param.schema.type:
-                    param_type = param.schema.type
-
-            required = "✅" if param.required else "❌"
-            param_desc = param.description or "-"
-            content += f"<tr><td><code>{param.name}</code></td><td>{param.location}</td><td>{param_type}</td><td>{required}</td><td>{param_desc}</td></tr>\n"
-
-        content += "</table>\n<hr/>\n"
-        return content
-
-    def _generate_request_body_section(self, operation, data_models_title: str, example_generator) -> str:
-        """Generate request body section with consistent structure"""
-        if not operation.request_body:
-            return ""
-
-        content = "<h2>Request Body</h2>\n"
-        content += '<table><colgroup><col style="width: 30%;"/><col style="width: 50%;"/><col style="width: 20%;"/></colgroup>\n'
-        content += "<tr><th>Content Type</th><th>Schema</th><th>Required</th></tr>\n"
-
-        for content_type, media_obj in operation.request_body.content.items():
-            required_badge = "✅" if operation.request_body.required else "❌"
-
-            schema_info = "object"
-            if media_obj.schema:
-                if hasattr(media_obj.schema, 'ref') and media_obj.schema.ref:
-                    model_name = media_obj.schema.ref.split('/')[-1]
-                    schema_info = f'<ac:link><ri:page ri:content-title="{data_models_title}"/><ac:plain-text-link-body><![CDATA[{model_name}]]></ac:plain-text-link-body></ac:link>'
-                elif hasattr(media_obj.schema, 'type') and media_obj.schema.type == 'array':
-                    # Handle array type with items reference
-                    if media_obj.schema.items and hasattr(media_obj.schema.items, 'ref') and media_obj.schema.items.ref:
-                        item_model_name = media_obj.schema.items.ref.split('/')[-1]
-                        schema_info = f'array[<ac:link><ri:page ri:content-title="{data_models_title}"/><ac:plain-text-link-body><![CDATA[{item_model_name}]]></ac:plain-text-link-body></ac:link>]'
-                    elif media_obj.schema.items and hasattr(media_obj.schema.items, 'type'):
-                        schema_info = f'array[{media_obj.schema.items.type}]'
-                    else:
-                        schema_info = 'array[object]'
-                elif hasattr(media_obj.schema, 'type'):
-                    schema_info = media_obj.schema.type
-
-            content += f"<tr><td><code>{content_type}</code></td><td>{schema_info}</td><td>{required_badge}</td></tr>\n"
-
-        content += "</table>\n"
-
-        if operation.request_body.description:
-            content += f"<p><em>{operation.request_body.description}</em></p>\n"
-
-        # Request Body JSON Example - EXACT SAME STRUCTURE AS RESPONSE (which works!)
-        for content_type, media_obj in operation.request_body.content.items():
-            if 'json' in content_type and media_obj.schema:
-                example_json = ""
-                if media_obj.example:
-                    example_json = json.dumps(media_obj.example, indent=2, ensure_ascii=False)
-                else:
-                    example_json = example_generator.generate_example_json(media_obj.schema)
-
-                # Skip empty JSON examples
-                if example_json.strip() in ['{}', '""', 'null', '']:
-                    continue
-
-                # Escape for CDATA
-                example_json_escaped = example_json.replace(']]>', ']]]]><![CDATA[>')
-
-                # EXACT COPY of Response structure
-                content += f"""<div style="margin-top: 12px;">
-<p><strong>Request Body Example ({content_type}):</strong></p>
-<ac:structured-macro ac:name="code" ac:schema-version="1">
-  <ac:parameter ac:name="language">json</ac:parameter>
-  <ac:plain-text-body><![CDATA[{example_json_escaped}]]></ac:plain-text-body>
-</ac:structured-macro>
-</div>
-"""
-
-        content += "<hr/>\n"
-        return content
-
-    def _generate_responses_section(self, operation, example_generator) -> str:
-        """Generate responses section with consistent structure"""
-        if not operation.responses:
-            return ""
-
-        content = "<h2>Responses</h2>\n"
-
-        for status, response in operation.responses.items():
-            status_color = "Green" if status.startswith('2') else "Yellow" if status.startswith('4') else "Red"
-            content += f"""
-<h3><ac:structured-macro ac:name="status" ac:schema-version="1">
-  <ac:parameter ac:name="colour">{status_color}</ac:parameter>
-  <ac:parameter ac:name="title">{status}</ac:parameter>
-</ac:structured-macro> {response.description}</h3>
-"""
-            # Response Body Example
-            if response.content:
-                for content_type, media_obj in response.content.items():
-                    if 'json' in content_type and media_obj.schema:
-                        example_json = ""
-                        if media_obj.example:
-                            example_json = json.dumps(media_obj.example, indent=2, ensure_ascii=False)
-                        else:
-                            example_json = example_generator.generate_example_json(media_obj.schema)
-
-                        # Skip empty JSON examples
-                        if example_json.strip() in ['{}', '""', 'null', '']:
-                            continue
-
-                        # Escape for CDATA
-                        example_json_escaped = example_json.replace(']]>', ']]]]><![CDATA[>')
-
-                        content += f"""<div style="margin-top: 12px;">
-<p><strong>Response Example ({content_type}):</strong></p>
-<ac:structured-macro ac:name="code" ac:schema-version="1">
-  <ac:parameter ac:name="language">json</ac:parameter>
-  <ac:plain-text-body><![CDATA[{example_json_escaped}]]></ac:plain-text-body>
-</ac:structured-macro>
-</div>
-"""
-
-        content += "<hr/>\n"
-        return content
-
-    def _generate_curl_section(self, api_spec, path: str, method: str, operation) -> str:
-        """Generate cURL example section"""
-        curl_example = self._generate_curl_example(api_spec, path, method, operation)
-        curl_example_escaped = curl_example.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-
-        content = f"""
-<h2>cURL Example</h2>
-<ac:structured-macro ac:name="code" ac:schema-version="1">
-  <ac:parameter ac:name="language">bash</ac:parameter>
-  <ac:plain-text-body><![CDATA[{curl_example_escaped}]]></ac:plain-text-body>
-</ac:structured-macro>
-"""
-
-        return content
-
-    def _generate_models_content(self, api_spec, api_prefix: str = "") -> str:
-        """Generate content for Data Models page with schemas grouped by tag"""
-
-        # Data Models page title with API prefix for internal links
-        data_models_title = f"{api_prefix} Data Models" if api_prefix else "Data Models"
-
-        # Build a map of which schemas are used by which tags
-        tag_schemas = {}
-        used_schemas = set()
-
-        for tag in api_spec.tags:
-            tag_schemas[tag.name] = set()
-
-            # Find schemas used by this tag's endpoints
-            for path, path_item in api_spec.paths.items():
-                for method, operation in path_item.operations.items():
-                    if tag.name in operation.tags:
-                        # Check request body
-                        if operation.request_body:
-                            for content_type, media_obj in operation.request_body.content.items():
-                                if media_obj.schema and hasattr(media_obj.schema, 'ref') and media_obj.schema.ref:
-                                    model_name = media_obj.schema.ref.split('/')[-1]
-                                    tag_schemas[tag.name].add(model_name)
-                                    used_schemas.add(model_name)
-
-                        # Check parameters
-                        if operation.parameters:
-                            for param in operation.parameters:
-                                if param.schema and hasattr(param.schema, 'ref') and param.schema.ref:
-                                    model_name = param.schema.ref.split('/')[-1]
-                                    tag_schemas[tag.name].add(model_name)
-                                    used_schemas.add(model_name)
-
-        # Generate content with full width layout
-        content = """<h1>Data Models</h1>
-
-<ac:structured-macro ac:name="info" ac:schema-version="1">
-  <ac:rich-text-body>
-    <p>Schema definitions and data structures used by the API, organized by endpoint categories.</p>
-  </ac:rich-text-body>
-</ac:structured-macro>
-"""
-
-        # Schemas grouped by tag
-        if api_spec.components and api_spec.components.schemas:
-            for tag in api_spec.tags:
-                if tag.name in tag_schemas and len(tag_schemas[tag.name]) > 0:
-                    content += f"<h2>{tag.name} Schemas</h2>"
-
-                    for schema_name in sorted(tag_schemas[tag.name]):
-                        if schema_name in api_spec.components.schemas:
-                            schema = api_spec.components.schemas[schema_name]
-                            schema_desc = schema.description or f"Schema definition for {schema_name}"
-
-                            content += f"""
-<h3 id="schema-{schema_name}">{schema_name}</h3>
-<p>{schema_desc}</p>
-"""
-
-                            if schema.properties:
-                                content += "<table><tr><th>Property</th><th>Type</th><th>Required</th><th>Description</th></tr>"
-                                for prop_name, prop in schema.properties.items():
-                                    prop_type = self._get_property_type_with_link(prop, data_models_title)
-                                    is_required = "✅" if prop_name in (schema.required or []) else "❌"
-                                    prop_desc = prop.description or "-"
-                                    content += f"<tr><td><code>{prop_name}</code></td><td>{prop_type}</td><td>{is_required}</td><td>{prop_desc}</td></tr>"
-                                content += "</table>"
-
-                            content += "<hr/>"
-
-            # Other schemas not associated with any tag
-            other_schemas = [name for name in api_spec.components.schemas.keys() if name not in used_schemas]
-            if other_schemas:
-                content += "<h2>Other Schemas</h2>"
-
-                for schema_name in sorted(other_schemas):
-                    schema = api_spec.components.schemas[schema_name]
-                    schema_desc = schema.description or f"Schema definition for {schema_name}"
-
-                    content += f"""
-<h3 id="schema-{schema_name}">{schema_name}</h3>
-<p>{schema_desc}</p>
-"""
-
-                    if schema.properties:
-                        content += "<table><tr><th>Property</th><th>Type</th><th>Required</th><th>Description</th></tr>"
-                        for prop_name, prop in schema.properties.items():
-                            prop_type = self._get_property_type_with_link(prop, data_models_title)
-                            is_required = "✅" if prop_name in (schema.required or []) else "❌"
-                            prop_desc = prop.description or "-"
-                            content += f"<tr><td><code>{prop_name}</code></td><td>{prop_type}</td><td>{is_required}</td><td>{prop_desc}</td></tr>"
-                        content += "</table>"
-
-                    content += "<hr/>"
-
-        return content
-
-    def _get_property_type_with_link(self, prop, data_models_title: str = "Data Models") -> str:
-        """Generate property type string with links for refs and arrays"""
-        # Check if it's a direct reference
-        if hasattr(prop, 'ref') and prop.ref:
-            model_name = prop.ref.split('/')[-1]
-            # Use anchor link to schema section within the same Data Models page
-            return f'<ac:link ac:anchor="schema-{model_name}"><ri:page ri:content-title="{data_models_title}"/><ac:plain-text-link-body><![CDATA[{model_name}]]></ac:plain-text-link-body></ac:link>'
-
-        # Check if it's an array
-        if hasattr(prop, 'type') and prop.type == 'array':
-            if prop.items:
-                # Array with reference
-                if hasattr(prop.items, 'ref') and prop.items.ref:
-                    item_model_name = prop.items.ref.split('/')[-1]
-                    # Use anchor link to schema section within the same Data Models page
-                    return f'array[<ac:link ac:anchor="schema-{item_model_name}"><ri:page ri:content-title="{data_models_title}"/><ac:plain-text-link-body><![CDATA[{item_model_name}]]></ac:plain-text-link-body></ac:link>]'
-                # Array with type
-                elif hasattr(prop.items, 'type') and prop.items.type:
-                    return f'array[{prop.items.type}]'
-            return 'array[object]'
-
-        # Default: return type or object
-        return prop.type or "object"
 
     def _generate_curl_example(self, api_spec, path: str, method: str, operation) -> str:
         """Generate a cURL example for an endpoint"""
@@ -1166,65 +635,10 @@ class ConfluencePublisher(PublisherContract):
         return '{"key": "value"}'
 
     def _generate_endpoints_folder_content(self, api_spec) -> str:
-        """Generate content for Endpoints folder page with centered layout"""
-        content = """<h1>Endpoints</h1>
+        """Generate content for endpoints folder page using Jinja2 template"""
+        template = self.jinja_env.get_template('endpoints_folder.html.j2')
+        return template.render(api=api_spec)
 
-<ac:structured-macro ac:name="info" ac:schema-version="1">
-  <ac:rich-text-body>
-    <p>This section contains all API endpoints organized by resource type.</p>
-  </ac:rich-text-body>
-</ac:structured-macro>
-
-<h2>📋 Endpoint Categories</h2>
-<p>Browse the child pages below to view detailed endpoint documentation:</p>
-
-<ac:structured-macro ac:name="children" ac:schema-version="2">
-  <ac:parameter ac:name="all">true</ac:parameter>
-  <ac:parameter ac:name="sort">title</ac:parameter>
-</ac:structured-macro>
-
-<h2>ℹ️ About</h2>
-<p>Each category contains detailed information about:</p>
-<ul>
-  <li>Available operations (GET, POST, PUT, DELETE, etc.)</li>
-  <li>Request parameters and body schemas</li>
-  <li>Response formats and status codes</li>
-  <li>Example requests and responses</li>
-</ul>
-"""
-        return content
-
-    def _generate_security_content(self, api_spec) -> str:
-        """Generate content for Security page with centered layout"""
-        security_html = ""
-
-        if api_spec.components and api_spec.components.security_schemes:
-            for scheme_name, scheme in api_spec.components.security_schemes.items():
-                scheme_type = scheme.type or "unknown"
-                scheme_desc = scheme.description or f"Security scheme: {scheme_name}"
-
-                security_html += f"""
-<h3>{scheme_name}</h3>
-<p><strong>Type:</strong> {scheme_type}</p>
-<p>{scheme_desc}</p>
-<hr/>
-"""
-
-        content = f"""<h1>Security</h1>
-
-<ac:structured-macro ac:name="info" ac:schema-version="1">
-  <ac:rich-text-body>
-    <p>This page describes the authentication and authorization mechanisms used by the API.</p>
-  </ac:rich-text-body>
-</ac:structured-macro>
-
-<h2>🔐 Security Schemes</h2>
-{security_html if security_html else '<p>No security schemes defined.</p>'}
-
-<h2>ℹ️ Implementation Notes</h2>
-<p>Please refer to the API specification for detailed implementation guidelines and examples.</p>
-"""
-        return content
 
     def _error_result(self, errors: List[str], start_time: datetime) -> PublishResultDTO:
         """Create an error result"""
