@@ -286,14 +286,8 @@
                 {# ============================================= #}
                 {# COMPLETE SCHEMA REFERENCE - ALL SCHEMAS + SUB-SCHEMAS #}
                 {# ============================================= #}
-                <div class="content-section">
-                    <h2 class="section-title">📋 Complete Schema Reference</h2>
-                    <p style="font-style: italic; color: #6B778C; margin-bottom: 16px;">
-                        Detailed schema definitions for all objects and sub-objects used in this endpoint.
-                    </p>
-
-                    {% set all_schemas_to_display = [] %}
-                    {% set schemas_metadata = {} %}
+                {% set all_schemas_to_display = [] %}
+                {% set schemas_metadata = {} %}
 
                     {# Collect schemas from Request Body #}
                     {% if operation.request_body %}
@@ -340,6 +334,14 @@
                             {% endif %}
                         {% endfor %}
                     {% endif %}
+
+                    {# Only show Complete Schema Reference section if there are schemas to display #}
+                    {% if all_schemas_to_display|length > 0 %}
+                    <div class="content-section">
+                        <h2 class="section-title">📋 Complete Schema Reference</h2>
+                        <p style="font-style: italic; color: #6B778C; margin-bottom: 16px;">
+                            Detailed schema definitions for all objects and sub-objects used in this endpoint.
+                        </p>
 
                     {# Now process each schema and collect sub-schemas #}
                     {% set processed_schemas = [] %}
@@ -426,7 +428,9 @@
                             {% set _ = processed_schemas.append(schema_name) %}
                         {% endif %}
                     {% endfor %}
-                </div>
+                    </div>
+                    {% endif %}
+                    {# End of Complete Schema Reference - only shown if schemas exist #}
             </div>
 
             {% endif %}

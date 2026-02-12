@@ -253,8 +253,6 @@
 {# ============================================= #}
 {# COMPLETE SCHEMA REFERENCE #}
 {# ============================================= #}
-<h2>📋 Complete Schema Reference</h2>
-<p><em>Detailed schema definitions for all objects and sub-objects used in this endpoint.</em></p>
 
 {% set all_schemas_to_display = [] %}
 {% set schemas_metadata = {} %}
@@ -304,6 +302,11 @@
     {% endif %}
   {% endfor %}
 {% endif %}
+
+{# Only show Complete Schema Reference section if there are schemas to display #}
+{% if all_schemas_to_display|length > 0 %}
+<h2>📋 Complete Schema Reference</h2>
+<p><em>Detailed schema definitions for all objects and sub-objects used in this endpoint.</em></p>
 
 {# Display all schemas and collect sub-schemas #}
 {% set processed_schemas = [] %}
@@ -395,4 +398,6 @@
     {% set _ = processed_schemas.append(schema_name) %}
   {% endif %}
 {% endfor %}
+{% endif %}
+{# End of Complete Schema Reference - only shown if schemas exist #}
 
